@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<themeConfig>
+	<name>the blackboard</name>
+	<applicationName>theBlackboard</applicationName>
+	<applicationVersion>0.1</applicationVersion>
+	<themeSwfUrl>main.swf</themeSwfUrl>
+	<clipFactoryType>library</clipFactoryType>
+
+	<layoutRules>
+		<containerRule>
+			<containerId>mainContainer</containerId>
+			<scaleGrid>
+				<gridType>scaleCenterStatic</gridType>
+				<bottom>
+					<elementName>navigation</elementName>
+				</bottom>
+				<center>
+					<elementName>entriesDisplay</elementName>
+				</center>
+			</scaleGrid>
+		</containerRule>
+	</layoutRules>
+</themeConfig>

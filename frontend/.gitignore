@@ -1,0 +1,6 @@
+.settings
+.as2_classpath
+.project
+*.swf
+# The buildsystem is not ready yet.
+build.xml

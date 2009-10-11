@@ -1,0 +1,201 @@
+import at.klickverbot.core.CoreObject;
+import at.klickverbot.debug.Debug;
+import at.klickverbot.event.EventListener;
+import at.klickverbot.event.IEventDispatcher;
+import at.klickverbot.event.events.Event;
+
+/**
+ * Minimalistic event dispatcher. Other than the GDispatcher and the standard
+ * Flash EventDispatcher, this class is not directly used as a mixin.
+ *
+ * Loosely based on the EventDispatcher by Saban Ünlü thawt he presented at the
+ * FlashForumKonferenz 2006.
+ *
+ */
+class at.klickverbot.event.EventDispatcher extends CoreObject
+   implements IEventDispatcher {
+
+   /**
+    * Registers an event listener that recieves the dispatched events.
+    *
+    * @param event The event to add the listener for.
+    * @param listenerOwner The owner of the listener function. Only needed
+    *        because ActionScript 2 allows no real function pointers.
+    * @param listener The listener function that recieves the event.
+    */
+   public function addEventListener( eventType :String, listenerOwner :Object,
+      listener :Function ) :Void {
+      if ( ( !( eventType.length > 0 ) ) || ( listener == null ) ) {
+         Debug.LIBRARY_LOG.warn( "Attempted to add illegal listener to " + this +
+            ": eventType: " + eventType + ", listenerOwner: " + listenerOwner +
+            ", listener: " + listener );
+      }
+
+      if ( m_listeners == null ) {
+         m_listeners = new Object();
+      }
+
+      if ( removeEventListener( eventType, listenerOwner, listener ) ) {
+         Debug.LIBRARY_LOG.debug( "Listener already exists, removing the old one " +
+            "from " + this + ": eventType: " + eventType + ", listenerOwner: " +
+            listenerOwner + ", listener: " + listener );
+      }
+
+      // Create listener array for this event type if it does not exit.
+      var eventListeners :Array = m_listeners[ eventType ] || (
+         m_listeners[ eventType ] = new Array() );
+
+      eventListeners.push( new EventListener( listenerOwner, listener ) );
+   }
+
+   /**
+    * Removes an event listener from the list.
+    *
+    * @return If the listener could be removed (if it was in the list).
+    * @see{ #addEventListener }
+    */
+   public function removeEventListener( eventType :String, listenerOwner :Object,
+      listener :Function ) :Boolean {
+      if ( m_listeners == null ) {
+         // Nothing to do, no registered listeners.
+         return false;
+      }
+
+      var eventRemoved :Boolean = false;
+
+      var currentListener :EventListener;
+      var eventListeners :Array = getListenersForEvent( eventType );
+
+      if ( eventListeners == null ) {
+         // Nothing to do, no registered listeners for this event.
+         return false;
+      }
+
+      // We need to traverse the m_listeners subarray to dispatch the event to
+      // all listeners. While we are at it, we can also check if any registered
+      // listeners have ceased to exist. Because this should not happen anyway,
+      // we go with a faster approach when not debugging. Inspired by Saban Ünlü.
+
+      if ( Debug.LEVEL == Debug.LEVEL_NO ) {
+         var i :Number = eventListeners.length;
+
+         while ( currentListener = eventListeners[ --i ] ) {
+            if ( ( currentListener.listenerFunc === listener ) &&
+               ( currentListener.listenerOwner === listenerOwner ) ) {
+
+               eventListeners.splice( i, 1 );
+               return true;
+            }
+         }
+      } else {
+         var listenerIndex :Number = 0;
+
+         while ( listenerIndex < eventListeners.length ) {
+            currentListener = eventListeners[ listenerIndex ];
+
+            if ( ( currentListener.listenerFunc === listener ) &&
+               ( currentListener.listenerOwner === listenerOwner ) ) {
+               eventListeners.splice( listenerIndex, 1 );
+               eventRemoved = true;
+
+               // We have to decrement the index value if we remove an element
+               // from the array because we would skip the following element if
+               // we did not.
+               if ( listenerIndex > 0 ) {
+                  --listenerIndex;
+               }
+            } else if ( ( currentListener.listenerFunc == null ) ||
+               ( currentListener.listenerOwner == null ) ) {
+               eventListeners.splice( listenerIndex, 1 );
+
+               if ( listenerIndex > 0 ) {
+                  --listenerIndex;
+               }
+
+               Debug.LIBRARY_LOG.warn( "No longer existing event listener for " +
+                  "event type " + eventType + " removed!" );
+            }
+
+            ++listenerIndex;
+         }
+      }
+      return eventRemoved;
+   }
+
+   /**
+    * Returns the number of listeners that are registered for the given event
+    * type.
+    *
+    * @param eventType The event type from which to get the number of listeners.
+    * @return The number of listeners.
+    */
+   public function getListenerCount( eventType :String ) :Number {
+      return getListenersForEvent( eventType ).length;
+   }
+
+   /**
+    * Dispatches event to all registered listeners.
+    *
+    * @param event An event object that is dispatched.
+    */
+   public function dispatchEvent( event :Event ) :Void {
+      Debug.assertNotNull( event, "Attempted to dispatch null event." );
+
+      if ( m_listeners == null ) {
+         // Nothing to do, no registered listeners.
+         return;
+      }
+
+
+      // We need to traverse the m_listeners subarray to dispatch the event to
+      // all listeners. While we are at it, we can also check if any registered
+      // listeners have ceased to exist. Because this should not happen anyway,
+      // we go with a faster approach when not debugging. Inspired by Saban Ünlü.
+
+      var eventListeners :Array = getListenersForEvent( event.type );
+      var currentListener :EventListener;
+
+      if ( Debug.LEVEL == Debug.LEVEL_NO ) {
+         var listenerCount :Number = eventListeners.length;
+
+         while ( currentListener = eventListeners[ --listenerCount ] ) {
+            currentListener.listenerFunc.call( currentListener.listenerOwner, event );
+         }
+      } else {
+         var listenerIndex :Number = 0;
+
+         while ( listenerIndex < eventListeners.length ) {
+            currentListener = eventListeners[ listenerIndex ];
+            if ( ( currentListener.listenerFunc != null ) ) {
+               currentListener.listenerFunc.call( currentListener.listenerOwner,
+                  event );
+            } else {
+               eventListeners.splice( listenerIndex, 1 );
+
+               if ( listenerIndex > 0 ) {
+                  --listenerIndex;
+               }
+
+               Debug.LIBRARY_LOG.warn( "No longer existing event listener " +
+                  "for event " + event + " removed!" );
+            }
+
+            ++listenerIndex;
+         }
+      }
+   }
+
+   /**
+    * Wrapper for the "dirty" associative array access to ensure type safety.
+    *
+    * @param eventType The type of event to get all listeners of.
+    * @return An Array containing all the listeners for the given event type.
+    */
+   private function getListenersForEvent( eventType :String ) :Array {
+      return m_listeners[ eventType ];
+   }
+
+   // Associative array of all event listeners. 1st dimension: events by event
+   // string; 2nd dimension: normal array containing all the listeners.
+   private var m_listeners :Object;
+}
