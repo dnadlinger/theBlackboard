@@ -8,8 +8,8 @@ import at.klickverbot.theBlackboard.view.MainView;
 
 /**
  * The main class of the application.
- * Is invoked directly by the main function.
  *
+ * It is invoked directly by the main function.
  */
 class at.klickverbot.theBlackboard.Application extends CoreObject {
    /**

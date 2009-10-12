@@ -26,4 +26,13 @@ class at.klickverbot.util.McUtils {
       return false;
    }
 
+   static public function getChildren( parent :MovieClip ) :Object {
+      var result :Object = new Object();
+      for ( var name :String in parent ) {
+         if ( typeof( parent[ name ] ) == "movieclip" ) {
+            result[ name ] = parent[ name ];
+         }
+      }
+      return result;
+   }
 }

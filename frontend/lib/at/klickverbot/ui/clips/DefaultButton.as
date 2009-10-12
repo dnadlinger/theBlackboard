@@ -4,9 +4,8 @@ import at.klickverbot.core.CoreMovieClip;
  * Button to use in a theme swf with a clip that is intened to work with the
  * at.klickverbot.ui.themed.Button component.
  *
- * No create here becuase this class doesn't make sense with a dynamically
- * created MovieClip.
- *
+ * No <code>create</code> function here becuase this class does not make sense
+ * with a dynamically created MovieClip.
  */
 class at.klickverbot.ui.clips.DefaultButton extends CoreMovieClip {
    public function activeAni() :Void {
