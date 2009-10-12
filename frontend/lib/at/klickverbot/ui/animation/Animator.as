@@ -45,7 +45,7 @@ class at.klickverbot.ui.animation.Animator extends CoreObject {
 
    // TODO: Add some means to stop an animation.
 
-   private function render( event :EnterFrameBeacon ) :Void {
+   private function render( event :Event ) :Void {
       var deltaTime :Number = ( getTimer() - m_lastTicks ) * 0.001;
       m_lastTicks = getTimer();
 

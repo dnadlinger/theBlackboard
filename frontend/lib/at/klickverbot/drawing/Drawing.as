@@ -159,7 +159,7 @@ class at.klickverbot.drawing.Drawing extends CoreObject {
     * Creates a copy of this object.
     *
     * @param deep Speciefies if a shallow or a deep copy will be created.
-    *        Defaults to true.
+    *        Defaults to true (deep).
     * @return The copied object.
     */
    public function clone( deep :Boolean ) :Drawing {

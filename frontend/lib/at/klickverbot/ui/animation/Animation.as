@@ -71,14 +71,13 @@ class at.klickverbot.ui.animation.Animation extends EventDispatcher
    }
 
    /**
-    * Creates a independent (deep) copy of this object.
+    * Creates a shallow copy of this object.
     *
     * @return The copied object.
     */
    public function clone() :Animation {
       var copy :Animation = new Animation( m_tween, m_duration, m_timeMapper );
       copy.m_timeIndex = m_timeIndex;
-
       return copy;
    }
 
