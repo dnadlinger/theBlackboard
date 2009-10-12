@@ -40,6 +40,7 @@ class at.klickverbot.ui.components.themed.Button extends Static
          return false;
       }
 
+      // TODO: Program against an interface instead?
       var buttonHack :DefaultButton = DefaultButton( m_staticContent );
 
       var active :MovieClip = buttonHack.getActiveArea();

@@ -41,18 +41,37 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
       m_background = m_staticContent[ BACKGROUND_NAME ];
 
       m_textFieldContainer.setScaleGrid(
-         m_textField._x,
-         m_staticContent._width - m_textField._x - m_textField._width,
-         m_textField._y,
-         m_staticContent._height - m_textField._y - m_textField._height
+         m_textFieldClip._x,
+         m_staticContent._width - m_textFieldClip._x - m_textFieldClip._width,
+         m_textFieldClip._y,
+         m_staticContent._height - m_textFieldClip._y - m_textFieldClip._height
       );
-
       m_textFieldContainer.addContent( new McWrapperComponent( m_textFieldClip ),
          StretchModes.FILL, ScaleGridCell.CENTER );
-
       m_textFieldContainer.create( m_container );
 
       m_textField.text = "";
+
+      // Install handlers to update the background when the textfield
+      // gets/looses focus.
+      var thisHack :TextBox = this;
+
+      m_textField.onSetFocus = function( oldFocus :Object ) :Void {
+         if ( thisHack.m_background != null ) {
+      	  thisHack.m_background.focus();
+         }
+      };
+
+      m_textField.onKillFocus = function( oldFocus :Object ) :Void {
+         if ( thisHack.m_background != null ) {
+         	thisHack.m_background.active();
+         }
+      };
+
+      // Also focus the textfield when the background is pressed.
+      thisHack.m_background.onRelease = function() :Void {
+         Selection.setFocus( thisHack.m_textField );
+      };
 
       return true;
    }
