@@ -1,3 +1,4 @@
+import at.klickverbot.util.Delegate;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.drawing.Point2D;
 import at.klickverbot.event.EventDispatcher;
@@ -229,8 +230,11 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
    }
 
    private function registerMouseoverArea() :Void {
-   	MouseoverManager.getInstance().addArea( getMouseoverArea(),
-         handleMouseOn, handleMouseOff );
+   	MouseoverManager.getInstance().addArea(
+         getMouseoverArea(),
+         Delegate.create( this, handleMouseOn ),
+         Delegate.create( this, handleMouseOff )
+      );
    }
 
    private function deregisterMouseoverArea() :Void {

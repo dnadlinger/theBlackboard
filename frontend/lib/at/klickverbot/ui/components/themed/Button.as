@@ -1,3 +1,4 @@
+import at.klickverbot.event.events.UiEvent;
 import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.theme.ClipId;
 import at.klickverbot.ui.components.IUiComponent;
@@ -35,8 +36,8 @@ class at.klickverbot.ui.components.themed.Button extends Static
       bindFunctionOrGotoAndPlay( "inactive" );
       bindFunctionOrGotoAndPlay( "hover" );
       bindFunctionOrGotoAndPlay( "press" );
-      bindFunctionOrGotoAndPlay( "release" );
-      bindFunctionOrGotoAndPlay( "getActiveArea" );
+      bindFunctionOrGotoAndPlay( "release", "hover" );
+      bindFunctionOrGotoAndPlay( "releaseOutside", "active" );
 
       var func :Function = Function( m_staticContent[ "getActiveArea" ] );
       if ( func != null ) {
@@ -50,14 +51,15 @@ class at.klickverbot.ui.components.themed.Button extends Static
       }
 
       // Bind the handler functions to the active area.
-      var active :MovieClip = m_state.getActiveArea();
-      if ( active == null ) {
-         active = m_staticContent;
-      }
-
+      var active :MovieClip = getMouseoverArea();
       active.onPress = Delegate.create( this, onPress );
       active.onRelease = Delegate.create( this, onRelease );
       active.onReleaseOutside = Delegate.create( this, onReleaseOutside );
+
+      // We are using the standard UiEvents dispatched by McComponent to react
+      // to mouseover/-out.
+      addEventListener( UiEvent.MOUSE_OVER, this, handleMouseOver );
+      addEventListener( UiEvent.MOUSE_OUT, this, handleMouseOut );
 
       // If the button is not active, put the button content into the "inactive"
       // state. "active" is the default.
@@ -89,19 +91,48 @@ class at.klickverbot.ui.components.themed.Button extends Static
 
    private function getMouseoverArea() :MovieClip {
       // Only consider the active area for the hovering events.
-      return m_state.getActiveArea();
+      var active :MovieClip = m_state.getActiveArea();
+      if ( active == null ) {
+         active = m_staticContent;
+      }
+      return active;
    }
 
-   private function bindFunctionOrGotoAndPlay( actionName :String ) :Void {
+   private function bindFunctionOrGotoAndPlay( actionName :String,
+      frameName :String ) :Void {
+      if ( frameName == null ) {
+      	frameName = actionName;
+      }
+
       var func :Function = Function( m_staticContent[ actionName ] );
       if ( func != null ) {
          m_state[ actionName ] = Delegate.create( m_staticContent, func );
       } else {
          m_state[ actionName ] = Delegate.create( m_staticContent,
             function() :Void {
-               this.gotoAndPlay( actionName );
+              this.gotoAndPlay( frameName );
             }
          );
+      }
+   }
+
+   /*
+    * Handler functions which are connected to the standard UiEvents to update
+    * the state on mouseover/-out.
+    */
+   private function handleMouseOver( event :UiEvent ) :Void {
+      m_hovering = true;
+
+      if ( m_active ) {
+         m_state.hover();
+      }
+   }
+
+   private function handleMouseOut( event :UiEvent ) :Void {
+      m_hovering = false;
+
+      if ( m_active ) {
+         m_state.active();
       }
    }
 

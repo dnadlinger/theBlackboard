@@ -5,10 +5,11 @@ class at.klickverbot.ui.mouse.MouseoverArea extends CoreObject {
 	 * Constructor.
 	 */
 	public function MouseoverArea( activeArea :MovieClip, overHandler :Function,
-      outHandler :Function ) {
+      outHandler :Function, boundingBoxOnly :Boolean ) {
       m_activeArea = activeArea;
       m_overHandler = overHandler;
       m_outHandler = outHandler;
+      m_boundingBoxOnly = boundingBoxOnly;
    }
 
    public function get activeArea() :MovieClip {
@@ -39,9 +40,21 @@ class at.klickverbot.ui.mouse.MouseoverArea extends CoreObject {
 		m_outHandler = to;
 	}
 
+	public function get boundingBoxOnly() :Boolean {
+		return m_boundingBoxOnly;
+	}
+	public function set boundingBoxOnly( to :Boolean ) :Void {
+		m_boundingBoxOnly = to;
+	}
 
-	private var m_activeArea :MovieClip;
+	private function getInstanceInfo() :Array {
+	   return super.getInstanceInfo().concat( [ "activeArea: " + m_activeArea,
+	     "boundingBoxOnly: " + m_boundingBoxOnly ] );
+   }
+
+   private var m_activeArea :MovieClip;
 	private var m_currentlyOver :Boolean;
 	private var m_overHandler :Function;
 	private var m_outHandler :Function;
+	private var m_boundingBoxOnly :Boolean;
 }

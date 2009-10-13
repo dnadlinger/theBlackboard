@@ -67,7 +67,7 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
       // the caret cursor is displayed by the system then (there is no known
       // workaround for this).
       MouseoverManager.getInstance().addArea(
-         m_textFieldClip, handleMouseOver, handleMouseOut );
+         m_textFieldClip, handleMouseOver, handleMouseOut, true );
 
       m_textField.text = "";
 
