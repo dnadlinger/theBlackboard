@@ -42,6 +42,7 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
             destroy();
             return false;
          }
+         // TODO: Why was this commented out?
 //			placeAndResizeContent( currentContent );
       }
 
@@ -51,8 +52,17 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
 
    public function destroy() :Void {
       if ( m_onStage ) {
-         for ( var i :Number = 0; i < m_contents.length; ++i ) {
-            ScaleGridContainerContent( m_contents[ i ] ).component.destroy();
+         var currentContent :ScaleGridContainerContent;
+         var i :Number = m_contents.length;
+
+         while ( currentContent = m_contents[ --i ] ) {
+         	// Check if the components are on stage before destorying them. Not
+         	// doing so could result destroy() being called two times if the UI
+         	// is destroyed because a child of this container could not be
+         	// created.
+            if ( currentContent.component.isOnStage() ) {
+               currentContent.component.destroy();
+            }
          }
       }
 

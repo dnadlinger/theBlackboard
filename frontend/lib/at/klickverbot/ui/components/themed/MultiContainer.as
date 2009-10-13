@@ -83,8 +83,17 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
          m_scaleGridContainer.destroy();
          m_scaleGridContainer.removeAllContents();
 
-         for ( var i :Number = 0; i < m_contents.length; ++i ) {
-            MultiContainerContent( m_contents[ i ] ).component.destroy();
+         var currentContent :MultiContainerContent;
+         var i :Number = m_contents.length;
+
+         while ( currentContent = m_contents[ --i ] ) {
+            // Check if the components are on stage before destorying them. Not
+            // doing so could result destroy() being called two times if the UI
+            // is destroyed because a child of this container could not be
+            // created.
+            if ( currentContent.component.isOnStage() ) {
+               currentContent.component.destroy();
+            }
          }
 
          m_dummyWrappers = new Object();

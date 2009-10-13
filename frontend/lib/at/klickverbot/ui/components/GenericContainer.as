@@ -36,9 +36,16 @@ class at.klickverbot.ui.components.GenericContainer extends McComponent
    }
 
    public function destroy() :Void {
-      for ( var i :Number = 0; i < m_components.length; ++i ) {
-         if ( m_components[ i ].isOnStage() ) {
-            m_components[ i ].destroy();
+      var currentComponent :IUiComponent;
+      var i :Number = m_components.length;
+
+      while ( currentComponent = m_components[ --i ] ) {
+   	   // Check if the components are on stage before destorying them. Not
+         // doing so could result destroy() being called two times if the UI
+         // is destroyed because a child of this container could not be
+         // created.
+         if ( currentComponent.isOnStage() ) {
+            currentComponent.destroy();
          }
       }
       super.destroy();
