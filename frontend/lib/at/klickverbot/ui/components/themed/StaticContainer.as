@@ -1,3 +1,4 @@
+import at.klickverbot.util.McUtils;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.debug.LogLevel;
 import at.klickverbot.drawing.Point2D;
@@ -66,14 +67,16 @@ class at.klickverbot.ui.components.themed.StaticContainer extends Static
       var oldSize :Point2D = getSize();
       var overallXFactor :Number = width / oldSize.x;
       var overallYFactor :Number = height / oldSize.y;
-      for ( var child :String in m_staticContent ) {
-         if ( m_staticContent[ child ] instanceof MovieClip ) {
-            var currentChild :MovieClip = m_staticContent[ child ];
-            currentChild._xscale *= overallXFactor;
-            currentChild._yscale *= overallYFactor;
-            currentChild._x *= overallXFactor;
-            currentChild._y *= overallYFactor;
-         }
+
+      var children :Array = McUtils.getChildren( m_staticContent );
+      var currentChild :MovieClip;
+      var i :Number = children.length;
+
+      while ( currentChild = children[ --i ] ) {
+         currentChild._xscale *= overallXFactor;
+         currentChild._yscale *= overallYFactor;
+         currentChild._x *= overallXFactor;
+         currentChild._y *= overallYFactor;
       }
       fitContentToDummy();
    }
