@@ -7,6 +7,9 @@ import at.klickverbot.ui.components.ScaleGridContainer;
 import at.klickverbot.ui.components.stretching.StretchModes;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.layout.ScaleGridCell;
+import at.klickverbot.ui.mouse.PointerManager;
+import at.klickverbot.ui.mouse.MouseoverManager;
+import at.klickverbot.util.Delegate;
 
 class at.klickverbot.ui.components.themed.TextBox extends Static
    implements IUiComponent {
@@ -17,8 +20,8 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
       m_textFieldContainer = new ScaleGridContainer();
    }
 
-   public function create( target :MovieClip, depth :Number ) :Boolean {
-      if ( !super.create( target, depth ) ) {
+   private function createUi() :Boolean {
+      if( !super.createUi() ) {
          return false;
       }
 
@@ -50,28 +53,23 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
          StretchModes.FILL, ScaleGridCell.CENTER );
       m_textFieldContainer.create( m_container );
 
-      m_textField.text = "";
-
       // Install handlers to update the background when the textfield
       // gets/looses focus.
-      var thisHack :TextBox = this;
-
-      m_textField.onSetFocus = function( oldFocus :Object ) :Void {
-         if ( thisHack.m_background != null ) {
-      	  thisHack.m_background.focus();
-         }
-      };
-
-      m_textField.onKillFocus = function( oldFocus :Object ) :Void {
-         if ( thisHack.m_background != null ) {
-         	thisHack.m_background.active();
-         }
-      };
+      m_textField.onSetFocus = Delegate.create( this, gotFocus );
+      m_textField.onKillFocus = Delegate.create( this, lostFocus );
 
       // Also focus the textfield when the background is pressed.
-      thisHack.m_background.onRelease = function() :Void {
-         Selection.setFocus( thisHack.m_textField );
-      };
+      if ( m_background != null ) {
+      	m_background.onRelease = Delegate.create( this, backgroundClicked );
+      }
+
+      // Hide any custom pointer when the mouse is over the textfield because
+      // the caret cursor is displayed by the system then (there is no known
+      // workaround for this).
+      MouseoverManager.getInstance().addArea(
+         m_textFieldClip, handleMouseOver, handleMouseOut );
+
+      m_textField.text = "";
 
       return true;
    }
@@ -108,6 +106,32 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
    }
    public function set text( to :String ) :Void {
       m_textField.text = to;
+   }
+
+
+   private function gotFocus() :Void {
+      if ( m_background != null ) {
+         m_background.gotoAndPlay( "focus" );
+      }
+   }
+
+   private function lostFocus() :Void {
+      if ( m_background != null ) {
+         m_background.gotoAndPlay( "active" );
+      }
+   }
+
+   private function handleMouseOver() :Void {
+      PointerManager.getInstance().suspendCustomPointer();
+      Mouse.hide();
+   }
+
+   private function handleMouseOut() :Void {
+      PointerManager.getInstance().resumeCustomPointer();
+   }
+
+   private function backgroundClicked() :Void {
+      Selection.setFocus( m_textField );
    }
 
    private static var TEXT_FIELD_CLIP_NAME :String = "textFieldClip";

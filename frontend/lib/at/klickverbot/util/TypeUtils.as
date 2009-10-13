@@ -1,7 +1,8 @@
 /**
- * Provides a way to get
- * Adapted from Simon Wacker's great work for the as2lib framework.
+ * Provides a way to get the (human-readable) name of a given type or a given
+ * object's type.
  *
+ * Adapted from Simon Wacker's great work for the as2lib framework.
  */
 class at.klickverbot.util.TypeUtils {
    /**

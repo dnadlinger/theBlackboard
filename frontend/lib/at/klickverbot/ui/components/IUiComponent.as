@@ -1,12 +1,11 @@
-import at.klickverbot.core.ICoreInterface;
 import at.klickverbot.drawing.Point2D;
+import at.klickverbot.event.IEventDispatcher;
 
 /**
  * Represents a visible user interface component that can be created in a
  * target MovieClip, destroyed, hidden, and moved around the stage.
- *
  */
-interface at.klickverbot.ui.components.IUiComponent extends ICoreInterface {
+interface at.klickverbot.ui.components.IUiComponent extends IEventDispatcher {
    /**
     * Creates the visible part of the component in the target parent MovieClip.
     * The component can be recreated using @link{ #destroy } and this function,

@@ -7,7 +7,6 @@
  *
  * The mx.utils.Delegate class cannot be used with MTASC because it messes
  * a bit with the variable scopes.
- *
  */
 class at.klickverbot.util.Delegate {
    /**

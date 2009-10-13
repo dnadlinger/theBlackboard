@@ -7,7 +7,6 @@ import at.klickverbot.util.Delegate;
  * Singleton EventDispatcher that broadcasts <code>Event.ENTER_FRAME</code>
  * every frame. Useful for <code>onEnterFrame</code>-like functions in classes
  * that do not extend MovieClip.
- *
  */
 class at.klickverbot.util.EnterFrameBeacon extends EventDispatcher {
 

@@ -17,8 +17,8 @@ class at.klickverbot.ui.components.Spacer extends CustomSizeableComponent
       m_initialSize = size;
    }
 
-   public function create( target :MovieClip, depth :Number ) :Boolean {
-      if ( !super.create( target, depth ) ) {
+   private function createUi() :Boolean {
+      if( !super.createUi() ) {
          return false;
       }
       m_sizeDummy._width = m_initialSize.x;

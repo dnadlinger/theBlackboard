@@ -16,17 +16,8 @@ class at.klickverbot.ui.components.HStrip extends CustomSizeableComponent
       m_contentComponents = new Array();
    }
 
-   /**
-    * Creates the visible part of the component in the target parent MovieClip.
-    * The component can be recreated using {@link #destroy} and this function,
-    * but only one (visible) representation can exist at the same time.
-    *
-    * @param target The MovieClip where the component is created.
-    * @param depth The depth to create the MovieClip at.
-    * @return If the component could be created.
-    */
-   public function create( target :MovieClip, depth :Number ) :Boolean {
-      if( !super.create( target, depth ) ) {
+   private function createUi() :Boolean {
+      if( !super.createUi() ) {
          return false;
       }
 

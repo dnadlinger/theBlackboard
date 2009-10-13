@@ -1,14 +1,14 @@
-import at.klickverbot.event.IEventDispatcher;
+import at.klickverbot.debug.Debug;
 import at.klickverbot.event.MixinDispatcher;
 import at.klickverbot.event.events.ButtonEvent;
-import at.klickverbot.event.events.Event;
 import at.klickverbot.theme.ClipId;
 import at.klickverbot.ui.clips.DefaultButton;
 import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.themed.Static;
+import at.klickverbot.util.Delegate;
 
 class at.klickverbot.ui.components.themed.Button extends Static
-   implements IUiComponent, IEventDispatcher {
+   implements IUiComponent {
 
    /**
     * Constructor.
@@ -21,85 +21,31 @@ class at.klickverbot.ui.components.themed.Button extends Static
 
       m_active = true;
       m_hovering = false;
-
-      m_dispatcher = new MixinDispatcher();
-      m_dispatcher.overwriteMethods( this );
    }
 
-   /**
-    * Creates the visible part of the component in the target parent MovieClip.
-    * The component can be recreated using @link{ #destroy } and this function,
-    * but only one (visible) representation can exist at the same time.
-    *
-    * @param target The MovieClip where the component is created.
-    * @param depth The depth in the MovieClip to create the component at.
-    * @return If the component could be created.
-    */
-   public function create( target :MovieClip, depth :Number ) :Boolean {
-      if( !super.create( target, depth ) ) {
+   private function createUi() :Boolean {
+      if( !super.createUi() ) {
          return false;
       }
 
-      // TODO: Program against an interface instead?
-      var buttonHack :DefaultButton = DefaultButton( m_staticContent );
+      if ( buttonHack() == null ) {
+         Debug.LIBRARY_LOG.error( "Button clip content expected to be of type " +
+            "DefaultButton, but was: " + m_staticContent );
+         super.destroy();
+         return false;
+      }
 
-      var active :MovieClip = buttonHack.getActiveArea();
+      var active :MovieClip = buttonHack().getActiveArea();
       if ( active == null ) {
          active = m_staticContent;
       }
 
-      var thisHack :Button = this;
-
-      active.onRollOver = function() :Void {
-         thisHack.m_hovering = true;
-
-         if ( thisHack.m_active ) {
-            buttonHack.hoverAni();
-         }
-
-         thisHack.dispatchEvent( new ButtonEvent( ButtonEvent.HOVER_ON,
-            thisHack ) );
-      };
-
-      active.onRollOut = function() :Void {
-         thisHack.m_hovering = false;
-
-         if ( thisHack.m_active ) {
-            buttonHack.activeAni();
-         }
-
-         thisHack.dispatchEvent( new ButtonEvent( ButtonEvent.HOVER_OFF,
-            thisHack ) );
-      };
-
-      active.onPress = function() :Void {
-         if ( thisHack.m_active ) {
-            buttonHack.pressAni();
-            thisHack.dispatchEvent( new ButtonEvent( ButtonEvent.PRESS,
-               thisHack ) );
-         }
-      };
-
-      active.onRelease = function() :Void {
-         if ( thisHack.m_active ) {
-            buttonHack.releaseAni();
-            thisHack.dispatchEvent( new ButtonEvent( ButtonEvent.RELEASE,
-               thisHack ) );
-         }
-      };
-
-      active.onReleaseOutside = function() :Void {
-         thisHack.m_hovering = false;
-
-         if ( thisHack.m_active ) {
-            buttonHack.releaseOutsideAni();
-            thisHack.dispatchEvent( new ButtonEvent(
-               ButtonEvent.RELEASE_OUTSIDE, thisHack ) );
-         }
-      };
+      active.onPress = Delegate.create( this, onPress );
+      active.onRelease = Delegate.create( this, onRelease );
+      active.onReleaseOutside = Delegate.create( this, onReleaseOutside );
 
       if ( !m_active ) {
-         buttonHack.inactiveAni();
+         buttonHack().inactiveAni();
       }
 
       return true;
@@ -125,22 +71,40 @@ class at.klickverbot.ui.components.themed.Button extends Static
       m_active = active;
    }
 
-   // The event dispatcher-related methods will be overwritten by the
-   // MixinDispatcher. Only here to satisfy the compiler.
-   public function addEventListener( eventType :String, handlerOwner :Object,
-      handler :Function ) :Void {
+   private function getMouseoverArea() :MovieClip {
+   	// Only consider the active area for the hovering events.
+      return buttonHack().getActiveArea();
    }
 
-   public function removeEventListener( eventType :String, handlerOwner :Object,
-      handler :Function ) :Boolean {
-      return null;
+   /*
+    * Handler functions that are hooked up to the active area.
+    */
+   private function onPress() :Void {
+      if ( m_active ) {
+         buttonHack.pressAni();
+         dispatchEvent( new ButtonEvent( ButtonEvent.PRESS, this ) );
+      }
    }
 
-   public function getListenerCount( eventType :String ) :Number {
-      return null;
+   private function onRelease() :Void {
+      if ( m_active ) {
+         buttonHack.releaseAni();
+         dispatchEvent( new ButtonEvent( ButtonEvent.RELEASE, this ) );
+      }
    }
 
-   public function dispatchEvent( event :Event ) :Void {
+   private function onReleaseOutside() :Void {
+      m_hovering = false;
+
+      if ( m_active ) {
+         buttonHack.releaseOutsideAni();
+         dispatchEvent( new ButtonEvent( ButtonEvent.RELEASE_OUTSIDE, this ) );
+      }
+   }
+
+   private function buttonHack() :DefaultButton {
+   	// TODO: Program against an interface instead or else this does not make sense at all.
+      return DefaultButton( m_staticContent );
    }
 
    private var m_active :Boolean;

@@ -21,8 +21,8 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
       m_layoutSuspended = false;
    }
 
-   public function create( target :MovieClip, depth :Number ) :Boolean {
-      if ( !super.create( target, depth ) ) {
+   private function createUi() :Boolean {
+      if( !super.createUi() ) {
          return false;
       }
 

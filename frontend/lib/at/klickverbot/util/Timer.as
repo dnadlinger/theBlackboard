@@ -3,7 +3,6 @@ import at.klickverbot.event.events.TimerEvent;
 
 /**
  * Encapsulates the setInterval() and clearInterval() calls into a handy class.
- *
  */
 class at.klickverbot.util.Timer extends EventDispatcher {
 

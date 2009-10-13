@@ -31,8 +31,8 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
       m_otherStaticContents = new Array();
    }
 
-   public function create( target :MovieClip, depth :Number ) :Boolean {
-      if ( !super.create( target, depth ) ) {
+   private function createUi() :Boolean {
+      if( !super.createUi() ) {
          return false;
       }
 

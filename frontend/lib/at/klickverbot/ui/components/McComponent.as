@@ -1,15 +1,17 @@
-import at.klickverbot.util.TypeUtils;
-import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.drawing.Point2D;
+import at.klickverbot.event.EventDispatcher;
+import at.klickverbot.event.events.UiEvent;
 import at.klickverbot.ui.components.IUiComponent;
+import at.klickverbot.ui.mouse.MouseoverManager;
+import at.klickverbot.util.McUtils;
+import at.klickverbot.util.TypeUtils;
 
 /**
  * Base class for all kinds of UiComponents that require a new MovieClip to be
  * created in the target (basically every component).
- *
  */
-class at.klickverbot.ui.components.McComponent extends CoreObject
+class at.klickverbot.ui.components.McComponent extends EventDispatcher
    implements IUiComponent {
    /**
     * Constructor.
@@ -25,7 +27,10 @@ class at.klickverbot.ui.components.McComponent extends CoreObject
          depth = target.getNextHighestDepth();
       }
 
-      Debug.assertPositive( depth, "The target depth for a component must be positive!" );
+      Debug.assertNotNull( target,
+         "Target movie clip for a component must not be null!" );
+      Debug.assertPositive( depth,
+         "Target depth for a component must be positive, but was: " + depth );
 
       if ( m_onStage ) {
          Debug.LIBRARY_LOG.warn(
@@ -36,8 +41,20 @@ class at.klickverbot.ui.components.McComponent extends CoreObject
       var containerName :String = TypeUtils.getTypeName( this ) +
          "(McComponent)@" + target.getNextHighestDepth();
       m_container = target.createEmptyMovieClip( containerName, depth );
-
       m_onStage = true;
+
+      if ( !createUi() ) {
+      	return false;
+      }
+
+      if ( hasMouseoverListeners() ) {
+      	registerMouseoverArea();
+      }
+
+      return true;
+   }
+
+   private function createUi() :Boolean {
       return true;
    }
 
@@ -53,26 +70,8 @@ class at.klickverbot.ui.components.McComponent extends CoreObject
       m_onStage = false;
    }
 
-   public function fade( alpha :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to fade a component that is not on stage: " + this );
-         return;
-      }
-
-      Debug.assertInRange( 0, alpha, 1,
-         "Alpha must be between 0 and 1, but is " + alpha + "!" );
-      m_container._alpha = alpha * 100;
-   }
-
-   public function getAlpha() :Number {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attempted to get the alpha of a component " +
-            "that is not on stage: " + this );
-         return 0;
-      }
-
-      return m_container._alpha / 100;
+   public function isOnStage() :Boolean {
+      return m_onStage;
    }
 
    public function move( x :Number, y :Number ) :Void {
@@ -110,12 +109,7 @@ class at.klickverbot.ui.components.McComponent extends CoreObject
          return new Point2D( 0, 0 );
       }
 
-      var point :Object = new Object();
-      point[ "x" ] = m_container._x;
-      point[ "y" ] = m_container._y;
-      m_container._parent.localToGlobal( point );
-
-      return new Point2D( point[ "x" ], point[ "y" ] );
+      return McUtils.localToGlobal( m_container._parent, getPosition() );
    }
 
    public function getSize() :Point2D {
@@ -165,8 +159,60 @@ class at.klickverbot.ui.components.McComponent extends CoreObject
       resize( size.x, size.y );
    }
 
-   public function isOnStage() :Boolean {
-      return m_onStage;
+   public function fade( alpha :Number ) :Void {
+      if ( !m_onStage ) {
+         Debug.LIBRARY_LOG.warn(
+            "Attempted to fade a component that is not on stage: " + this );
+         return;
+      }
+
+      Debug.assertInRange( 0, alpha, 1,
+         "Alpha must be between 0 and 1, but is " + alpha + "!" );
+      m_container._alpha = alpha * 100;
+   }
+
+   public function getAlpha() :Number {
+      if ( !m_onStage ) {
+         Debug.LIBRARY_LOG.warn( "Attempted to get the alpha of a component " +
+            "that is not on stage: " + this );
+         return 0;
+      }
+
+      return m_container._alpha / 100;
+   }
+
+   public function addEventListener( eventType :String, listenerOwner :Object,
+      listener :Function ) :Void {
+      var hadMouseoverListeners :Boolean = hasMouseoverListeners();
+
+      super.addEventListener( eventType, listenerOwner, listener );
+
+      if ( isOnStage() && ( hadMouseoverListeners != hasMouseoverListeners() ) ) {
+         registerMouseoverArea();
+      }
+   }
+
+   public function removeEventListener( eventType :String,
+      listenerOwner :Object, listener :Function ) :Boolean {
+      var hadMouseoverListeners :Boolean = hasMouseoverListeners();
+
+      var success :Boolean =
+         super.removeEventListener( eventType, listenerOwner, listener );
+
+      if ( isOnStage() && ( hadMouseoverListeners != hasMouseoverListeners() ) ) {
+         deregisterMouseoverArea();
+      }
+
+      return success;
+   }
+
+   /**
+    * Returns a MovieClip which represents the area of the component which is
+    * sensitive for mouseover events.
+    */
+   private function getMouseoverArea() :MovieClip {
+   	Debug.assert( m_onStage, "mouseOverArea() called while not on stage" );
+      return m_container;
    }
 
    /**
@@ -174,13 +220,29 @@ class at.klickverbot.ui.components.McComponent extends CoreObject
     * system.
     */
    private function globalToLocal( point :Point2D ) :Point2D {
-      var tempPoint :Object = new Object();
-      tempPoint[ "x" ] = point.x;
-      tempPoint[ "y" ] = point.y;
+      return McUtils.globalToLocal( m_container, point );
+   }
 
-      m_container.globalToLocal( tempPoint );
+   private function hasMouseoverListeners() :Boolean {
+      return ( ( getListenerCount( UiEvent.MOUSE_OVER ) +
+        getListenerCount( UiEvent.MOUSE_OUT ) ) > 0 );
+   }
 
-      return new Point2D( tempPoint[ "x" ], tempPoint[ "y" ] );
+   private function registerMouseoverArea() :Void {
+   	MouseoverManager.getInstance().addArea( getMouseoverArea(),
+         handleMouseOn, handleMouseOff );
+   }
+
+   private function deregisterMouseoverArea() :Void {
+      MouseoverManager.getInstance().removeArea( getMouseoverArea() );
+   }
+
+   private function handleMouseOn() :Void {
+      dispatchEvent( new UiEvent( UiEvent.MOUSE_OVER, this ) );
+   }
+
+   private function handleMouseOff() :Void {
+      dispatchEvent( new UiEvent( UiEvent.MOUSE_OUT, this ) );
    }
 
    private function getInstanceInfo() :Array {

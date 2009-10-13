@@ -8,9 +8,8 @@ import at.klickverbot.event.events.Event;
  * Minimalistic event dispatcher. Other than the GDispatcher and the standard
  * Flash EventDispatcher, this class is not directly used as a mixin.
  *
- * Loosely based on the EventDispatcher by Saban Ünlü thawt he presented at the
+ * Loosely based on the EventDispatcher by Saban Ünlü that he presented at the
  * FlashForumKonferenz 2006.
- *
  */
 class at.klickverbot.event.EventDispatcher extends CoreObject
    implements IEventDispatcher {

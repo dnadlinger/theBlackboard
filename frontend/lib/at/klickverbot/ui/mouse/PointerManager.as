@@ -12,19 +12,19 @@ import at.klickverbot.util.Delegate;
  * <li>{@link #selectPointer}</li>
  * <li>{@link #useCustomPointer}</li>
  * </ol>
- *
  */
-class at.klickverbot.ui.mouse.MouseManager extends CoreObject {
+class at.klickverbot.ui.mouse.PointerManager extends CoreObject {
 
    /**
     * Constructor.
     * Initializes all the members with values that don't change the current
     * cursor.
     */
-   private function MouseManager() {
+   private function PointerManager() {
       m_useCustomPointer = false;
       m_showPointer = true;
       m_currentPointer = null;
+      m_pointerSuspensionCount = 0;
       m_pointers = new Array();
 
       m_pointerClip = null;
@@ -37,9 +37,9 @@ class at.klickverbot.ui.mouse.MouseManager extends CoreObject {
     *
     * @return The instance of MouseManager.
     */
-   public static function getInstance() :MouseManager {
+   public static function getInstance() :PointerManager {
       if ( m_instance == null ) {
-         m_instance = new MouseManager();
+         m_instance = new PointerManager();
       }
       return m_instance;
    }
@@ -129,7 +129,7 @@ class at.klickverbot.ui.mouse.MouseManager extends CoreObject {
    public function showPointer() :Void {
       if ( !m_showPointer ) {
          m_showPointer = true;
-         if ( m_useCustomPointer ) {
+         if ( m_useCustomPointer && ( m_pointerSuspensionCount == 0 ) ) {
             m_pointerClip._visible = true;
          } else {
             Mouse.show();
@@ -147,6 +147,26 @@ class at.klickverbot.ui.mouse.MouseManager extends CoreObject {
             m_pointerClip._visible = false;
          } else {
             Mouse.hide();
+         }
+      }
+   }
+
+   public function suspendCustomPointer() :Void {
+      if ( m_pointerSuspensionCount == 0 ) {
+      	if ( m_useCustomPointer ) {
+            m_pointerClip._visible = false;
+      	}
+      }
+
+      ++m_pointerSuspensionCount;
+   }
+
+   public function resumeCustomPointer() :Void {
+      --m_pointerSuspensionCount;
+
+      if ( m_pointerSuspensionCount == 0 ) {
+      	if ( m_showPointer && m_useCustomPointer ) {
+            m_pointerClip._visible = true;
          }
       }
    }
@@ -243,10 +263,11 @@ class at.klickverbot.ui.mouse.MouseManager extends CoreObject {
 
    private static var DEFAULT_DEPTH :Number = 200;
 
-   private static var m_instance :MouseManager;
+   private static var m_instance :PointerManager;
 
    private var m_useCustomPointer :Boolean;
    private var m_showPointer :Boolean;
+   private var m_pointerSuspensionCount :Number;
 
    private var m_currentPointer :String;
    private var m_pointers :Object;

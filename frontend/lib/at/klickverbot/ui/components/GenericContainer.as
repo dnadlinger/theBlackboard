@@ -20,8 +20,8 @@ class at.klickverbot.ui.components.GenericContainer extends McComponent
       m_components = new Array();
    }
 
-   public function create( target :MovieClip, depth :Number ) :Boolean {
-      if ( !super.create( target, depth ) ) {
+   private function createUi() :Boolean {
+      if( !super.createUi() ) {
          return false;
       }
 

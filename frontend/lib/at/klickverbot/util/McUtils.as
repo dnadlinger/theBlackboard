@@ -1,6 +1,7 @@
+import at.klickverbot.drawing.Point2D;
+
 /**
  * Provides various utils for dealing with MovieClips.
- *
  */
 class at.klickverbot.util.McUtils {
    /**
@@ -34,5 +35,19 @@ class at.klickverbot.util.McUtils {
          }
       }
       return result;
+   }
+
+   static public function localToGlobal( parent :MovieClip,
+      point :Point2D ) :Point2D {
+      var flashPoint :Object = { x: point.x, y: point.y };
+      parent.localToGlobal( flashPoint );
+      return new Point2D( flashPoint[ "x" ], flashPoint[ "y" ] );
+   }
+
+   static public function globalToLocal( parent :MovieClip,
+      point :Point2D ) :Point2D {
+      var flashPoint :Object = { x: point.x, y: point.y };
+      parent.globalToLocal( flashPoint );
+      return new Point2D( flashPoint[ "x" ], flashPoint[ "y" ] );
    }
 }

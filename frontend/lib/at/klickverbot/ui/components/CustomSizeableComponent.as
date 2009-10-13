@@ -10,8 +10,8 @@ class at.klickverbot.ui.components.CustomSizeableComponent extends McComponent
       super();
    }
 
-   public function create( target :MovieClip, depth :Number ) :Boolean {
-      if ( !super.create( target, depth ) ) {
+   private function createUi() :Boolean {
+      if( !super.createUi() ) {
          return false;
       }
 

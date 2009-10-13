@@ -34,8 +34,8 @@ class at.klickverbot.theBlackboard.view.EntriesView extends McComponent
          this, handleApplicationStateChange );
    }
 
-   public function create( target :MovieClip, depth :Number ) :Boolean {
-      if ( !super.create( target, depth ) ) {
+   private function createUi() :Boolean {
+      if( !super.createUi() ) {
          return false;
       }
 

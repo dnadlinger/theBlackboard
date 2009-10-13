@@ -17,8 +17,8 @@ class at.klickverbot.theBlackboard.view.EntryDisplay extends CustomSizeableCompo
       m_drawingAreaContainer = new DrawingAreaContainer();
    }
 
-   public function create( target :MovieClip, depth :Number ) :Boolean {
-      if ( !super.create( target, depth ) ) {
+   private function createUi() :Boolean {
+      if( !super.createUi() ) {
          return false;
       }
 

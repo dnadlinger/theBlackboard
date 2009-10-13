@@ -22,8 +22,8 @@ class at.klickverbot.theBlackboard.view.NavigationView extends CustomSizeableCom
       setupUi();
    }
 
-   public function create( target :MovieClip, depth :Number ) :Boolean {
-      if ( !super.create( target, depth ) ) {
+   private function createUi() :Boolean {
+      if( !super.createUi() ) {
          return false;
       }
 

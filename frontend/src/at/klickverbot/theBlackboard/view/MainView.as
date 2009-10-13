@@ -1,3 +1,4 @@
+import at.klickverbot.util.McUtils;
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.data.List;
 import at.klickverbot.debug.Logger;
@@ -32,7 +33,7 @@ import at.klickverbot.ui.components.Stack;
 import at.klickverbot.ui.components.stretching.StretchModes;
 import at.klickverbot.ui.components.themed.MultiContainer;
 import at.klickverbot.ui.components.themed.StaticContainer;
-import at.klickverbot.ui.mouse.MouseManager;
+import at.klickverbot.ui.mouse.PointerManager;
 import at.klickverbot.ui.mouse.ThemeMcCreator;
 import at.klickverbot.util.Delegate;
 import at.klickverbot.util.IStageListener;
@@ -93,9 +94,9 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
       m_overlayStack.selectComponent( null );
 
       // Add and use the default pointer which is defined in the theme.
-      MouseManager.getInstance().addPointer( Pointer.DEFAULT,
+      PointerManager.getInstance().addPointer( Pointer.DEFAULT,
          new ThemeMcCreator( AppClipId.DEFAULT_POINTER ) );
-      MouseManager.getInstance().selectPointer( Pointer.DEFAULT );
+      PointerManager.getInstance().selectPointer( Pointer.DEFAULT );
    }
 
    private function startView() :Void {
@@ -145,8 +146,8 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
       }
 
       // Set the default custom pointer.
-      MouseManager.getInstance().setPointerContainer( event.themeTarget );
-      MouseManager.getInstance().useCustomPointer( true );
+      PointerManager.getInstance().setPointerContainer( event.themeTarget );
+      PointerManager.getInstance().useCustomPointer( true );
 
       // Set up the resize handlers for fitting the view into the stage size.
       m_stageListener = new IStageListener();
@@ -169,7 +170,7 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
    }
 
    private function destroyUi( event :ThemeEvent ) :Void {
-      MouseManager.getInstance().useCustomPointer( false );
+      PointerManager.getInstance().useCustomPointer( false );
    }
 
    private function goToActiveEntry( animate :Boolean ) :Void {
@@ -307,13 +308,7 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
       // We should use some more elegant solution, e.g. creating a
       // getRelativePosition( component :IUiComponent ) function in McComponent
       // and using a McWrapperComponent on MainView.
-      var tempPoint :Object = new Object();
-      tempPoint[ "x" ] = point.x;
-      tempPoint[ "y" ] = point.y;
-
-      m_mainContentClip.globalToLocal( tempPoint );
-
-      return new Point2D( tempPoint[ "x" ], tempPoint[ "y" ] );
+      return McUtils.globalToLocal( m_mainContentClip, point );
    }
 
    private static var RESIZE_REFRESH_INTERVAL :Number = 500;
