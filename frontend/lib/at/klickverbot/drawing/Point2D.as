@@ -1,6 +1,6 @@
-import flash.geom.Point;
-
 import at.klickverbot.core.CoreObject;
+
+import flash.geom.Point;
 
 /**
  * A point (in 2D space).

@@ -1,6 +1,6 @@
+import at.klickverbot.data.ICollection;
 import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.CollectionEvent;
-import at.klickverbot.data.ICollection;
 
 class at.klickverbot.data.List extends EventDispatcher
    implements ICollection {

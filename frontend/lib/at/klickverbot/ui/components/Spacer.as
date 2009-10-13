@@ -1,6 +1,6 @@
 import at.klickverbot.drawing.Point2D;
-import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
+import at.klickverbot.ui.components.IUiComponent;
 
 /**
  * Placeholder component that is completely empty.

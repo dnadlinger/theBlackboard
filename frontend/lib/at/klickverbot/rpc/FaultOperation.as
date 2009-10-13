@@ -1,5 +1,5 @@
-import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.EventDispatcher;
+import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.rpc.IOperation;
 
 class at.klickverbot.rpc.FaultOperation extends EventDispatcher implements IOperation {

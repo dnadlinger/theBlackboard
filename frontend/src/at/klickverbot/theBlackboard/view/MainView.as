@@ -1,4 +1,3 @@
-import at.klickverbot.util.McUtils;
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.data.List;
 import at.klickverbot.debug.Logger;
@@ -37,6 +36,7 @@ import at.klickverbot.ui.mouse.PointerManager;
 import at.klickverbot.ui.mouse.ThemeMcCreator;
 import at.klickverbot.util.Delegate;
 import at.klickverbot.util.IStageListener;
+import at.klickverbot.util.McUtils;
 import at.klickverbot.util.Timer;
 
 class at.klickverbot.theBlackboard.view.MainView extends CoreObject {

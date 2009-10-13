@@ -2,8 +2,8 @@ import at.klickverbot.core.CoreObject;
 import at.klickverbot.theme.LayoutRules;
 import at.klickverbot.theme.SizeConstraints;
 import at.klickverbot.ui.layout.ContainerRule;
-import at.klickverbot.ui.layout.ScaleGridMapping;
 import at.klickverbot.ui.layout.ScaleGridCell;
+import at.klickverbot.ui.layout.ScaleGridMapping;
 import at.klickverbot.ui.layout.ScaleGridType;
 
 class at.klickverbot.theme.ThemeConfig extends CoreObject {

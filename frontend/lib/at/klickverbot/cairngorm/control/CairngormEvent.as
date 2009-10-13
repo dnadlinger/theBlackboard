@@ -1,5 +1,5 @@
-import at.klickverbot.event.events.Event;
 import at.klickverbot.cairngorm.control.CairngormEventDispatcher;
+import at.klickverbot.event.events.Event;
 
 class at.klickverbot.cairngorm.control.CairngormEvent extends Event {
    public function CairngormEvent( type :String ) {

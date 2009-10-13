@@ -1,6 +1,6 @@
 import at.klickverbot.debug.Log;
-import at.klickverbot.debug.Logger;
 import at.klickverbot.debug.LogLevel;
+import at.klickverbot.debug.Logger;
 
 /**
  * Main debug class.

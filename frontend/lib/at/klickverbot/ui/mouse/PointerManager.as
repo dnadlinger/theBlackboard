@@ -1,4 +1,4 @@
-﻿import at.klickverbot.core.CoreObject;
+import at.klickverbot.core.CoreObject;
 import at.klickverbot.ui.mouse.IMcCreator;
 import at.klickverbot.util.Delegate;
 

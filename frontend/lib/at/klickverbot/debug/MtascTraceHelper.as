@@ -1,5 +1,5 @@
-import at.klickverbot.debug.Logger;
 import at.klickverbot.debug.LogLevel;
+import at.klickverbot.debug.Logger;
 
 /**
  * A helper class that redirects all the trace calls to the logging system

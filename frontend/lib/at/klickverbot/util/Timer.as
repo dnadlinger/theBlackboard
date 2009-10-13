@@ -1,4 +1,4 @@
-﻿import at.klickverbot.event.EventDispatcher;
+import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.TimerEvent;
 
 /**

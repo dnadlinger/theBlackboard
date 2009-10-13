@@ -1,11 +1,11 @@
-import at.klickverbot.ui.components.stretching.StretchModes;
-import at.klickverbot.ui.components.ContainerContent;
-import at.klickverbot.ui.components.stretching.IStretchMode;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.debug.LogLevel;
 import at.klickverbot.drawing.Point2D;
+import at.klickverbot.ui.components.ContainerContent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.IUiComponent;
+import at.klickverbot.ui.components.stretching.IStretchMode;
+import at.klickverbot.ui.components.stretching.StretchModes;
 
 class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
    implements IUiComponent {

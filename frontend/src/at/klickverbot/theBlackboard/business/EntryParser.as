@@ -1,7 +1,7 @@
-import at.klickverbot.drawing.DrawingStringifier;
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.LogLevel;
 import at.klickverbot.debug.Logger;
+import at.klickverbot.drawing.DrawingStringifier;
 import at.klickverbot.theBlackboard.vo.Entry;
 
 class at.klickverbot.theBlackboard.business.EntryParser extends CoreObject {

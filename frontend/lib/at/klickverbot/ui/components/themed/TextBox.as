@@ -7,8 +7,8 @@ import at.klickverbot.ui.components.ScaleGridContainer;
 import at.klickverbot.ui.components.stretching.StretchModes;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.layout.ScaleGridCell;
-import at.klickverbot.ui.mouse.PointerManager;
 import at.klickverbot.ui.mouse.MouseoverManager;
+import at.klickverbot.ui.mouse.PointerManager;
 import at.klickverbot.util.Delegate;
 
 class at.klickverbot.ui.components.themed.TextBox extends Static

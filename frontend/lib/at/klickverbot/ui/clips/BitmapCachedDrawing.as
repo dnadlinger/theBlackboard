@@ -1,11 +1,11 @@
+import at.klickverbot.core.CoreMovieClip;
+import at.klickverbot.event.events.TimerEvent;
+import at.klickverbot.util.Timer;
+
 import flash.display.BitmapData;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-
-import at.klickverbot.core.CoreMovieClip;
-import at.klickverbot.event.events.TimerEvent;
-import at.klickverbot.util.Timer;
 
 /**
  * Class that extends MovieClip with caching for the standard vector drawing

@@ -1,4 +1,3 @@
-import at.klickverbot.util.McUtils;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.drawing.Point2D;
 import at.klickverbot.theme.ClipId;
@@ -14,6 +13,7 @@ import at.klickverbot.ui.layout.ContainerRule;
 import at.klickverbot.ui.layout.ScaleGridCell;
 import at.klickverbot.ui.layout.ScaleGridMapping;
 import at.klickverbot.ui.layout.ScaleGridType;
+import at.klickverbot.util.McUtils;
 
 class at.klickverbot.ui.components.themed.MultiContainer extends Static
    implements IUiComponent {

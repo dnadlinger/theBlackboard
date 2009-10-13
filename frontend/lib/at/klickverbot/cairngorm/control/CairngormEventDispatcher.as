@@ -1,5 +1,5 @@
-import at.klickverbot.core.CoreObject;
 import at.klickverbot.cairngorm.control.CairngormEvent;
+import at.klickverbot.core.CoreObject;
 import at.klickverbot.event.EventDispatcher;
 
 class at.klickverbot.cairngorm.control.CairngormEventDispatcher extends CoreObject {

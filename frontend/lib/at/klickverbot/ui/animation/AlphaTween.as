@@ -1,6 +1,6 @@
 import at.klickverbot.core.CoreObject;
-import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.animation.ITween;
+import at.klickverbot.ui.components.IUiComponent;
 
 class at.klickverbot.ui.animation.AlphaTween extends CoreObject
    implements ITween {

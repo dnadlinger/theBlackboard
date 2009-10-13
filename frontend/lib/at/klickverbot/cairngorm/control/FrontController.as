@@ -1,7 +1,7 @@
-import at.klickverbot.core.CoreObject;
 import at.klickverbot.cairngorm.commands.ICommand;
 import at.klickverbot.cairngorm.control.CairngormEvent;
 import at.klickverbot.cairngorm.control.CairngormEventDispatcher;
+import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.LogLevel;
 import at.klickverbot.debug.Logger;
 

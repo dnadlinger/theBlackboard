@@ -1,7 +1,7 @@
-﻿import at.klickverbot.util.DummyClipManager;
 import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.Event;
 import at.klickverbot.util.Delegate;
+import at.klickverbot.util.DummyClipManager;
 
 /**
  * Singleton EventDispatcher that broadcasts <code>Event.ENTER_FRAME</code>

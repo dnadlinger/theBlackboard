@@ -1,6 +1,5 @@
 import at.klickverbot.event.events.Event;
 
-
 class at.klickverbot.event.events.ErrorEvent extends Event {
    public static var ERROR :String = "erError";
 

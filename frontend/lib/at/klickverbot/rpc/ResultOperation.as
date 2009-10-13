@@ -1,5 +1,5 @@
-import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.event.EventDispatcher;
+import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.rpc.IOperation;
 
 class at.klickverbot.rpc.ResultOperation extends EventDispatcher

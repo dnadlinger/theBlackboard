@@ -1,6 +1,6 @@
 import at.klickverbot.core.CoreObject;
-import at.klickverbot.ui.components.VerticalAlign;
 import at.klickverbot.ui.components.HorizontalAlign;
+import at.klickverbot.ui.components.VerticalAlign;
 
 class at.klickverbot.ui.layout.ScaleGridCell extends CoreObject {
    /**

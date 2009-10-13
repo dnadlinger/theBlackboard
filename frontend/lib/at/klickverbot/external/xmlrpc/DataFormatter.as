@@ -1,4 +1,4 @@
-﻿import at.klickverbot.external.xmlrpc.DataType;
+import at.klickverbot.external.xmlrpc.DataType;
 import at.klickverbot.util.DateUtils;
 
 class at.klickverbot.external.xmlrpc.DataFormatter {

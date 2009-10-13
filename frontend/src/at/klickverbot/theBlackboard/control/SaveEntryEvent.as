@@ -1,6 +1,6 @@
-import at.klickverbot.theBlackboard.vo.Entry;
 import at.klickverbot.cairngorm.control.CairngormEvent;
 import at.klickverbot.theBlackboard.control.Controller;
+import at.klickverbot.theBlackboard.vo.Entry;
 
 class at.klickverbot.theBlackboard.control.SaveEntryEvent extends CairngormEvent {
    public function SaveEntryEvent( entry :Entry ) {

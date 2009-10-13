@@ -1,5 +1,5 @@
-import at.klickverbot.core.CoreObject;
 import at.klickverbot.cairngorm.business.IResponder;
+import at.klickverbot.core.CoreObject;
 import at.klickverbot.theBlackboard.vo.EntriesSortingType;
 
 class at.klickverbot.theBlackboard.business.EntrySetRequest extends CoreObject {

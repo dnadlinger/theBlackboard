@@ -1,7 +1,7 @@
-import at.klickverbot.ui.layout.ScaleGridCell;
 import at.klickverbot.ui.components.ContainerContent;
 import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.stretching.IStretchMode;
+import at.klickverbot.ui.layout.ScaleGridCell;
 
 class at.klickverbot.ui.components.ScaleGridContainerContent extends ContainerContent {
    public function ScaleGridContainerContent( component :IUiComponent,

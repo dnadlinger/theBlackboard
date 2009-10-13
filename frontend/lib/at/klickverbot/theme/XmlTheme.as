@@ -1,4 +1,3 @@
-import at.klickverbot.theme.SizeConstraints;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.debug.LogLevel;
 import at.klickverbot.event.EventDispatcher;
@@ -10,10 +9,11 @@ import at.klickverbot.external.xml.XmlLoader;
 import at.klickverbot.theme.ClipId;
 import at.klickverbot.theme.IClipFactory;
 import at.klickverbot.theme.ITheme;
+import at.klickverbot.theme.LayoutRules;
+import at.klickverbot.theme.LibraryClipFactory;
+import at.klickverbot.theme.SizeConstraints;
 import at.klickverbot.theme.ThemeConfig;
 import at.klickverbot.util.Delegate;
-import at.klickverbot.theme.LibraryClipFactory;
-import at.klickverbot.theme.LayoutRules;
 
 class at.klickverbot.theme.XmlTheme
    extends EventDispatcher implements ITheme, IClipFactory {

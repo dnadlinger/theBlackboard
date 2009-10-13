@@ -1,5 +1,3 @@
-import flash.geom.Point;
-
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.drawing.IDrawingOperation;
@@ -8,6 +6,8 @@ import at.klickverbot.drawing.LineStyle;
 import at.klickverbot.drawing.Point2D;
 import at.klickverbot.ui.clips.BitmapCachedDrawing;
 import at.klickverbot.util.DummyClipManager;
+
+import flash.geom.Point;
 
 class at.klickverbot.drawing.Drawing extends CoreObject {
    /**

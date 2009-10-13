@@ -1,10 +1,10 @@
-import at.klickverbot.util.McUtils;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.debug.LogLevel;
 import at.klickverbot.drawing.Point2D;
 import at.klickverbot.theme.ClipId;
 import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.themed.Static;
+import at.klickverbot.util.McUtils;
 
 class at.klickverbot.ui.components.themed.StaticContainer extends Static
    implements IUiComponent {

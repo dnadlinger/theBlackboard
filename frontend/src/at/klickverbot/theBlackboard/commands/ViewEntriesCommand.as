@@ -1,10 +1,10 @@
-import at.klickverbot.theBlackboard.vo.EntrySet;
-import at.klickverbot.theBlackboard.control.GetEntriesEvent;
 import at.klickverbot.cairngorm.commands.AbstractCommand;
 import at.klickverbot.cairngorm.commands.ICommand;
 import at.klickverbot.cairngorm.control.CairngormEvent;
+import at.klickverbot.theBlackboard.control.GetEntriesEvent;
 import at.klickverbot.theBlackboard.model.Model;
 import at.klickverbot.theBlackboard.vo.ApplicationState;
+import at.klickverbot.theBlackboard.vo.EntrySet;
 
 class at.klickverbot.theBlackboard.commands.ViewEntriesCommand
    extends AbstractCommand implements ICommand {

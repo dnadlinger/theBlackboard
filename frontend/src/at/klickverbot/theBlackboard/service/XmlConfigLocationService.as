@@ -1,7 +1,7 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.rpc.IOperation;
-import at.klickverbot.theBlackboard.service.IConfigLocationService;
 import at.klickverbot.rpc.XmlOperation;
+import at.klickverbot.theBlackboard.service.IConfigLocationService;
 
 class at.klickverbot.theBlackboard.service.XmlConfigLocationService extends CoreObject
    implements IConfigLocationService {
