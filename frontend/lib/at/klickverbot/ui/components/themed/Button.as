@@ -1,9 +1,7 @@
-import at.klickverbot.debug.Debug;
-import at.klickverbot.event.MixinDispatcher;
 import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.theme.ClipId;
-import at.klickverbot.ui.clips.DefaultButton;
 import at.klickverbot.ui.components.IUiComponent;
+import at.klickverbot.ui.components.themed.IButtonStateChanger;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.util.Delegate;
 
@@ -28,14 +26,31 @@ class at.klickverbot.ui.components.themed.Button extends Static
          return false;
       }
 
-      if ( buttonHack() == null ) {
-         Debug.LIBRARY_LOG.error( "Button clip content expected to be of type " +
-            "DefaultButton, but was: " + m_staticContent );
-         super.destroy();
-         return false;
+      // Setup the interface to the button content states. If the content
+      // MovieClip has custom functions for the states, these are used,
+      // otherwise, gotoAndPlay() is called on state changes.
+      m_state = new IButtonStateChanger();
+
+      bindFunctionOrGotoAndPlay( "active" );
+      bindFunctionOrGotoAndPlay( "inactive" );
+      bindFunctionOrGotoAndPlay( "hover" );
+      bindFunctionOrGotoAndPlay( "press" );
+      bindFunctionOrGotoAndPlay( "release" );
+      bindFunctionOrGotoAndPlay( "getActiveArea" );
+
+      var func :Function = Function( m_staticContent[ "getActiveArea" ] );
+      if ( func != null ) {
+         m_state.getActiveArea = Delegate.create( m_staticContent, func );
+      } else {
+         m_state.getActiveArea = Delegate.create( m_staticContent,
+            function() :MovieClip {
+               return this[ "activeArea" ];
+            }
+         );
       }
 
-      var active :MovieClip = buttonHack().getActiveArea();
+      // Bind the handler functions to the active area.
+      var active :MovieClip = m_state.getActiveArea();
       if ( active == null ) {
          active = m_staticContent;
       }
@@ -44,8 +59,10 @@ class at.klickverbot.ui.components.themed.Button extends Static
       active.onRelease = Delegate.create( this, onRelease );
       active.onReleaseOutside = Delegate.create( this, onReleaseOutside );
 
+      // If the button is not active, put the button content into the "inactive"
+      // state. "active" is the default.
       if ( !m_active ) {
-         buttonHack().inactiveAni();
+         m_state.inactive();
       }
 
       return true;
@@ -56,15 +73,14 @@ class at.klickverbot.ui.components.themed.Button extends Static
    }
 
    public function setActive( active :Boolean ) :Void {
-      var buttonHack :DefaultButton = DefaultButton( m_staticContent );
       if ( m_onStage ) {
          if ( m_active && !active ) {
-            buttonHack.inactiveAni();
+            m_state.inactive();
          } else if ( !m_active && active ) {
             if ( m_hovering ) {
-               buttonHack.hoverAni();
+               m_state.hover();
             } else {
-               buttonHack.activeAni();
+               m_state.active();
             }
          }
       }
@@ -72,8 +88,21 @@ class at.klickverbot.ui.components.themed.Button extends Static
    }
 
    private function getMouseoverArea() :MovieClip {
-   	// Only consider the active area for the hovering events.
-      return buttonHack().getActiveArea();
+      // Only consider the active area for the hovering events.
+      return m_state.getActiveArea();
+   }
+
+   private function bindFunctionOrGotoAndPlay( actionName :String ) :Void {
+      var func :Function = Function( m_staticContent[ actionName ] );
+      if ( func != null ) {
+         m_state[ actionName ] = Delegate.create( m_staticContent, func );
+      } else {
+         m_state[ actionName ] = Delegate.create( m_staticContent,
+            function() :Void {
+               this.gotoAndPlay( actionName );
+            }
+         );
+      }
    }
 
    /*
@@ -81,14 +110,14 @@ class at.klickverbot.ui.components.themed.Button extends Static
     */
    private function onPress() :Void {
       if ( m_active ) {
-         buttonHack.pressAni();
+         m_state.press();
          dispatchEvent( new ButtonEvent( ButtonEvent.PRESS, this ) );
       }
    }
 
    private function onRelease() :Void {
       if ( m_active ) {
-         buttonHack.releaseAni();
+         m_state.release();
          dispatchEvent( new ButtonEvent( ButtonEvent.RELEASE, this ) );
       }
    }
@@ -97,18 +126,12 @@ class at.klickverbot.ui.components.themed.Button extends Static
       m_hovering = false;
 
       if ( m_active ) {
-         buttonHack.releaseOutsideAni();
+         m_state.releaseOutside();
          dispatchEvent( new ButtonEvent( ButtonEvent.RELEASE_OUTSIDE, this ) );
       }
    }
 
-   private function buttonHack() :DefaultButton {
-   	// TODO: Program against an interface instead or else this does not make sense at all.
-      return DefaultButton( m_staticContent );
-   }
-
    private var m_active :Boolean;
    private var m_hovering :Boolean;
-
-   private var m_dispatcher :MixinDispatcher;
+   private var m_state :IButtonStateChanger;
 }
