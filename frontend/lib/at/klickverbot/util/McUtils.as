@@ -27,11 +27,15 @@ class at.klickverbot.util.McUtils {
       return false;
    }
 
-   static public function getChildren( parent :MovieClip ) :Object {
-      var result :Object = new Object();
+   /**
+    * Returns an array containing all MovieClips which have the given MovieClip
+    * as their _parent.
+    */
+   static public function getChildren( parent :MovieClip ) :Array {
+      var result :Array = new Array();
       for ( var name :String in parent ) {
-         if ( typeof( parent[ name ] ) == "movieclip" ) {
-            result[ name ] = parent[ name ];
+         if ( parent[ name ] instanceof MovieClip ) {
+            result.push( parent[ name ] );
          }
       }
       return result;

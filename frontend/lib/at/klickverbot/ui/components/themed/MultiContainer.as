@@ -1,3 +1,4 @@
+import at.klickverbot.util.McUtils;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.drawing.Point2D;
 import at.klickverbot.theme.ClipId;
@@ -46,22 +47,19 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
       // Set the ScaleGridContainer size dummy to the correct size.
       m_scaleGridContainer.setSize( getSize() );
 
-      for ( var childName :String in m_staticContent ) {
-         if ( !( m_staticContent[ childName ] instanceof MovieClip ) ) {
-            continue;
-         }
-
-         var currentClip :MovieClip = MovieClip( m_staticContent[ childName ] );
-
+      var children :Object = McUtils.getChildren( m_staticContent );
+      var currentClip :MovieClip;
+      var childIndex :Number = children.length;
+      while ( currentClip = children[ --childIndex ] ) {
          var cell :ScaleGridCell = null;
          if ( m_scaleGridMapping ) {
-            cell = m_scaleGridMapping.getLocationForElement( childName );
+            cell = m_scaleGridMapping.getLocationForElement( currentClip._name );
          }
          if ( cell == null ) {
             m_otherStaticContents.push( currentClip );
          } else {
             var wrapper :McWrapperComponent = new McWrapperComponent( currentClip );
-            m_dummyWrappers[ childName ] = wrapper;
+            m_dummyWrappers[ currentClip._name ] = wrapper;
             m_scaleGridContainer.addContent( wrapper, StretchModes.FILL, cell );
          }
       }
