@@ -1,3 +1,4 @@
+import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.data.List;
 import at.klickverbot.debug.Logger;
@@ -68,7 +69,12 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
    }
 
    private function setupUi() :Void {
-      // Setup the main container and its childs (EntriesView and NavigationView).
+      // Setup the scenery.
+   	m_background = new Static( AppClipId.BACKGROUND );
+      m_backScenery = new Static( AppClipId.BACK_SCENERY );
+      m_frontScenery = new Static( AppClipId.FRONT_SCENERY );
+
+      // Setup the main container and its children (EntriesView and NavigationView).
       m_mainContainer = new MultiContainer( AppClipId.MAIN_CONTAINER );
 
       m_entriesContainer = new StaticContainer( AppClipId.ENTRIES_DISPLAY_CONTAINER );
@@ -131,12 +137,21 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
          "Theme ready, creating it and building the ui." );
 
       // TODO: Report errors to user if creating the components fails.
+      if ( !m_background.create( event.themeTarget ) ) {
+         Logger.getLog( "MainView" ).error( "Could not create the background!" );
+      }
 
       // Create the main container.
       var depth :Number = event.themeTarget.getNextHighestDepth();
       m_mainContentClip = event.themeTarget.createEmptyMovieClip( "mainContent@" + depth, depth );
+      if ( !m_backScenery.create( m_mainContentClip ) ) {
+         Logger.getLog( "MainView" ).error( "Could not create the back scenery!" );
+      }
       if ( !m_mainContainer.create( m_mainContentClip ) ) {
          Logger.getLog( "MainView" ).error( "Could not create the main container!" );
+      }
+      if ( !m_frontScenery.create( m_mainContentClip ) ) {
+         Logger.getLog( "MainView" ).error( "Could not create the front scenery!" );
       }
 
       // Create the overlay stack.
@@ -241,10 +256,12 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
    private function fitToStage() :Void {
       var constraints :SizeConstraints =
          ThemeManager.getInstance().getTheme().getStageSizeConstraints();
-
-      m_mainContainer.resize(
-         constraints.limitWidth( Stage.width ),
-         constraints.limitHeight( Stage.height ) );
+      var width :Number = constraints.limitWidth( Stage.width );
+      var height :Number = constraints.limitHeight( Stage.height );
+      m_background.resize( width, height );
+      m_backScenery.resize( width, height );
+      m_mainContainer.resize( width, height );
+      m_frontScenery.resize( width, height );
 
       if ( Model.getInstance().applicationState == ApplicationState.DRAW_ENTRY ) {
          goToActiveEntry( false );
@@ -324,8 +341,12 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
    private var m_resizeTimer :Timer;
    private var m_entryUpdatingActiveBeforeResize :Boolean;
 
+   private var m_background :Static;
+
    private var m_mainContentClip :MovieClip;
+   private var m_backScenery :Static;
    private var m_mainContainer :MultiContainer;
+   private var m_frontScenery :Static;
 
    private var m_entriesContainer :StaticContainer;
    private var m_entriesView :EntriesView;
