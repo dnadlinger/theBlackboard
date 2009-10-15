@@ -65,6 +65,13 @@ class at.klickverbot.theme.SizeConstraints extends CoreObject {
       m_maxHeight = to;
    }
 
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( [
+         "minWidth: " + m_minWidth, "minHeight: " + m_minHeight,
+         "maxWidth: " + m_maxWidth, "maxHeight: " + m_maxHeight
+      ] );
+   }
+
    private var m_minWidth :Number;
    private var m_minHeight :Number;
    private var m_maxWidth :Number;

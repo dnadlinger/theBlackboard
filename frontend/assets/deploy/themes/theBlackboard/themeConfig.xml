@@ -6,6 +6,11 @@
 	<themeSwfUrl>main.swf</themeSwfUrl>
 	<clipFactoryType>library</clipFactoryType>
 
+	<stageSizeConstraints>
+	  <minWidth>430</minWidth>
+	  <minHeight>380</minHeight>
+	</stageSizeConstraints>
+
 	<layoutRules>
 		<containerRule>
 			<containerId>mainContainer</containerId>
