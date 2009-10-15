@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configLocation>
-	<url>config.xml</url>
-	<type>xml</type>
+   <url>config.xml</url>
+   <type>xml</type>
 </configLocation>

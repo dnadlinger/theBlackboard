@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-	<availableThemes>themes/theBlackboard</availableThemes>
-	<defaultTheme>themes/theBlackboard</defaultTheme>
-	<drawingSize>200</drawingSize>
-	<entryPreloadLimit>30</entryPreloadLimit>
-	<entryServiceType>local</entryServiceType>
-	<entryServiceInfo>theBlackboard</entryServiceInfo>
+   <availableThemes>themes/theBlackboard</availableThemes>
+   <defaultTheme>themes/theBlackboard</defaultTheme>
+   <drawingSize>200</drawingSize>
+   <entryPreloadLimit>30</entryPreloadLimit>
+   <entryServiceType>local</entryServiceType>
+   <entryServiceInfo>theBlackboard</entryServiceInfo>
 </config>
