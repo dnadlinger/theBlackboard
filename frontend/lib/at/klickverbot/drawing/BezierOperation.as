@@ -3,8 +3,8 @@ import at.klickverbot.debug.Debug;
 import at.klickverbot.drawing.BezierSegment2D;
 import at.klickverbot.drawing.IDrawingOperation;
 import at.klickverbot.drawing.LineStyle;
-import at.klickverbot.drawing.Point2D;
-import at.klickverbot.drawing.Rect2D;
+import at.klickverbot.graphics.Point2D;
+import at.klickverbot.graphics.Rect2D;
 
 class at.klickverbot.drawing.BezierOperation extends CoreObject
    implements IDrawingOperation {

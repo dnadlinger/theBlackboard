@@ -1,5 +1,5 @@
 import at.klickverbot.core.CoreObject;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.stretching.IStretchMode;
 

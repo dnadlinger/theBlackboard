@@ -3,7 +3,7 @@ import at.klickverbot.debug.Debug;
 import at.klickverbot.drawing.IDrawingOperation;
 import at.klickverbot.drawing.IOperationOptimizer;
 import at.klickverbot.drawing.LineOperation;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 
 /**
  * A simple OperationOptimizer that reduces unneeded points.

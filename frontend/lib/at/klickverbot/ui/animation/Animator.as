@@ -1,6 +1,7 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.event.events.Event;
 import at.klickverbot.ui.animation.Animation;
+import at.klickverbot.ui.animation.IAnimation;
 import at.klickverbot.util.EnterFrameBeacon;
 
 class at.klickverbot.ui.animation.Animator extends CoreObject {
@@ -25,7 +26,7 @@ class at.klickverbot.ui.animation.Animator extends CoreObject {
       return m_instance;
    }
 
-   public function add( animation :Animation ) :Void {
+   public function add( animation :IAnimation ) :Void {
       // TODO: Check if animation is already added.
       // TODO: Reset animation first?
 
@@ -71,7 +72,7 @@ class at.klickverbot.ui.animation.Animator extends CoreObject {
    }
 
    private function handleAnimationCompleted( event :Event ) :Void {
-      var currentAnimation :Animation;
+      var currentAnimation :IAnimation;
       var i :Number = m_animations.length;
 
       while ( currentAnimation = m_animations[ --i ] ) {

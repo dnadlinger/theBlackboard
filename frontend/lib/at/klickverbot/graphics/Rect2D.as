@@ -1,13 +1,13 @@
 import at.klickverbot.core.CoreObject;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 
 /**
  * A rectangle (in 2D space).
+ *
  * Uses the defualt screen coordinates, not the mathematical ones:
  * +x => right, +y => bottom.
- *
  */
-class at.klickverbot.drawing.Rect2D extends CoreObject {
+class at.klickverbot.graphics.Rect2D extends CoreObject {
    /**
     * Constructor.
     * Doesn't provide direct specification of the anchor points because the
@@ -263,10 +263,8 @@ class at.klickverbot.drawing.Rect2D extends CoreObject {
     */
    public function getFlashRect() :flash.geom.Rectangle {
       var flashRect :flash.geom.Rectangle = new flash.geom.Rectangle();
-
-      flashRect.topLeft = new flash.geom.Point( m_topLeft.x, m_topLeft.y );
-      flashRect.bottomRight =
-         new flash.geom.Point( m_bottomRight.x, m_bottomRight.y );
+      flashRect.topLeft = m_topLeft.getFlashPoint();
+      flashRect.bottomRight = m_bottomRight.getFlashPoint();
       return flashRect;
    }
 

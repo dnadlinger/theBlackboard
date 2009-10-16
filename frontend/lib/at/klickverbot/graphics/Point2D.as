@@ -9,7 +9,7 @@ import flash.geom.Point;
  * not rename it.
  *
  */
-class at.klickverbot.drawing.Point2D extends CoreObject {
+class at.klickverbot.graphics.Point2D extends CoreObject {
 
    /**
     * Constructor.

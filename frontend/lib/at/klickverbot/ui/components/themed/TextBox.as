@@ -1,5 +1,5 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theme.ClipId;
 import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.McWrapperComponent;

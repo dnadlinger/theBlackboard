@@ -1,13 +1,14 @@
-import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.data.List;
 import at.klickverbot.debug.Logger;
-import at.klickverbot.drawing.Point2D;
 import at.klickverbot.event.events.CollectionEvent;
 import at.klickverbot.event.events.PropertyChangeEvent;
 import at.klickverbot.event.events.ThemeEvent;
 import at.klickverbot.event.events.ThemeManagerEvent;
 import at.klickverbot.event.events.TimerEvent;
+import at.klickverbot.graphics.Color;
+import at.klickverbot.graphics.Point2D;
+import at.klickverbot.graphics.Tint;
 import at.klickverbot.theBlackboard.Application;
 import at.klickverbot.theBlackboard.control.ActivateEntryUpdatingEvent;
 import at.klickverbot.theBlackboard.control.SuspendEntryUpdatingEvent;
@@ -27,11 +28,17 @@ import at.klickverbot.theme.XmlTheme;
 import at.klickverbot.ui.animation.AlphaTween;
 import at.klickverbot.ui.animation.Animation;
 import at.klickverbot.ui.animation.Animator;
+import at.klickverbot.ui.animation.Delay;
+import at.klickverbot.ui.animation.IAnimation;
 import at.klickverbot.ui.animation.PropertyTween;
+import at.klickverbot.ui.animation.Sequence;
+import at.klickverbot.ui.animation.TintTween;
 import at.klickverbot.ui.animation.timeMapping.TimeMappers;
+import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.Stack;
 import at.klickverbot.ui.components.stretching.StretchModes;
 import at.klickverbot.ui.components.themed.MultiContainer;
+import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.components.themed.StaticContainer;
 import at.klickverbot.ui.mouse.PointerManager;
 import at.klickverbot.ui.mouse.ThemeMcCreator;
@@ -70,7 +77,7 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
 
    private function setupUi() :Void {
       // Setup the scenery.
-   	m_background = new Static( AppClipId.BACKGROUND );
+      m_background = new Static( AppClipId.BACKGROUND );
       m_backScenery = new Static( AppClipId.BACK_SCENERY );
       m_frontScenery = new Static( AppClipId.FRONT_SCENERY );
 
@@ -178,10 +185,43 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
       var updatingEvent :ActivateEntryUpdatingEvent = new ActivateEntryUpdatingEvent();
       updatingEvent.dispatch();
 
-      // Fade in the main container.
-      m_mainContainer.fade( 0 );
+      // Fade in the scenery and the main container;
+      Animator.getInstance().add( fadeIn( m_backScenery ) );
+
+      // The flash effect is disabled at the moment since I cannot seem to get
+      // it to look good.
+      Animator.getInstance().add( new Sequence( [
+         new Delay( FADE_DURATION * 0.8 ),
+         fadeIn( m_mainContainer )/*,
+         new Delay( FADE_DURATION * 0.2 ),
+         flash( m_mainContainer )*/
+      ] ) );
       Animator.getInstance().add(
-         new Animation( new AlphaTween( m_mainContainer, 1 ), FADE_DURATION, TimeMappers.CUBIC ) );
+         Delay.preDelay( FADE_DURATION * 1.1, fadeIn( m_frontScenery ) ) );
+   }
+
+   private function fadeIn( component :IUiComponent ) :IAnimation {
+      component.fade( 0 );
+      return new Animation(
+         new AlphaTween( component, 1 ),
+         FADE_DURATION,
+         TimeMappers.CUBIC
+      );
+   }
+
+   private function flash( component :IUiComponent ) :IAnimation {
+      return new Sequence( [
+         new Animation(
+            new TintTween( component, FULL_WHITE, ZERO_WHITE ),
+            FADE_DURATION * 0.1,
+            TimeMappers.SINE
+         ),
+         new Animation(
+            new TintTween( component, ZERO_WHITE, FULL_WHITE ),
+            FADE_DURATION * 0.6,
+            TimeMappers.SINE
+         )
+      ] );
    }
 
    private function destroyUi( event :ThemeEvent ) :Void {
@@ -190,10 +230,10 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
 
    private function goToActiveEntry( animate :Boolean ) :Void {
       // TODO: Should we reset the view here?
-      //goToGeneralView( false );
+      // goToGeneralView( false );
 
-      var entryPosition :Point2D =
-         globalToLocal( m_entriesView.getSelectedEntryPosition() );
+      var entryPosition :Point2D = McUtils.globalToLocal( m_mainContentClip,
+         m_entriesView.getSelectedEntryPosition() );
 
       var drawingSize :Number = Model.getInstance().config.drawingSize;
       var displaySize :Number = drawingSize + ZOOM_VIEW_PADDING;
@@ -320,14 +360,6 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
          "The theme is not suited for this application: " + event.target );
    }
 
-   private function globalToLocal( point :Point2D ) :Point2D {
-      // TODO: This is a duplicate of the code in McComponent.
-      // We should use some more elegant solution, e.g. creating a
-      // getRelativePosition( component :IUiComponent ) function in McComponent
-      // and using a McWrapperComponent on MainView.
-      return McUtils.globalToLocal( m_mainContentClip, point );
-   }
-
    private static var RESIZE_REFRESH_INTERVAL :Number = 500;
    private static var MIN_WIDTH :Number = 400;
    private static var MIN_HEIGHT :Number = 400;
@@ -335,6 +367,8 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
    private static var ZOOM_VIEW_PADDING :Number = 20;
 
    private static var FADE_DURATION :Number = 0.7;
+   private static var FULL_WHITE :Tint = new Tint( new Color( 1, 1, 1 ), 0.5 );
+   private static var ZERO_WHITE :Tint = new Tint( new Color( 1, 1, 1 ), 0 );
 
    private var m_containerClip :MovieClip;
    private var m_stageListener :IStageListener;

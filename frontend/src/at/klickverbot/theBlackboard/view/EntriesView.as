@@ -1,6 +1,6 @@
 import at.klickverbot.debug.Debug;
 import at.klickverbot.debug.Logger;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theBlackboard.control.GetEntriesEvent;
 import at.klickverbot.theBlackboard.model.Model;
 import at.klickverbot.theBlackboard.model.ModelChangeEvent;

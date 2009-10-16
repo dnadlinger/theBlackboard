@@ -8,11 +8,14 @@ class at.klickverbot.ui.animation.PropertyTween extends CoreObject
     * Constructor.
     */
    public function PropertyTween( target :Object, propertyName :String,
-      endValue :Number ) {
+      endValue :Number, startValue :Number ) {
+      if ( startValue == null ) {
+         startValue = target[ propertyName ];
+      }
 
       m_target = target;
       m_propertyName = propertyName;
-      m_startValue = target[ propertyName ];
+      m_startValue = startValue;
       m_deltaValue = endValue - m_startValue;
    }
 

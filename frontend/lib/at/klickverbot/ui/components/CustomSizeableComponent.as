@@ -1,8 +1,8 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Color;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.McComponent;
-import at.klickverbot.util.ColorUtils;
 
 class at.klickverbot.ui.components.CustomSizeableComponent extends McComponent
    implements IUiComponent {
@@ -69,8 +69,8 @@ class at.klickverbot.ui.components.CustomSizeableComponent extends McComponent
       target.lineStyle( 0, 0, 0 );
 
       if( Debug.LEVEL >= Debug.LEVEL_HIGH ) {
-         target.beginFill( ColorUtils.rgbToHex(
-            Math.random(), Math.random(), Math.random() ), 30 );
+         target.beginFill( ( new Color(
+            Math.random(), Math.random(), Math.random() ) ).toHex(), 30 );
       } else {
          target.beginFill( 0, 0 );
       }

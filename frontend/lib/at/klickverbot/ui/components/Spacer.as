@@ -1,4 +1,4 @@
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.IUiComponent;
 

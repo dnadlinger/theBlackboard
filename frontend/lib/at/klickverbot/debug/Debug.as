@@ -144,6 +144,7 @@ class at.klickverbot.debug.Debug {
 
       var found :Boolean = false;
       for ( var i :Number = 0; i < haystack.length; ++i ) {
+         // TODO: This probably does not work as intended when checking for null/undefined elements because !( null === undefined ).
          if ( haystack[ i ] === needle ) {
             found = true;
             break;

@@ -1,5 +1,5 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.ui.components.ContainerContent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.HorizontalAlign;

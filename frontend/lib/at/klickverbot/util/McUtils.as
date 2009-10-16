@@ -1,4 +1,4 @@
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 
 /**
  * Provides various utils for dealing with MovieClips.

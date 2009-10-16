@@ -8,9 +8,14 @@ class at.klickverbot.ui.animation.AlphaTween extends CoreObject
    /**
     * Constructor.
     */
-   public function AlphaTween( target :IUiComponent, endAlpha :Number ) {
+   public function AlphaTween( target :IUiComponent, endAlpha :Number,
+      startAlpha :Number ) {
+      if ( startAlpha == null ) {
+         startAlpha = target.getAlpha();
+      }
+
       m_target = target;
-      m_startAlpha = m_target.getAlpha();
+      m_startAlpha = startAlpha;
       m_deltaAlpha = endAlpha - m_startAlpha;
    }
 

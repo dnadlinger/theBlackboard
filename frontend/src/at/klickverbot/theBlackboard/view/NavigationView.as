@@ -1,5 +1,5 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.theBlackboard.control.AddEntryEvent;
 import at.klickverbot.theBlackboard.control.GetEntriesEvent;

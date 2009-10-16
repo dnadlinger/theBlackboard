@@ -4,7 +4,7 @@ import at.klickverbot.drawing.BezierSegment2D;
 import at.klickverbot.drawing.IDrawingOperation;
 import at.klickverbot.drawing.IOperationOptimizer;
 import at.klickverbot.drawing.LineOperation;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 
 /**
  * An OperationOptimizer that makes a smooth BezierOperation out of a

@@ -1,6 +1,6 @@
 import at.klickverbot.core.ICoreInterface;
 import at.klickverbot.drawing.LineStyle;
-import at.klickverbot.drawing.Rect2D;
+import at.klickverbot.graphics.Rect2D;
 
 /**
  * Represents an action that can be drawn to a MovieClip.

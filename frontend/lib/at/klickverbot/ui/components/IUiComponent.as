@@ -1,5 +1,6 @@
-import at.klickverbot.drawing.Point2D;
 import at.klickverbot.event.IEventDispatcher;
+import at.klickverbot.graphics.Point2D;
+import at.klickverbot.graphics.Tint;
 
 /**
  * Represents a visible user interface component that can be created in a
@@ -149,4 +150,8 @@ interface at.klickverbot.ui.components.IUiComponent extends IEventDispatcher {
     * @return The translucency of the component (0..1).
     */
    public function getAlpha() :Number;
+
+   public function tint( tint :Tint ) :Void;
+
+   public function getTint() :Tint;
 }

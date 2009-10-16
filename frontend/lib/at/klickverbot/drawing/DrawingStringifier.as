@@ -7,7 +7,7 @@ import at.klickverbot.drawing.Drawing;
 import at.klickverbot.drawing.IDrawingOperation;
 import at.klickverbot.drawing.LineOperation;
 import at.klickverbot.drawing.LineStyle;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 
 class at.klickverbot.drawing.DrawingStringifier extends CoreObject {
    public function makeString( drawing :Drawing ) :String {

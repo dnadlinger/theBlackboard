@@ -1,5 +1,5 @@
 import at.klickverbot.core.CoreObject;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 
 class at.klickverbot.drawing.BezierSegment2D extends CoreObject {
    /**

@@ -2,7 +2,7 @@ import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Debug;
-import at.klickverbot.drawing.Point2D;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.ui.mouse.MouseoverArea;
 import at.klickverbot.util.Delegate;
 import at.klickverbot.util.DummyClipManager;

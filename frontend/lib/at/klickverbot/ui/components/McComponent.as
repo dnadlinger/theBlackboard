@@ -1,10 +1,11 @@
-import at.klickverbot.util.Delegate;
 import at.klickverbot.debug.Debug;
-import at.klickverbot.drawing.Point2D;
 import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.UiEvent;
+import at.klickverbot.graphics.Point2D;
+import at.klickverbot.graphics.Tint;
 import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.mouse.MouseoverManager;
+import at.klickverbot.util.Delegate;
 import at.klickverbot.util.McUtils;
 import at.klickverbot.util.TypeUtils;
 
@@ -45,11 +46,11 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
       m_onStage = true;
 
       if ( !createUi() ) {
-      	return false;
+         return false;
       }
 
       if ( hasMouseoverListeners() ) {
-      	registerMouseoverArea();
+         registerMouseoverArea();
       }
 
       return true;
@@ -120,12 +121,19 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
          return null;
       }
 
-      // TODO: Why is this workaround neccessary?
+      // This workaround was introduced to get around the problem that
+      // MovieClips with _visible == false do not contribute to the with and
+      // height of their parent. However, it is not really much of a fix since
+      // it only meters the area from the registration point of the MovieClip to
+      // the bottom right corner of the bounding box enclosing the content with
+      // _visible == true.
+      // TODO: Find out which code relies on this semi-broken behavior.
+      // Point2D( m_container._width, m_container._height ) would yield the
+      // dimensions of the mentioned bounding box.
       var bounds :Object = m_container.getBounds( m_container._parent );
 
       return new Point2D( bounds[ "xMax" ] - m_container._x,
          bounds[ "yMax" ] - m_container._y );
-      //return new Point2D( m_container._width, m_container._height );
    }
 
    public function resize( width :Number, height :Number ) :Void {
@@ -182,6 +190,27 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
       return m_container._alpha / 100;
    }
 
+   public function tint( tint :Tint ) :Void {
+      if ( !m_onStage ) {
+         Debug.LIBRARY_LOG.warn(
+            "Attempted to tint a component that is not on stage: " + this );
+         return;
+      }
+
+      // Note: This will discard any previously set color transform.
+      m_container.transform.colorTransform = tint.getColorTransform();
+   }
+
+   public function getTint() :Tint {
+      if ( !m_onStage ) {
+         Debug.LIBRARY_LOG.warn(
+            "Attempted to get the tint a component that is not on stage: " + this );
+         return null;
+      }
+
+      return Tint.fromColorTransform( m_container.transform.colorTransform );
+   }
+
    public function addEventListener( eventType :String, listenerOwner :Object,
       listener :Function ) :Void {
       var hadMouseoverListeners :Boolean = hasMouseoverListeners();
@@ -212,7 +241,7 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
     * sensitive for mouseover events.
     */
    private function getMouseoverArea() :MovieClip {
-   	Debug.assert( m_onStage, "mouseOverArea() called while not on stage" );
+      Debug.assert( m_onStage, "mouseOverArea() called while not on stage" );
       return m_container;
    }
 
@@ -230,7 +259,7 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
    }
 
    private function registerMouseoverArea() :Void {
-   	MouseoverManager.getInstance().addArea(
+      MouseoverManager.getInstance().addArea(
          getMouseoverArea(),
          Delegate.create( this, handleMouseOn ),
          Delegate.create( this, handleMouseOff )
