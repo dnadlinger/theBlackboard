@@ -128,12 +128,20 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
       // the bottom right corner of the bounding box enclosing the content with
       // _visible == true.
       // TODO: Find out which code relies on this semi-broken behavior.
-      // Point2D( m_container._width, m_container._height ) would yield the
+      // new Point2D( m_container._width, m_container._height ) would yield the
       // dimensions of the mentioned bounding box.
       var bounds :Object = m_container.getBounds( m_container._parent );
 
-      return new Point2D( bounds[ "xMax" ] - m_container._x,
+      var hack :Point2D = new Point2D( bounds[ "xMax" ] - m_container._x,
          bounds[ "yMax" ] - m_container._y );
+
+      var simple :Point2D = new Point2D( m_container._width, m_container._height );
+      if ( !hack.equals( simple ) ) {
+         trace( "Difference found for: " + this );
+         trace( hack + " vs. " + simple );
+      }
+
+      return hack;
    }
 
    public function resize( width :Number, height :Number ) :Void {
