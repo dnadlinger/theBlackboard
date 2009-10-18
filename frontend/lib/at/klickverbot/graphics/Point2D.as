@@ -1,3 +1,4 @@
+import at.klickverbot.util.NumberUtils;
 import at.klickverbot.core.CoreObject;
 
 import flash.geom.Point;
@@ -141,10 +142,21 @@ class at.klickverbot.graphics.Point2D extends CoreObject {
     * Tests if this object has the same value as another Point2D.
     *
     * @param other The object to test for equality.
+    * @param strict Whether to test for strict numerical equality. By default,
+    *    a comparison allowing for NumberUtils.EPSILON is used. (optional)
     * @return If the objects have the same value.
     */
-   public function equals( other :Point2D ) :Boolean {
-      return ( ( m_x == other.m_x ) && ( m_y == other.m_y ) );
+   public function equals( other :Point2D, strict :Boolean ) :Boolean {
+      if ( strict == null ) {
+         strict = false;
+      }
+
+      if ( strict ) {
+         return ( ( m_x == other.m_x ) && ( m_y == other.m_y ) );
+      } else {
+         return ( NumberUtils.fuzzyEquals( m_x, other.m_x ) &&
+            NumberUtils.fuzzyEquals( m_y, other.m_y ) );
+      }
    }
 
    /**

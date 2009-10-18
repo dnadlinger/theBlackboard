@@ -20,4 +20,10 @@ class at.klickverbot.util.NumberUtils {
 
       return resultString;
    }
+
+   public static function fuzzyEquals( value0 :Number, value1 :Number ) :Boolean {
+      return ( Math.abs( value0 - value1 ) < EPSILON );
+   }
+
+   public static var EPSILON :Number = 0.000001;
 }
