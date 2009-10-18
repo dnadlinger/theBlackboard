@@ -1,14 +1,16 @@
+import at.klickverbot.debug.Debug;
+
 /**
  * Provides a way to get the (human-readable) name of a given type or a given
  * object's type.
  *
- * Adapted from Simon Wacker's great work for the as2lib framework.
+ * Inspired by Simon Wacker's great work for the as2lib framework.
  */
 class at.klickverbot.util.TypeUtils {
    /**
     * Returns the type name of the passed object.
     *
-    * @param target The object to get the type name of.
+    * @param target The object or class to get the type name of.
     * @param fullyQualified If the name should include the package name.
     *        Defaults to false.
     * @return A string containing the type name.
@@ -22,13 +24,15 @@ class at.klickverbot.util.TypeUtils {
          return null;
       }
 
-      // According to Simon Wacker, __constructor__ and constructor are likely
-      // to be incorrect on dynamic instances. We thus use __proto__ which
-      // refers to the prototype of the type.
       var targetPrototype :Object;
       if ( typeof( target ) == "function" ) {
+         // If the passed target object is a class, just get its prototype.
          targetPrototype = target.prototype;
       } else {
+         // According to Simon Wacker, __constructor__ and constructor are
+         // likely to be incorrect on dynamic inheritance chains. We thus use
+         // __proto__ which refers directly prototype property of the object's
+         // class.
          targetPrototype = target.__proto__;
       }
 
@@ -69,7 +73,7 @@ class at.klickverbot.util.TypeUtils {
 
             // Is this the prototype we are searching for?
             // We have to check for strict equality because not doing so would
-            // result in a wrong result when searching for prototype of a
+            // result in a wrong result when searching for the prototype of a
             // Boolean or Number.
             if ( !isGlobalDuplicate( currentKey ) &&
                ( currentChild.prototype === targetPrototype ) ) {
@@ -86,8 +90,6 @@ class at.klickverbot.util.TypeUtils {
             // If not, check if the current child is a package or if it is a
             // class – typeof( SomeClass ) == "function".
             if ( typeof( currentChild ) == "object" ) {
-               // TODO: currentChild.__constructor__.valueOf()?!?
-
                // If it is a package, continue by recursively seraching its
                // children.
 
@@ -95,8 +97,9 @@ class at.klickverbot.util.TypeUtils {
                // in case of circular references.
                var alreadySearched :Boolean = false;
                for ( var i:Number = 0; i < visitedPackages.length; i++ ) {
-                  // TODO: Why valueOf here?
-                  if ( visitedPackages[ i ].valueOf() == currentChild.valueOf() ) {
+                  // The use of valueOf() should be unnecessary since we are
+                  // calling this only on objects anyway.
+                  if ( visitedPackages[ i ] == currentChild ) {
                      alreadySearched = true;
                      break;
                   }
@@ -120,7 +123,10 @@ class at.klickverbot.util.TypeUtils {
                writeNameToCache( currentChild, packagePath + currentKey );
             }
          } catch ( e :Object ) {
-            // Ignore any exceptions that might occur due to our dirty hacking.
+            // Ignore any exceptions which might occur due to our dirty hacking –
+            // not that there was evidence that it actually happens…
+            Debug.LIBRARY_LOG.debug(
+               "Triggered exception while searching for type name: " + e );
          }
       }
 
@@ -133,13 +139,28 @@ class at.klickverbot.util.TypeUtils {
     * the fully qualified name are replaced with underscores to get a valid
     * property name) and once in its actual package (which is an object that
     * resides under _global).
-    * We have to ignore the references in _global in our search.
+    * We have to ignore these references in _global in our search.
     */
    private static function isGlobalDuplicate( propertyName :String ) :Boolean {
-      var hasUnderscore :Boolean = ( propertyName.indexOf("_") >= 0 );
-      var realName :String = propertyName.split( "_" ).join( "." );
-      var realClassExists :Boolean = ( eval( "_global." + realName ) != null );
-      return( hasUnderscore && realClassExists );
+      if ( propertyName.indexOf("_") == -1 ) {
+         // If there is no underscore in the name, it cannot be a Flex duplicate.
+         return false;
+      }
+
+      // We descend the hierachy level by level to avoid generating debug Flash
+      // Player warnings.
+      var packageHierachy :Array = propertyName.split( "_" );
+      var currentPackage :Object = _global;
+      while ( packageHierachy.length > 0 ) {
+         currentPackage = currentPackage[ packageHierachy.shift() ];
+         if ( currentPackage == null ) {
+            return false;
+         }
+      }
+
+      // If we get here, the path generated from the passed property name was
+      // valid – this is a duplicate generated by the Flex compiler.
+      return true;
    }
 
    /**
@@ -149,13 +170,14 @@ class at.klickverbot.util.TypeUtils {
    private static function readNameFromCache( protoType :Object ) :String {
       var cachedName :String = protoType[ NAME_CACHE_PROPERTY ];
 
-      // The name has not already been cached.
       if ( cachedName == null ) {
+         // The name has not already been cached.
          return null;
       }
 
-      // TODO: What is this good for?
       if ( cachedName == protoType.__proto__[ NAME_CACHE_PROPERTY ] ) {
+         // If we have inherited the cached name from the parent class
+         // prototype, we obviously cannot use it.
          return null;
       }
 
@@ -167,6 +189,8 @@ class at.klickverbot.util.TypeUtils {
     */
    private static function writeNameToCache( targetType :Object, name :String ) :Void {
       targetType.prototype[ NAME_CACHE_PROPERTY ] = name;
+
+      // Hide the property which is used to cache the name from enumeration.
       setPropFlags( targetType.prototype, NAME_CACHE_PROPERTY, 1, 1 );
    }
 
