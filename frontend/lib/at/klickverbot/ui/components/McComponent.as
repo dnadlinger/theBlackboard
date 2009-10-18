@@ -121,27 +121,29 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
          return null;
       }
 
-      // This workaround was introduced to get around the problem that
-      // MovieClips with _visible == false do not contribute to the with and
-      // height of their parent. However, it is not really much of a fix since
-      // it only meters the area from the registration point of the MovieClip to
-      // the bottom right corner of the bounding box enclosing the content with
-      // _visible == true.
-      // TODO: Find out which code relies on this semi-broken behavior.
-      // new Point2D( m_container._width, m_container._height ) would yield the
-      // dimensions of the mentioned bounding box.
+      // Using getBounds() is necessary because our convention is specified that
+      // the size of a component is always measured from its registration point
+      // (origin of the coordinate system) to the lower right corner of its
+      // bounding box. This also makes it necessary to resort to scaling factors
+      // when handling a resize. (see resize() and scale()).
       var bounds :Object = m_container.getBounds( m_container._parent );
-
-      var hack :Point2D = new Point2D( bounds[ "xMax" ] - m_container._x,
+      var result :Point2D = new Point2D( bounds[ "xMax" ] - m_container._x,
          bounds[ "yMax" ] - m_container._y );
 
-      var simple :Point2D = new Point2D( m_container._width, m_container._height );
-      if ( !hack.equals( simple ) ) {
-         trace( "Difference found for: " + this );
-         trace( hack + " vs. " + simple );
+      // If a high debugging level is activated, warn if the result obtained via
+      // getBounds() differs from the _width/_height properties. This is the
+      // case if some element in the MovieClip extends beyond x==0 or y==0.
+      if ( Debug.LEVEL > Debug.LEVEL_NORMAL ) {
+         var traditionalSize :Point2D =
+            new Point2D( m_container._width, m_container._height );
+         if ( !result.equals( traditionalSize ) ) {
+            Debug.LIBRARY_LOG.debug( "Is it intended that " + this +
+               " extends beyond its registration point (origin): " + result +
+               " vs. " + traditionalSize + "?" );
+         }
       }
 
-      return hack;
+      return result;
    }
 
    public function resize( width :Number, height :Number ) :Void {
@@ -151,11 +153,8 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
          return;
       }
 
-      // Unfortunately, we have to go this little indirection, namely converting
-      // into scale factors, here. If a subclass overwrites getSize() but not this
-      // function and we would just assign the new width/height to m_container,
-      // the result might be unexpected.
-      // TODO: Is this workaround necessary anymore?
+      // Unfortunately, we have to go this little indirection to honor our
+      // convention regarding the size of components (see getSize()).
       // FIXME: Can't resize a component once its size was 0.
       var size :Point2D = getSize();
       scale( width / size.x, height / size.y );
