@@ -214,8 +214,6 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
          return true;
       }
 
-      var createTime :Number = 0;
-
       var success :Boolean = true;
 
       for ( var i :Number = 0; i < m_contents.length; ++i ) {
@@ -223,7 +221,6 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
 
          if ( i < getCapacity() ) {
             if ( !currentContent.component.isOnStage() ) {
-               var createStart :Number = getTimer();
                if ( !currentContent.component.create( m_container ) ) {
                   success = false;
 
@@ -231,7 +228,6 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
                   // a method that can't simply return false – so don't break.
                   continue;
                }
-               createTime += getTimer() - createStart;
             }
 
             currentContent.component.setPosition( getCellPosition( i ) );
