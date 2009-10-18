@@ -2,7 +2,6 @@ import at.klickverbot.core.CoreObject;
 
 /**
  * Simple enumeration-substitute for the standard log levels.
- *
  */
 class at.klickverbot.debug.LogLevel extends CoreObject {
    /**
@@ -14,12 +13,12 @@ class at.klickverbot.debug.LogLevel extends CoreObject {
       m_name = name;
    }
 
-   public function isGreaterEqual( other :LogLevel ) :Boolean {
-      return m_level >= other.m_level;
-   }
-
    public function getName() :String {
       return m_name;
+   }
+
+   public function valueOf() :Number {
+      return m_level;
    }
 
    public static var NONE :LogLevel = new LogLevel( 0, "NONE" );
