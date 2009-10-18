@@ -85,7 +85,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent
 
       // Make border and background invisible per default.
       m_backgroundStyle = new FillStyle( 0xCCCCCC, 0 );
-      m_borderStyle = new LineStyle( 1, 0x555577, 0 );
+      m_borderStyle = new LineStyle( 0, 0x555577, 0 );
 
       m_mouseDrawMode = false;
       m_mouseDrawModePaused = false;
