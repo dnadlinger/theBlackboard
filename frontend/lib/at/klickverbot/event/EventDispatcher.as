@@ -1,5 +1,6 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Debug;
+import at.klickverbot.debug.DebugLevel;
 import at.klickverbot.event.EventListener;
 import at.klickverbot.event.IEventDispatcher;
 import at.klickverbot.event.events.Event;
@@ -75,7 +76,7 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
       // listeners have ceased to exist. Because this should not happen anyway,
       // we go with a faster approach when not debugging. Inspired by Saban Ünlü.
 
-      if ( Debug.LEVEL == Debug.LEVEL_NO ) {
+      if ( Debug.LEVEL == DebugLevel.NONE ) {
          var i :Number = eventListeners.length;
 
          while ( currentListener = eventListeners[ --i ] ) {
@@ -154,7 +155,7 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
       var eventListeners :Array = getListenersForEvent( event.type );
       var currentListener :EventListener;
 
-      if ( Debug.LEVEL == Debug.LEVEL_NO ) {
+      if ( Debug.LEVEL == DebugLevel.NONE ) {
          var listenerCount :Number = eventListeners.length;
 
          while ( currentListener = eventListeners[ --listenerCount ] ) {

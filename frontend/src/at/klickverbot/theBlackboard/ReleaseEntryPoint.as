@@ -1,4 +1,5 @@
 import at.klickverbot.debug.Debug;
+import at.klickverbot.debug.DebugLevel;
 import at.klickverbot.theBlackboard.Application;
 
 class at.klickverbot.theBlackboard.ReleaseEntryPoint {
@@ -10,7 +11,7 @@ class at.klickverbot.theBlackboard.ReleaseEntryPoint {
     */
    public static function main( container :MovieClip ) :Void {
       // This is a constant and won't be touched from here on.
-      Debug.LEVEL = Debug.LEVEL_NO;
+      Debug.LEVEL = DebugLevel.NONE;
 
       // Don't add any log handlers, all log messages will be discarded.
 

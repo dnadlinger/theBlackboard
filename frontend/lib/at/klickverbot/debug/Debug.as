@@ -1,3 +1,4 @@
+import at.klickverbot.debug.DebugLevel;
 import at.klickverbot.debug.Log;
 import at.klickverbot.debug.LogLevel;
 import at.klickverbot.debug.Logger;
@@ -20,7 +21,7 @@ class at.klickverbot.debug.Debug {
     *        the condition is false.
     */
    public static function assert( condition :Boolean, failMessage :String ) :Void {
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
 
@@ -31,7 +32,7 @@ class at.klickverbot.debug.Debug {
    }
 
    public static function assertFalse( condition :Boolean, failMessage :String ) :Void {
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
 
@@ -41,7 +42,7 @@ class at.klickverbot.debug.Debug {
    public static function assertEqual( first :Object, second :Object,
       failMessage :String ) :Void {
 
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
       assert( first === second, failMessage );
@@ -50,35 +51,35 @@ class at.klickverbot.debug.Debug {
    public static function assertNotEqual( first :Object, second :Object,
       failMessage :String ) :Void {
 
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
       assert( first !== second, failMessage );
    }
 
    public static function assertNull( target :Object, failMessage :String ) :Void {
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
       assert( target == null, failMessage );
    }
 
    public static function assertNotNull( target :Object, failMessage :String ) :Void {
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
       assert( target != null, failMessage );
    }
 
    public static function assertNumber( target :Object, failMessage :String ) :Void {
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
       assert( !isNaN( Number( target ) ), failMessage );
    }
 
    public static function assertPositive( target :Number, failMessage :String ) :Void {
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
       assertNumber( target, failMessage );
@@ -88,7 +89,7 @@ class at.klickverbot.debug.Debug {
    public static function assertInRange( lowerLimit :Number, target :Number,
       upperLimit :Number, failMessage :String ) :Void {
 
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
       assertNumber( target, failMessage );
@@ -98,7 +99,7 @@ class at.klickverbot.debug.Debug {
    public static function assertLess( first :Number, second :Number,
       failMessage :String ) :Void {
 
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
       assertNumber( first, failMessage );
@@ -109,7 +110,7 @@ class at.klickverbot.debug.Debug {
    public static function assertLessOrEqual( first :Number, second :Number,
       failMessage :String ) :Void {
 
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
       assertNumber( first, failMessage );
@@ -120,7 +121,7 @@ class at.klickverbot.debug.Debug {
    public static function assertIncludes( haystack :Array, needle :Object,
       failMessage :String ) :Void {
 
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
 
@@ -138,7 +139,7 @@ class at.klickverbot.debug.Debug {
    public static function assertExcludes( haystack :Array, needle :Object,
       failMessage :String ) :Void {
 
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
 
@@ -157,7 +158,7 @@ class at.klickverbot.debug.Debug {
    public static function assertInstanceOf( value :Object, klass :Function,
       failMessage :String ) :Void {
 
-      if ( LEVEL == LEVEL_NO ) {
+      if ( LEVEL == DebugLevel.NONE ) {
          return;
       }
       assert( value instanceof klass, failMessage );
@@ -175,8 +176,7 @@ class at.klickverbot.debug.Debug {
     * @param functionName The full name of the function, including the class.
     */
    public static function pureVirtualFunctionCall( functionName :String ) :Void {
-      LIBRARY_LOG.log( LogLevel.ERROR, "Pure virtual function called: "
-         + functionName );
+      LIBRARY_LOG.error( "Pure virtual function called: " + functionName );
    }
 
    /**
@@ -186,25 +186,12 @@ class at.klickverbot.debug.Debug {
     */
    public static var FQI :Boolean = false;
 
-   // Warning: Order of definitions could be important here!
-
-   /**
-    * Global debug levels for managing time-expensive safety checks and debug
-    * features interfering with the user experience.
-    *
-    * - LEVEL_NORMAL: Enables logging and EventDispatcher safety checks.
-    * - LEVEL_HIGH: Additionally make UI size dummies visible.
-    */
-   public static var LEVEL_NO :Number = 0;
-   public static var LEVEL_NORMAL :Number = 1;
-   public static var LEVEL_HIGH :Number = 2;
-
    /**
     * The active debug level.
-    * Defaults to LEVEL_NORMAL, but overwriting the constant at the very
+    * Defaults to DebugLevel.NORMAL, but overwriting the constant at the very
     * beginning of the program execution may be suitable.
     */
-   public static var LEVEL :Number = LEVEL_NORMAL;
+   public static var LEVEL :DebugLevel = DebugLevel.NORMAL;
 
    /**
     * Central log for the at.klickverbot - codebase itself. Usually there

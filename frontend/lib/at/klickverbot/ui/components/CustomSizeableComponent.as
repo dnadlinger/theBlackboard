@@ -1,4 +1,5 @@
 import at.klickverbot.debug.Debug;
+import at.klickverbot.debug.DebugLevel;
 import at.klickverbot.graphics.Color;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.ui.components.IUiComponent;
@@ -68,7 +69,7 @@ class at.klickverbot.ui.components.CustomSizeableComponent extends McComponent
    private function drawDummyRectangle( target :MovieClip ) :Void {
       target.lineStyle( 0, 0, 0 );
 
-      if( Debug.LEVEL >= Debug.LEVEL_HIGH ) {
+      if( Debug.LEVEL >= DebugLevel.HIGH ) {
          target.beginFill( ( new Color(
             Math.random(), Math.random(), Math.random() ) ).toHex(), 30 );
       } else {

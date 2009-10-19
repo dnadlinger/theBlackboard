@@ -1,5 +1,5 @@
-import at.klickverbot.util.NumberUtils;
 import at.klickverbot.debug.Debug;
+import at.klickverbot.debug.DebugLevel;
 import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.UiEvent;
 import at.klickverbot.graphics.Point2D;
@@ -8,6 +8,7 @@ import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.mouse.MouseoverManager;
 import at.klickverbot.util.Delegate;
 import at.klickverbot.util.McUtils;
+import at.klickverbot.util.NumberUtils;
 import at.klickverbot.util.TypeUtils;
 
 /**
@@ -134,7 +135,7 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
       // If a high debugging level is activated, warn if the result obtained via
       // getBounds() differs from the _width/_height properties. This is the
       // case if some element in the MovieClip extends beyond x==0 or y==0.
-      if ( Debug.LEVEL > Debug.LEVEL_NORMAL ) {
+      if ( Debug.LEVEL > DebugLevel.NORMAL ) {
          var traditionalSize :Point2D =
             new Point2D( m_container._width, m_container._height );
          if ( !result.equals( traditionalSize ) ) {

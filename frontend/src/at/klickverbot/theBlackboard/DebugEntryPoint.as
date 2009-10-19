@@ -1,4 +1,5 @@
 import at.klickverbot.debug.Debug;
+import at.klickverbot.debug.DebugLevel;
 import at.klickverbot.debug.ILogHandler;
 import at.klickverbot.debug.LogLevel;
 import at.klickverbot.debug.Logger;
@@ -14,7 +15,7 @@ class at.klickverbot.theBlackboard.DebugEntryPoint {
     */
    public static function main( container :MovieClip ) :Void {
       // This is a constant and won't be touched from here on.
-      Debug.LEVEL = Debug.LEVEL_NORMAL;
+      Debug.LEVEL = DebugLevel.HIGH;
 
       // Send all log output (including traces) to Sos.
       var allHandler :ILogHandler = new SosHandler();
