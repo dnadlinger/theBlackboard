@@ -51,10 +51,10 @@ class at.klickverbot.graphics.Point2D extends CoreObject {
    }
 
    public function sqrDistanceTo( other :Point2D ) :Number {
-      return subtractToNew( other ).getSqrLength();
+      return difference( other ).getSqrLength();
    }
    public function distanceTo( other :Point2D ) :Number {
-      return subtractToNew( other ).getLength();
+      return difference( other ).getLength();
    }
 
    /**
@@ -73,7 +73,7 @@ class at.klickverbot.graphics.Point2D extends CoreObject {
     * @param other The point to add to this point.
     * @return The sum of the two points.
     */
-   public function addToNew( other :Point2D ) :Point2D {
+   public function sum( other :Point2D ) :Point2D {
       return new Point2D( m_x + other.m_x, m_y + other.m_y );
    }
 
@@ -94,7 +94,7 @@ class at.klickverbot.graphics.Point2D extends CoreObject {
     * @param other The point to substract from this point.
     * @return The difference of the two points.
     */
-   public function subtractToNew( other :Point2D ) :Point2D {
+   public function difference( other :Point2D ) :Point2D {
       return new Point2D( m_x - other.m_x, m_y - other.m_y );
    }
 
@@ -123,7 +123,7 @@ class at.klickverbot.graphics.Point2D extends CoreObject {
     *        xFactor is used for both coordinates.
     * @return A Point2D containing the result if the multiplication.
     */
-   public function scaleToNew( xFactor :Number, yFactor :Number ) :Point2D {
+   public function product( xFactor :Number, yFactor :Number ) :Point2D {
       if ( yFactor == null ) {
          yFactor = xFactor;
       }

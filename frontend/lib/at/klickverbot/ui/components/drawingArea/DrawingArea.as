@@ -478,7 +478,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent
 
       clearHistory();
 
-      var newSmoothedDrawing :Drawing = newDrawing.optimizeToNew( m_smoother );
+      var newSmoothedDrawing :Drawing = newDrawing.optimized( m_smoother );
       newSmoothedDrawing.draw( m_finalDrawing );
 
       m_history.addStep( new HistoryStep( newDrawing, newSmoothedDrawing ) );
@@ -677,7 +677,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent
             var lastPoint :Point2D =
                m_tempLine.getPoints()[ m_tempLine.getNumPoints() - 1 ];
 
-            var difference :Point2D = currentPoint.subtractToNew( lastPoint );
+            var difference :Point2D = currentPoint.difference( lastPoint );
             // TODO: Make threshold configurable?
             if ( difference.getSqrLength() >	INTERPOLATE_BORDER_POINT_LIMIT ) {
                if ( ( pointerX < 0 ) || ( pointerX > m_clipRect.getWidth() ) ) {
@@ -689,7 +689,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent
                      currentPoint.x = m_clipRect.getWidth();
                   }
 
-                  difference = currentPoint.subtractToNew( lastPoint );
+                  difference = currentPoint.difference( lastPoint );
                   currentPoint.y = lastPoint.y + difference.x * slope;
                }
 
@@ -702,7 +702,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent
                      currentPoint.y = m_clipRect.getHeight();
                   }
 
-                  difference = currentPoint.subtractToNew( lastPoint );
+                  difference = currentPoint.difference( lastPoint );
                   currentPoint.x = lastPoint.x + difference.y * reziprocalSlope;
                }
             }

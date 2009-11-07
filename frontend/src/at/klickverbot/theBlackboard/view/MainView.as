@@ -259,7 +259,7 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
 
       zoomTo( positionX, positionY, scaleFactor, animate );
 
-      var finalPosition :Point2D = entryPosition.scaleToNew( scaleFactor );
+      var finalPosition :Point2D = entryPosition.product( scaleFactor );
       finalPosition.x -= positionX;
       finalPosition.y -= positionY;
       m_overlayStack.resize( effectiveEntrySize, effectiveEntrySize );

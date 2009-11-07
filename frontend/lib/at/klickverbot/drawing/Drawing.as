@@ -134,7 +134,7 @@ class at.klickverbot.drawing.Drawing extends CoreObject {
       }
    }
 
-   public function optimizeToNew( optimizer :IOperationOptimizer ) :Drawing {
+   public function optimized( optimizer :IOperationOptimizer ) :Drawing {
       var result :Drawing = new Drawing();
 
       for ( var i :Number = 0; i < m_operations.length; ++i ) {
