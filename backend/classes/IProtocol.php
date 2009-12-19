@@ -1,6 +1,6 @@
 <?php
 interface IProtocol {
-	public function createRequest();
-	public function createResponse();
+   public function createRequest();
+   public function createResponse();
 }
 ?>
