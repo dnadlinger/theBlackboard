@@ -1,0 +1,42 @@
+Configuration
+-------------
+
+Large parts of the frontend are controlled settings loaded at run-time. The
+configuration loading process consists of two stages. First, the configuration
+location file is loaded. It contains information on where the configuration
+values are fetched from. Then, the actual configuration is loaded from the
+specified location.
+
+The config location is stored in a small XML file. It has to contain a root
+node, <configLocation>, with two child nodes, <type> and <url>. The content of
+the <type> node specifies the method used to access the configuration. Valid
+values are »xml« (values read from a plain XML file) and »xml-rpc« (values
+fetched via XML-RPC calls). The <url> node stores the location of the
+configuration data. If no full locator (with protocol prefix) is given, the URL
+is regarded as relative to the main SWF path. See configLocation.template.xml
+for an example file.
+
+The configuration is essentially a simple key/value store for several predefined
+keys. Currently, the frontend reads the following keys:
+ - availableThemes: Array of paths (relative to the directory the main SWF
+   resides in) pointing to the theme root directory (the directory containing
+   the themeConfig.xml) for each available frontend theme.
+ - defaultTheme: The theme loaded on application startup (see above).
+ - drawingSize: Default display size for the entry drawings (length of one
+   side in pixels).
+ - entryPreloadLimit: Number of entries loaded loaded in advance (eager
+   loading for entries on the next pages).
+ - entryServiceType: Method used to load the guest book entries. Must be one of
+   »local« (SharedObject storage on the client-side) or »xml-rpc« (server store
+   accessed via XML-RPC).
+ - entryServiceInfo: Information specific to each entry service used to
+   determine the location to load the entries from. When using the SharedObject
+   storage it is the name of the object, when using the XML-RPC storage, the URL
+   of the resource.
+
+An XML configuration file contains all the values as nodes below a <config> root
+node. See config.template.xml for an example XML config file.
+
+When using an XML-RPC configuration, the values are fetched from the specified
+XML-RPC resource via the API specified for theBlackboard. Please see the XML-RPC
+API documentation for details.
