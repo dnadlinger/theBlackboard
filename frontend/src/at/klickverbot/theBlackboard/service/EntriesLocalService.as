@@ -4,10 +4,10 @@ import at.klickverbot.rpc.IOperation;
 import at.klickverbot.rpc.ResultOperation;
 import at.klickverbot.theBlackboard.service.IEntriesService;
 
-class at.klickverbot.theBlackboard.service.LocalEntriesService extends CoreObject
+class at.klickverbot.theBlackboard.service.EntriesLocalService extends CoreObject
    implements IEntriesService {
 
-   public function LocalEntriesService( name :String ) {
+   public function EntriesLocalService( name :String ) {
       m_sharedObject = SharedObject.getLocal( name );
       if ( m_sharedObject.data[ INITIALIZED ] == null ) {
          m_sharedObject.data[ ENTRIES ] = new Array();

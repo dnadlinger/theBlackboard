@@ -6,11 +6,11 @@ import at.klickverbot.theBlackboard.business.ServiceType;
 import at.klickverbot.theBlackboard.service.IConfigLocationService;
 import at.klickverbot.theBlackboard.service.IConfigService;
 import at.klickverbot.theBlackboard.service.IEntriesService;
-import at.klickverbot.theBlackboard.service.LocalEntriesService;
-import at.klickverbot.theBlackboard.service.XmlConfigLocationService;
-import at.klickverbot.theBlackboard.service.XmlConfigService;
-import at.klickverbot.theBlackboard.service.XmlRpcConfigService;
-import at.klickverbot.theBlackboard.service.XmlRpcEntriesService;
+import at.klickverbot.theBlackboard.service.EntriesLocalService;
+import at.klickverbot.theBlackboard.service.ConfigLocationXmlService;
+import at.klickverbot.theBlackboard.service.ConfigXmlService;
+import at.klickverbot.theBlackboard.service.ConfigXmlRpcService;
+import at.klickverbot.theBlackboard.service.EntriesXmlRpcService;
 
 class at.klickverbot.theBlackboard.business.ServiceLocator extends CoreObject
    implements IServiceLocator {
@@ -34,7 +34,7 @@ class at.klickverbot.theBlackboard.business.ServiceLocator extends CoreObject
 
    public function initConfigLocationService( location :ServiceLocation ) :Boolean {
       if ( location.type == ServiceType.PLAIN_XML ) {
-         m_configLocationService = new XmlConfigLocationService( String( location.info ) );
+         m_configLocationService = new ConfigLocationXmlService( String( location.info ) );
          return true;
       } else {
          m_configLocationService = null;
@@ -44,10 +44,10 @@ class at.klickverbot.theBlackboard.business.ServiceLocator extends CoreObject
 
    public function initConfigService( location :ServiceLocation ) :Boolean {
       if ( location.type == ServiceType.XML_RPC ) {
-         m_configService = new XmlRpcConfigService( String( location.info ) );
+         m_configService = new ConfigXmlRpcService( String( location.info ) );
          return true;
       } else if ( location.type == ServiceType.PLAIN_XML ) {
-         m_configService = new XmlConfigService( String( location.info ) );
+         m_configService = new ConfigXmlService( String( location.info ) );
          return true;
       } else {
          m_configService = null;
@@ -57,10 +57,10 @@ class at.klickverbot.theBlackboard.business.ServiceLocator extends CoreObject
 
    public function initEntriesService( location :ServiceLocation ) :Boolean {
       if ( location.type == ServiceType.XML_RPC ) {
-         m_entriesService = new XmlRpcEntriesService( String( location.info ) );
+         m_entriesService = new EntriesXmlRpcService( String( location.info ) );
          return true;
       } else if ( location.type == ServiceType.LOCAL ) {
-         m_entriesService = new LocalEntriesService( String( location.info ) );
+         m_entriesService = new EntriesLocalService( String( location.info ) );
          return true;
       } else {
          m_entriesService = null;

@@ -3,13 +3,13 @@ import at.klickverbot.rpc.IOperation;
 import at.klickverbot.rpc.XmlRpcOperation;
 import at.klickverbot.theBlackboard.service.IEntriesService;
 
-class at.klickverbot.theBlackboard.service.XmlRpcEntriesService extends CoreObject
+class at.klickverbot.theBlackboard.service.EntriesXmlRpcService extends CoreObject
    implements IEntriesService {
 
    /**
     * Constructor.
     */
-   public function XmlRpcEntriesService( url :String ) {
+   public function EntriesXmlRpcService( url :String ) {
       m_url = url;
    }
 
