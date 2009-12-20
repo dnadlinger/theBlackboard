@@ -1,37 +1,37 @@
 import at.klickverbot.core.CoreObject;
-import at.klickverbot.ui.components.HorizontalAlign;
-import at.klickverbot.ui.components.VerticalAlign;
+import at.klickverbot.ui.layout.HorizontalPosition;
+import at.klickverbot.ui.layout.VerticalPosition;
 
 class at.klickverbot.ui.layout.ScaleGridCell extends CoreObject {
    /**
     * Constructor.
     * Private to prohibit instantiation from outside the class itself.
     */
-   private function ScaleGridCell( column :HorizontalAlign, row :VerticalAlign ) {
+   private function ScaleGridCell( column :HorizontalPosition, row :VerticalPosition ) {
       m_column = column;
       m_row = row;
    }
 
-   public function get column() :HorizontalAlign {
+   public function get column() :HorizontalPosition {
       return m_column;
    }
 
-   public function get row() :VerticalAlign {
+   public function get row() :VerticalPosition {
       return m_row;
    }
 
-   public static var TOP_LEFT :ScaleGridCell = new ScaleGridCell( HorizontalAlign.LEFT, VerticalAlign.TOP );
-   public static var TOP :ScaleGridCell = new ScaleGridCell( HorizontalAlign.CENTER, VerticalAlign.TOP );
-   public static var TOP_RIGHT :ScaleGridCell = new ScaleGridCell( HorizontalAlign.RIGHT, VerticalAlign.TOP );
+   public static var TOP_LEFT :ScaleGridCell = new ScaleGridCell( HorizontalPosition.LEFT, VerticalPosition.TOP );
+   public static var TOP :ScaleGridCell = new ScaleGridCell( HorizontalPosition.CENTER, VerticalPosition.TOP );
+   public static var TOP_RIGHT :ScaleGridCell = new ScaleGridCell( HorizontalPosition.RIGHT, VerticalPosition.TOP );
 
-   public static var LEFT :ScaleGridCell = new ScaleGridCell( HorizontalAlign.LEFT, VerticalAlign.CENTER );
-   public static var CENTER :ScaleGridCell = new ScaleGridCell( HorizontalAlign.CENTER, VerticalAlign.CENTER );
-   public static var RIGHT :ScaleGridCell = new ScaleGridCell( HorizontalAlign.RIGHT, VerticalAlign.CENTER );
+   public static var LEFT :ScaleGridCell = new ScaleGridCell( HorizontalPosition.LEFT, VerticalPosition.MIDDLE );
+   public static var CENTER :ScaleGridCell = new ScaleGridCell( HorizontalPosition.CENTER, VerticalPosition.MIDDLE );
+   public static var RIGHT :ScaleGridCell = new ScaleGridCell( HorizontalPosition.RIGHT, VerticalPosition.MIDDLE );
 
-   public static var BOTTOM_LEFT :ScaleGridCell = new ScaleGridCell( HorizontalAlign.LEFT, VerticalAlign.BOTTOM );
-   public static var BOTTOM :ScaleGridCell = new ScaleGridCell( HorizontalAlign.CENTER, VerticalAlign.BOTTOM );
-   public static var BOTTOM_RIGHT :ScaleGridCell = new ScaleGridCell( HorizontalAlign.RIGHT, VerticalAlign.BOTTOM );
+   public static var BOTTOM_LEFT :ScaleGridCell = new ScaleGridCell( HorizontalPosition.LEFT, VerticalPosition.BOTTOM );
+   public static var BOTTOM :ScaleGridCell = new ScaleGridCell( HorizontalPosition.CENTER, VerticalPosition.BOTTOM );
+   public static var BOTTOM_RIGHT :ScaleGridCell = new ScaleGridCell( HorizontalPosition.RIGHT, VerticalPosition.BOTTOM );
 
-   private var m_column :HorizontalAlign;
-   private var m_row :VerticalAlign;
+   private var m_column :HorizontalPosition;
+   private var m_row :VerticalPosition;
 }

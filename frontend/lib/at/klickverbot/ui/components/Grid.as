@@ -1,11 +1,7 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.graphics.Point2D;
-import at.klickverbot.ui.components.ContainerContent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.IUiComponent;
-import at.klickverbot.ui.components.stretching.IStretchMode;
-import at.klickverbot.ui.components.stretching.StretchModes;
 
 class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
    implements IUiComponent {
@@ -44,15 +40,15 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
 
    public function resize( width :Number, height :Number ) :Void {
       if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
-            "Attempted to resize a Grid that is not stage!" );
+         Debug.LIBRARY_LOG.warn(
+            "Attempted to resize a Grid that is not stage: " + this );
          return;
       }
       super.resize( width, height );
       createContents();
    }
 
-   public function addContent( component :IUiComponent, stretchMode :IStretchMode ) :Void {
+   public function addContent( component :IUiComponent ) :Void {
       // Check if the component is not already a member of the Grid, adding a
       // component twice would lead to strange bugs.
       Debug.assertNotNull( component, "Cannot add null to a Grid!" );
@@ -62,11 +58,7 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
       Debug.assertFalse( component.isOnStage(),
          "Cannot add a component to the Grid that is already on stage!" );
 
-      if ( stretchMode == null ) {
-         stretchMode = StretchModes.FILL;
-      }
-
-      m_contents.push( new ContainerContent( component, stretchMode ) );
+      m_contents.push( component );
 
       if ( m_onStage ) {
          createContents();
@@ -77,7 +69,7 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
       var index :Number = null;
 
       for ( var i :Number = 0; i < m_contents.length; ++i ) {
-         if ( ContainerContent( m_contents[ i ] ).component === component ) {
+         if ( m_contents[ i ] === component ) {
             index = i;
             break;
          }
@@ -98,13 +90,7 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
 
    public function removeAllContents() :Void {
       if ( m_onStage ) {
-         var currentComponent :IUiComponent;
-         for ( var i :Number = 0; i < m_contents.length; ++i ) {
-            currentComponent = m_contents[ i ];
-            if ( currentComponent.isOnStage() ) {
-               currentComponent.destroy();
-            }
-         }
+         destroyContents();
       }
       m_contents = new Array();
    }
@@ -120,7 +106,8 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
       if ( size.x < m_columnWidth ) {
          return 0;
       } else {
-         return ( 1 + Math.floor( ( size.x - m_columnWidth ) / ( m_columnWidth + m_columnSpacing ) ) );
+         return ( 1 + Math.floor(
+            ( size.x - m_columnWidth ) / ( m_columnWidth + m_columnSpacing ) ) );
       }
    }
 
@@ -134,7 +121,8 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
       if ( size.y < m_rowHeight ) {
          return 0;
       } else {
-         return ( 1 + Math.floor( ( size.y - m_rowHeight ) / ( m_rowHeight + m_rowSpacing ) ) );
+         return ( 1 + Math.floor(
+            ( size.y - m_rowHeight ) / ( m_rowHeight + m_rowSpacing ) ) );
       }
    }
 
@@ -217,11 +205,11 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
       var success :Boolean = true;
 
       for ( var i :Number = 0; i < m_contents.length; ++i ) {
-         var currentContent :ContainerContent = m_contents[ i ];
+         var currentContent :IUiComponent = m_contents[ i ];
 
          if ( i < getCapacity() ) {
-            if ( !currentContent.component.isOnStage() ) {
-               if ( !currentContent.component.create( m_container ) ) {
+            if ( !( currentContent.isOnStage() ) ) {
+               if ( !currentContent.create( m_container ) ) {
                   success = false;
 
                   // Still try to create the other components – we could be in
@@ -230,12 +218,11 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
                }
             }
 
-            currentContent.component.setPosition( getCellPosition( i ) );
-            currentContent.stretchMode.fitToSize( currentContent.component,
-               new Point2D( m_columnWidth, m_rowHeight ) );
+            currentContent.setPosition( getCellPosition( i ) );
+            currentContent.resize( m_columnWidth, m_rowHeight );
          } else {
-            if ( currentContent.component.isOnStage() ) {
-               currentContent.component.destroy();
+            if ( currentContent.isOnStage() ) {
+               currentContent.destroy();
             }
          }
       }
@@ -254,12 +241,12 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
    }
 
    private function destroyContents() :Void {
-      for ( var i :Number = 0; i < m_contents.length; ++i ) {
-         var currentComponent :IUiComponent =
-            ContainerContent( m_contents[ i ] ).component;
+      var currentContent :IUiComponent;
+      var i :Number = m_contents.length;
 
-         if ( currentComponent.isOnStage() ) {
-            currentComponent.destroy();
+      while ( currentContent = m_contents[ --i ] ) {
+         if ( currentContent.isOnStage() ) {
+            currentContent.destroy();
          }
       }
    }

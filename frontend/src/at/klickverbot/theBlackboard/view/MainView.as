@@ -34,12 +34,13 @@ import at.klickverbot.ui.animation.PropertyTween;
 import at.klickverbot.ui.animation.Sequence;
 import at.klickverbot.ui.animation.TintTween;
 import at.klickverbot.ui.animation.timeMapping.TimeMappers;
+import at.klickverbot.ui.components.Container;
 import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.Stack;
-import at.klickverbot.ui.components.stretching.StretchModes;
 import at.klickverbot.ui.components.themed.MultiContainer;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.components.themed.StaticContainer;
+import at.klickverbot.ui.layout.stretching.StretchModes;
 import at.klickverbot.ui.mouse.PointerManager;
 import at.klickverbot.ui.mouse.ThemeMcCreator;
 import at.klickverbot.util.Delegate;
@@ -88,21 +89,25 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
       m_entriesView = new EntriesView();
       m_entriesContainer.setContent( m_entriesView );
       m_mainContainer.addContent( ContainerElement.MAIN_ENTRIES_DISPLAY,
-         m_entriesContainer, StretchModes.FILL );
+         m_entriesContainer );
 
       m_navigation = new NavigationView();
       m_mainContainer.addContent( ContainerElement.MAIN_NAVIGATION,
-         m_navigation, StretchModes.FILL );
+         m_navigation );
 
       // Setup the overlay stack, which is displayed at the position of the
       // selected entry and is not scaled when zooming in.
       m_overlayStack = new Stack();
 
-      m_drawEntryView = new DrawEntryView();
-      m_overlayStack.addContent( m_drawEntryView, StretchModes.UNIFORM_FILL );
+      m_drawEntryView = new Container();
+      m_drawEntryView.addContent( new DrawEntryView(),
+         StretchModes.UNIFORM_FILL );
+      m_overlayStack.addContent( m_drawEntryView );
 
-      m_editEntryDetailsView = new EditEntryDetailsView();
-      m_overlayStack.addContent( m_editEntryDetailsView, StretchModes.UNIFORM_FILL );
+      m_editEntryDetailsView = new Container();
+      m_editEntryDetailsView.addContent( new EditEntryDetailsView(),
+         StretchModes.UNIFORM_FILL );
+      m_overlayStack.addContent( m_editEntryDetailsView );
 
       m_overlayStack.selectComponent( null );
 
@@ -386,8 +391,8 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
    private var m_entriesView :EntriesView;
 
    private var m_overlayStack :Stack;
-   private var m_drawEntryView :DrawEntryView;
-   private var m_editEntryDetailsView :EditEntryDetailsView;
+   private var m_drawEntryView :Container;
+   private var m_editEntryDetailsView :Container;
 
    private var m_navigation :NavigationView;
 }

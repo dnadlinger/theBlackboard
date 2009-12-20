@@ -14,7 +14,7 @@ import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.McComponent;
 import at.klickverbot.ui.components.Spacer;
 import at.klickverbot.ui.components.Stack;
-import at.klickverbot.ui.components.stretching.StretchModes;
+import at.klickverbot.ui.layout.stretching.StretchModes;
 
 class at.klickverbot.theBlackboard.view.EntriesView extends McComponent
    implements IUiComponent {

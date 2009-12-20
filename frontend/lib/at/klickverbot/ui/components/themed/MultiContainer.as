@@ -4,9 +4,7 @@ import at.klickverbot.theme.ClipId;
 import at.klickverbot.theme.ThemeManager;
 import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.McWrapperComponent;
-import at.klickverbot.ui.components.ScaleGridContainer;
-import at.klickverbot.ui.components.stretching.IStretchMode;
-import at.klickverbot.ui.components.stretching.StretchModes;
+import at.klickverbot.ui.components.ScaleGrid;
 import at.klickverbot.ui.components.themed.MultiContainerContent;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.layout.ContainerRule;
@@ -26,7 +24,7 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
    public function MultiContainer( clipId :ClipId ) {
       super( clipId );
 
-      m_scaleGridContainer = new ScaleGridContainer();
+      m_scaleGridContainer = new ScaleGrid();
       m_contents = new Array();
       m_dummyWrappers = new Object();
       m_otherStaticContents = new Array();
@@ -48,6 +46,7 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
       m_scaleGridContainer.setSize( getSize() );
 
       var children :Object = McUtils.getChildren( m_staticContent );
+
       var currentClip :MovieClip;
       var childIndex :Number = children.length;
       while ( currentClip = children[ --childIndex ] ) {
@@ -60,7 +59,7 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
          } else {
             var wrapper :McWrapperComponent = new McWrapperComponent( currentClip );
             m_dummyWrappers[ currentClip._name ] = wrapper;
-            m_scaleGridContainer.addContent( wrapper, StretchModes.FILL, cell );
+            m_scaleGridContainer.addContent( cell, wrapper );
          }
       }
 
@@ -116,8 +115,8 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
       var overallYFactor :Number = height / getSize().y;
 
       var currentClip :MovieClip;
-      for ( var i :Number = 0; i < m_otherStaticContents.length; ++i ) {
-         currentClip = m_otherStaticContents[ i ];
+      var staticIndex :Number = m_otherStaticContents.length;
+      while ( currentClip = m_otherStaticContents[ --staticIndex ] ) {
          currentClip._xscale *= overallXFactor;
          currentClip._yscale *= overallYFactor;
          currentClip._x *= overallXFactor;
@@ -128,8 +127,10 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
       m_scaleGridContainer.resize( width, height );
 
       // Update the size and position of all content components.
-      for ( var i :Number = 0; i < m_contents.length; ++i ) {
-         updateContentPositionAndSize( m_contents[ i ] );
+      var currentContent :MultiContainerContent;
+      var contentIndex :Number = m_contents.length;
+      while ( currentContent = m_contents[ --contentIndex ] ) {
+         updateContentPositionAndSize( currentContent );
       }
    }
 
@@ -144,19 +145,14 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
       resize( size.x * xScaleFactor, size.y * yScaleFactor );
    }
 
-   public function addContent( elementName :String, component :IUiComponent,
-      stretchMode :IStretchMode ) :Void {
+   public function addContent( elementName :String, component :IUiComponent ) :Void {
       Debug.assertNotNull( component, "Cannot add null to a MultiContainer!" );
       Debug.assertExcludes( m_contents, component,
          "Attemped to add a component which is already in the MultiContainer: " +
          component );
 
-      if ( stretchMode == null ) {
-         stretchMode = StretchModes.FILL;
-      }
-
-      var content :MultiContainerContent = new MultiContainerContent(
-         component, stretchMode, elementName );
+      var content :MultiContainerContent =
+         new MultiContainerContent( component, elementName );
 
       m_contents.push( content );
 
@@ -223,7 +219,7 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
                return;
             }
 
-            m_scaleGridContainer.setScaleGrid( leftWidth, rightWidth,
+            m_scaleGridContainer.setCellSizes( leftWidth, rightWidth,
                topHeight, bottomHeight );
          } else {
             Debug.LIBRARY_LOG.error( "Unsupported ScaleGridType for a " +
@@ -257,7 +253,7 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
       }
 
       content.component.setPosition( dummy.getPosition() );
-      content.stretchMode.fitToSize( content.component, dummy.getSize() );
+      content.component.setSize( dummy.getSize() );
    }
 
    private function findDummy( name :String ) :IUiComponent {
@@ -278,6 +274,6 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
    private var m_contents :Array;
    private var m_dummyWrappers :Object;
    private var m_otherStaticContents :Array;
-   private var m_scaleGridContainer :ScaleGridContainer;
+   private var m_scaleGridContainer :ScaleGrid;
    private var m_scaleGridMapping :ScaleGridMapping;
 }

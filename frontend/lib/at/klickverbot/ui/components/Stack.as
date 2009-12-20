@@ -4,11 +4,8 @@ import at.klickverbot.ui.animation.AlphaTween;
 import at.klickverbot.ui.animation.Animation;
 import at.klickverbot.ui.animation.Animator;
 import at.klickverbot.ui.animation.timeMapping.TimeMappers;
-import at.klickverbot.ui.components.ContainerContent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.IUiComponent;
-import at.klickverbot.ui.components.stretching.IStretchMode;
-import at.klickverbot.ui.components.stretching.StretchModes;
 
 class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
    implements IUiComponent {
@@ -29,7 +26,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
       }
 
       if ( m_selectedContent != null ) {
-         if ( !m_selectedContent.component.create( m_container ) ) {
+         if ( !m_selectedContent.create( m_container ) ) {
             destroy();
             return false;
          }
@@ -55,35 +52,34 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
       super.resize( width, height );
 
       if ( m_selectedContent != null ) {
-         m_selectedContent.stretchMode.fitToSize( m_selectedContent.component, getSize() );
+         m_selectedContent.setSize( getSize() );
       }
 
       if ( m_runningFadeOut != null ) {
-         m_oldSelectedContent.stretchMode.fitToSize( m_oldSelectedContent.component, getSize() );
+         m_oldSelectedContent.setSize( getSize() );
       }
    }
 
-   public function addContent( component :IUiComponent, stretchMode :IStretchMode ) :Void {
+   public function addContent( component :IUiComponent ) :Void {
       Debug.assertNotNull( component, "Cannot add null to a Stack!" );
       Debug.assertExcludes( m_contents, component,
-         "Attemped to add a component which is already in the Stack: {" +
-         component + "}" );
+         "Attemped to add a component which is already in the Stack: " +
+         component );
       Debug.assertFalse( component.isOnStage(),
-         "Cannot add a component to the Stack that is already on stage!" );
+         "Cannot add a component to the Stack that is already on stage: " +
+         component );
 
-      if ( stretchMode == null ) {
-         stretchMode = StretchModes.FILL;
-      }
-
-      var newContent :ContainerContent = new ContainerContent( component, stretchMode );
-      m_contents.push( newContent );
+      m_contents.push( component );
 
       // If the component is the first one, select it.
       if ( m_contents.length == 1 ) {
-         m_selectedContent = newContent;
+         m_selectedContent = component;
          if ( m_onStage ) {
             component.create( m_container );
-            m_selectedContent.stretchMode.fitToSize( m_selectedContent.component, getSize() );
+
+            trace( getSize() );
+            // The stack could have been resized before.
+            m_selectedContent.setSize( getSize() );
          }
       }
    }
@@ -91,10 +87,9 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
    public function removeContent( component :IUiComponent ) :Boolean {
       var found :Boolean = false;
 
-      var currentContent :ContainerContent;
       for ( var i :Number = 0; i < m_contents.length; ++i ) {
-         currentContent = m_contents[ i ];
-         if ( currentContent.component === component ) {
+         var currentContent :IUiComponent = m_contents[ i ];
+         if ( currentContent === component ) {
             m_contents.splice( i, 1 );
 
             if ( m_selectedContent == component ) {
@@ -137,21 +132,18 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
     * <code>null</code> will hide the whole stack.
     */
    public function selectComponent( component :IUiComponent ) :Void {
-      var content :ContainerContent = findContentForComponent( component );
-
       if ( component != null ) {
-         // TODO: Using assert this way is not quite clean.
-         Debug.assertNotNull( content,
+         Debug.assertIncludes( m_contents, component,
             "Cannot select a component which has not been added." );
       }
 
       // Check if we have to change something.
-      if ( m_selectedContent == content ) {
+      if ( m_selectedContent == component ) {
          return;
       }
 
       m_oldSelectedContent = m_selectedContent;
-      m_selectedContent = content;
+      m_selectedContent = component;
 
       if ( m_onStage ) {
          // Check if there is some old animations running; if so, jump to their end.
@@ -165,7 +157,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
          // Fade the old component out.
          if ( m_oldSelectedContent != null ) {
             m_runningFadeOut = m_fadeTemplate.clone();
-            m_runningFadeOut.setTween( new AlphaTween( m_oldSelectedContent.component, 0 ) );
+            m_runningFadeOut.setTween( new AlphaTween( m_oldSelectedContent, 0 ) );
             m_runningFadeOut.addEventListener( Event.COMPLETE, this, handleFadeOutComplete );
             Animator.getInstance().add( m_runningFadeOut );
          }
@@ -173,7 +165,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
          // Create the new component, hide it, and fade it in.
          if ( component != null ) {
             component.create( m_container );
-            m_selectedContent.stretchMode.fitToSize( component, getSize() );
+            m_selectedContent.setSize( getSize() );
             component.fade( 0 );
 
             m_runningFadeIn = m_fadeTemplate.clone();
@@ -185,12 +177,12 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
    }
 
    public function getSelectedComponent() :IUiComponent {
-      return m_selectedContent.component;
+      return m_selectedContent;
    }
 
    private function destroyAllContents() :Void {
       for ( var i :Number = 0; i < m_contents.length; ++i ) {
-         var currentComponent :IUiComponent = ContainerContent( m_contents[ i ] ).component;
+         var currentComponent :IUiComponent = m_contents[ i ];
          if ( currentComponent.isOnStage() ) {
             currentComponent.destroy();
          }
@@ -202,25 +194,21 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
    }
 
    private function handleFadeOutComplete( event :Event ) :Void {
-      m_oldSelectedContent.component.destroy();
+      m_oldSelectedContent.destroy();
       m_runningFadeOut = null;
    }
 
-   private function findContentForComponent( component :IUiComponent ) :ContainerContent {
-      for ( var i :Number = 0; i < m_contents.length; ++i ) {
-         if ( ContainerContent( m_contents[ i ] ).component === component ) {
-            return m_contents[ i ];
-         }
-      }
-      return null;
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat(
+         "contents.length: " + m_contents.length );
    }
 
    private static var DEFAULT_FADE_ANIMATION :Animation =
       new Animation( null, 0.7, TimeMappers.CUBIC );
 
    private var m_contents :Array;
-   private var m_selectedContent :ContainerContent;
-   private var m_oldSelectedContent :ContainerContent;
+   private var m_selectedContent :IUiComponent;
+   private var m_oldSelectedContent :IUiComponent;
 
    private var m_fadeTemplate :Animation;
    private var m_runningFadeIn :Animation;

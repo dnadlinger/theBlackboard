@@ -1,11 +1,11 @@
 import at.klickverbot.core.CoreObject;
-import at.klickverbot.ui.components.stretching.FillStretching;
-import at.klickverbot.ui.components.stretching.IStretchMode;
-import at.klickverbot.ui.components.stretching.NoStretching;
-import at.klickverbot.ui.components.stretching.UniformFillStretching;
-import at.klickverbot.ui.components.stretching.UniformStretching;
+import at.klickverbot.ui.layout.stretching.FillStretching;
+import at.klickverbot.ui.layout.stretching.IStretchMode;
+import at.klickverbot.ui.layout.stretching.NoStretching;
+import at.klickverbot.ui.layout.stretching.UniformFillStretching;
+import at.klickverbot.ui.layout.stretching.UniformStretching;
 
-class at.klickverbot.ui.components.stretching.StretchModes extends CoreObject {
+class at.klickverbot.ui.layout.stretching.StretchModes extends CoreObject {
    /**
     * Don't instanciate this class.
     */

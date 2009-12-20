@@ -1,21 +1,43 @@
 import at.klickverbot.debug.Debug;
+import at.klickverbot.debug.DebugLevel;
 import at.klickverbot.graphics.Point2D;
-import at.klickverbot.ui.components.ContainerContent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
-import at.klickverbot.ui.components.HorizontalAlign;
 import at.klickverbot.ui.components.IUiComponent;
-import at.klickverbot.ui.components.ScaleGridContainerContent;
-import at.klickverbot.ui.components.VerticalAlign;
-import at.klickverbot.ui.components.stretching.IStretchMode;
+import at.klickverbot.ui.components.ScaleGridContent;
+import at.klickverbot.ui.layout.HorizontalPosition;
 import at.klickverbot.ui.layout.ScaleGridCell;
+import at.klickverbot.ui.layout.VerticalPosition;
 
-class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComponent
+/**
+ * A container which provides resizing behavior similar to the nine-slice
+ * scaling feature in the Flash IDE.
+ *
+ * The detailled semantics of this class are a bit hard to understand, but
+ * enbale several powerful use cases: All that this class assumes about its
+ * children resp. content components is that the coordinate systems that this
+ * class and the content component were created in are equal.
+ *
+ * This is obviously the case for »normal« components which are created in the
+ * target container MovieClip when their create method is called. But the
+ * loose restrictions make it also possible to use MovieClips which are already
+ * on stage (e.g. because they are part of a library symbol) by wrapping them
+ * with a McWrapperComponent.
+ *
+ * Moreover, the algorithms used in this class are designed so that a MovieClip
+ * in a specific cell does not even have to fit inside the area of that cell (as
+ * defined by the four width/height values) to be scaled/moved in a reasonable
+ * way. However, please be aware that content extending beyond the bottom right
+ * corner could lead to strange resizing behavior (the size reported by
+ * getSize() and the size of the space occupied in the parent MovieClip would
+ * differ).
+ */
+class at.klickverbot.ui.components.ScaleGrid extends CustomSizeableComponent
    implements IUiComponent {
 
    /**
     * Constructor.
     */
-   public function ScaleGridContainer() {
+   public function ScaleGrid() {
       super();
 
       m_contents = new Array();
@@ -31,19 +53,16 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
          return false;
       }
 
-      var currentContent :ScaleGridContainerContent;
-      for ( var i :Number = 0; i < m_contents.length; ++i ) {
-         currentContent = m_contents[ i ];
-
-         if ( !currentContent.component.create( m_container ) ) {
+      var currentContent :ScaleGridContent;
+      var i :Number = m_contents.length;
+      while ( currentContent = m_contents[ --i ] ) {
+          if ( !currentContent.component.create( m_container ) ) {
             Debug.LIBRARY_LOG.error( "Could not create the component " +
                currentContent.component + " for the container element " +
-                  currentContent.cell );
+               currentContent.cell );
             destroy();
             return false;
          }
-         // TODO: Why was this commented out?
-//			placeAndResizeContent( currentContent );
       }
 
       updateSizeDummy();
@@ -52,14 +71,14 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
 
    public function destroy() :Void {
       if ( m_onStage ) {
-         var currentContent :ScaleGridContainerContent;
+         var currentContent :ScaleGridContent;
          var i :Number = m_contents.length;
 
          while ( currentContent = m_contents[ --i ] ) {
-         	// Check if the components are on stage before destorying them. Not
-         	// doing so could result destroy() being called two times if the UI
-         	// is destroyed because a child of this container could not be
-         	// created.
+            // Check if the components are on stage before destorying them. Not
+            // doing so could result destroy() being called two times if the UI
+            // is destroyed because a child of this container could not be
+            // created.
             if ( currentContent.component.isOnStage() ) {
                currentContent.component.destroy();
             }
@@ -71,7 +90,7 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
 
    public function resize( width :Number, height :Number ) :Void {
       if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attempted to resize a ScaleGridContainer " +
+         Debug.LIBRARY_LOG.warn( "Attempted to resize a ScaleGrid " +
             "that is not on stage." );
          return;
       }
@@ -89,9 +108,10 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
 
       if ( ( newCenterWidth < 0 ) || ( newCenterHeight < 0 ) ) {
          // TODO: Implement a more sophisticated fallback (maybe resizing m_container?).
-         Debug.LIBRARY_LOG.warn( "Could not fully resize the ScaleGridContainer " +
-            "because it would be smaller than the limits resulting from the scale " +
-            "grid (" + outerWidth + "x" + outerHeight + ")." );
+         Debug.LIBRARY_LOG.warn( "Could not resize the ScaleGrid because the" +
+            "target size (" + width + ", " + height + ") is smaller than the" +
+            "limits resulting from the set cell sizes (" + outerWidth +
+            ", " + outerHeight + "): " + this );
          return;
       }
 
@@ -99,7 +119,7 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
       // in the scale grid. We have to treat all components in one cell as if
       // the cell was a single unit, so we also have to move them accordingly
       // to reflect the process in an imaginary single cell.
-      var currentContent :ScaleGridContainerContent;
+      var currentContent :ScaleGridContent;
       for ( var i :Number = 0; i < m_contents.length; ++i ) {
          currentContent = m_contents[ i ];
 
@@ -110,7 +130,7 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
          // the x axis.
          // If the component is in the right column, it is moved along the x
          // axis.
-         if ( currentContent.cell.column == HorizontalAlign.CENTER ) {
+         if ( currentContent.cell.column == HorizontalPosition.CENTER ) {
             if ( oldCenterWidth > 0 ) {
                var xScaleFactor :Number = newCenterWidth / oldCenterWidth;
                size.x *= xScaleFactor;
@@ -119,7 +139,7 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
                size.x = newCenterWidth;
                position.x = m_leftWidth;
             }
-         } else if ( currentContent.cell.row == HorizontalAlign.RIGHT ) {
+         } else if ( currentContent.cell.row == HorizontalPosition.RIGHT ) {
             position.x += width - oldSize.x;
          }
 
@@ -127,7 +147,7 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
          // y axis.
          // If the component is in the bottom row, it is moved along the y
          // axis.
-         if ( currentContent.cell.row == VerticalAlign.CENTER ) {
+         if ( currentContent.cell.row == VerticalPosition.MIDDLE ) {
             if ( oldCenterHeight > 0 ) {
                var yScaleFactor :Number = newCenterHeight / oldCenterHeight;
                size.y *= yScaleFactor;
@@ -136,36 +156,39 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
                size.y = newCenterHeight;
                position.y = m_topHeight;
             }
-         } else if ( currentContent.cell.row == VerticalAlign.BOTTOM ) {
+         } else if ( currentContent.cell.row == VerticalPosition.BOTTOM ) {
             position.y += height - oldSize.y;
          }
 
          currentContent.component.setPosition( position );
-         currentContent.stretchMode.fitToSize( currentContent.component, size );
+         currentContent.component.setSize( size );
       }
 
       // Update the size dummy.
       super.resize( width, height );
    }
 
-   public function addContent( component :IUiComponent, stretchMode :IStretchMode,
-      cell :ScaleGridCell ) :Void {
+   public function addContent( cell :ScaleGridCell, component :IUiComponent ) :Void {
+      Debug.assertNotNull( component, "Cannot add null to a ScaleGrid!" );
+      if ( Debug.LEVEL > DebugLevel.NONE ) {
+         var currentContent :ScaleGridContent;
+         var i :Number = m_contents.length;
+         while ( currentContent = m_contents[ --i ] ) {
+            Debug.assertNotEqual( component, currentContent.component,
+               "Attemped to add a component already in the ScaleGrid: " +
+               component );
+         }
+      }
 
-      Debug.assertNotNull( component, "Cannot add null to a ScaleGridContainer!" );
-      Debug.assertExcludes( m_contents, component, "Attemped to add a " +
-         "component which is already in the ScaleGridContainer: " + component );
-
-      var content :ScaleGridContainerContent =
-         new ScaleGridContainerContent( component, stretchMode, cell );
+      var content :ScaleGridContent = new ScaleGridContent( cell, component );
 
       if ( m_onStage ) {
          if ( !component.create( m_container ) ) {
             Debug.LIBRARY_LOG.error( "Failed to add a component to the " +
-               "ScaleGridContainer: Could not create the content component: " +
+               "ScaleGrid: Could not create the content component: " +
                component );
             return;
          }
-//			placeAndResizeContent( content );
       }
 
       m_contents.push( content );
@@ -175,7 +198,7 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
       var found :Boolean = false;
 
       for ( var i :Number = 0; i < m_contents.length; ++i ) {
-         if ( ContainerContent( m_contents[ i ] ).component === component ) {
+         if ( ScaleGridContent( m_contents[ i ] ).component === component ) {
             m_contents.splice( i, 1 );
             if ( m_onStage ) {
                component.destroy();
@@ -189,18 +212,18 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
    public function removeAllContents() :Void {
       if ( m_onStage ) {
          for ( var i :Number = 0; i < m_contents.length; ++i ) {
-            ContainerContent( m_contents[ i ] ).component.destroy();
+            ScaleGridContent( m_contents[ i ] ).component.destroy();
          }
       }
       m_contents = new Array();
    }
 
-   public function setScaleGrid( leftWidth :Number, rightWidth :Number,
+   public function setCellSizes( leftWidth :Number, rightWidth :Number,
       topHeight :Number, bottomHeight :Number ) :Void {
 
       if ( m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Setting the scale grid of a ScaleGridContainer " +
-            "that is already on stage has no effect!" );
+         Debug.LIBRARY_LOG.warn( "Setting the cell sizes of a ScaleGrid " +
+            "that is already on stage has no effect: " + this );
          return;
       }
 
@@ -209,35 +232,6 @@ class at.klickverbot.ui.components.ScaleGridContainer extends CustomSizeableComp
       m_topHeight = topHeight;
       m_bottomHeight = bottomHeight;
    }
-
-//	private function placeAndResizeContent( content :ScaleGridContainerContent ) :Void {
-//		var position :Point2D = content.component.getPosition();
-//		var size :Point2D = content.component.getSize();
-//
-//		if ( content.cell.column == HorizontalAlign.LEFT ) {
-//			position.x = 0;
-//			size.x = m_leftWidth;
-//		} else if ( content.cell.column == HorizontalAlign.CENTER ) {
-//			position.x = m_leftWidth;
-//			size.x = getSize().x - m_leftWidth - m_rightWidth;
-//		} else if ( content.cell.column == HorizontalAlign.RIGHT ) {
-//			position.x = getSize().x - m_rightWidth;
-//			size.x = m_rightWidth;
-//		}
-//
-//		if ( content.cell.row == VerticalAlign.TOP ) {
-//			position.y = 0;
-//			size.y = m_topHeight;
-//		} else if ( content.cell.row == VerticalAlign.CENTER ) {
-//			position.y = m_topHeight;
-//			size.y = getSize().y - m_topHeight - m_bottomHeight;
-//		} else if ( content.cell.row == VerticalAlign.BOTTOM ) {
-//			position.y = getSize().y - m_bottomHeight;
-//			size.y = m_bottomHeight;
-//		}
-//
-//		fitContentToSize( content, size );
-//	}
 
    private function getInstanceInfo() :Array {
       return super.getInstanceInfo().concat( [

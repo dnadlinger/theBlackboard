@@ -3,8 +3,7 @@ import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theme.ClipId;
 import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.McWrapperComponent;
-import at.klickverbot.ui.components.ScaleGridContainer;
-import at.klickverbot.ui.components.stretching.StretchModes;
+import at.klickverbot.ui.components.ScaleGrid;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.layout.ScaleGridCell;
 import at.klickverbot.ui.mouse.MouseoverManager;
@@ -17,7 +16,7 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
    public function TextBox( clipId :ClipId ) {
       super( clipId );
 
-      m_textFieldContainer = new ScaleGridContainer();
+      m_textFieldContainer = new ScaleGrid();
    }
 
    private function createUi() :Boolean {
@@ -43,14 +42,14 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
 
       m_background = m_staticContent[ BACKGROUND_NAME ];
 
-      m_textFieldContainer.setScaleGrid(
+      m_textFieldContainer.setCellSizes(
          m_textFieldClip._x,
          m_staticContent._width - m_textFieldClip._x - m_textFieldClip._width,
          m_textFieldClip._y,
          m_staticContent._height - m_textFieldClip._y - m_textFieldClip._height
       );
-      m_textFieldContainer.addContent( new McWrapperComponent( m_textFieldClip ),
-         StretchModes.FILL, ScaleGridCell.CENTER );
+      m_textFieldContainer.addContent( ScaleGridCell.CENTER,
+         new McWrapperComponent( m_textFieldClip ) );
       m_textFieldContainer.create( m_container );
 
       // Install handlers to update the background when the textfield
@@ -60,7 +59,7 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
 
       // Also focus the textfield when the background is pressed.
       if ( m_background != null ) {
-      	m_background.onRelease = Delegate.create( this, backgroundClicked );
+         m_background.onRelease = Delegate.create( this, backgroundClicked );
       }
 
       // Hide any custom pointer when the mouse is over the textfield because
@@ -141,5 +140,5 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
    private var m_textFieldClip :MovieClip;
    private var m_textField :TextField;
    private var m_background :MovieClip;
-   private var m_textFieldContainer :ScaleGridContainer;
+   private var m_textFieldContainer :ScaleGrid;
 }
