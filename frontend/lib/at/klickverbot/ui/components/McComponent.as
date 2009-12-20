@@ -321,7 +321,16 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
    }
 
    private function getInstanceInfo() :Array {
-      return super.getInstanceInfo().concat( "onStage: " + m_onStage );
+      if ( m_onStage && ( Debug.LEVEL > DebugLevel.NORMAL ) ) {
+         // Only add the container path if a high debug level is activated
+         // since it can get pretty long.
+         return super.getInstanceInfo().concat( [
+            "onStage: true",
+            "container: " + m_container
+         ] );
+      } else {
+         return super.getInstanceInfo().concat( "onStage: " + m_onStage );
+      }
    }
 
    private var m_container :MovieClip;
