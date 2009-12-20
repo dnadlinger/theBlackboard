@@ -176,7 +176,7 @@ class at.klickverbot.debug.Debug {
     * @param functionName The full name of the function, including the class.
     */
    public static function pureVirtualFunctionCall( functionName :String ) :Void {
-      LIBRARY_LOG.error( "Pure virtual function called: " + functionName );
+      LIBRARY_LOG.fatal( "Pure virtual function called: " + functionName );
    }
 
    /**
