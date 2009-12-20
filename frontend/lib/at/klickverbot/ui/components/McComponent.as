@@ -123,7 +123,7 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
          return null;
       }
 
-      // Using getBounds() is necessary because our convention is specified that
+      // Using getBounds() is necessary because our convention specifies that
       // the size of a component is always measured from its registration point
       // (origin of the coordinate system) to the lower right corner of its
       // bounding box. This also makes it necessary to resort to scaling factors
@@ -158,13 +158,13 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
       // Warn on setting zero width or height for this could lead to troubles
       // because we are using scale factors.
       if ( NumberUtils.fuzzyEquals( width, 0 ) ) {
-         Debug.LIBRARY_LOG.warn( "Resizing a component to zero width can cause" +
+         Debug.LIBRARY_LOG.warn( "Resizing a component to zero width can cause " +
             "unwanted behavior when resizing it back to a non-zero width: " +
             this );
       }
 
       if ( NumberUtils.fuzzyEquals( height, 0 ) ) {
-         Debug.LIBRARY_LOG.warn( "Resizing a component to zero height can cause" +
+         Debug.LIBRARY_LOG.warn( "Resizing a component to zero height can cause " +
             "unwanted behavior when resizing it back to a non-zero height: " +
             this );
       }
@@ -177,7 +177,7 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
       // getSize() but not this method, but we cannot do anything in that case
       // anyway.
       if ( NumberUtils.fuzzyEquals( size.x, 0 ) ) {
-         Debug.LIBRARY_LOG.warn( "Trying to resize a component with width 0," +
+         Debug.LIBRARY_LOG.warn( "Trying to resize a component with width 0, " +
             "setting container _width to 1 to allow for using scale factors: " +
             this );
          m_container._width = 1;
@@ -185,7 +185,7 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
       }
 
       if ( NumberUtils.fuzzyEquals( size.y, 0 ) ) {
-         Debug.LIBRARY_LOG.warn( "Trying to resize a component with height 0," +
+         Debug.LIBRARY_LOG.warn( "Trying to resize a component with height 0, " +
             "setting container _height to 1 to allow for using scale factors: " +
             this );
          m_container._height = 1;
