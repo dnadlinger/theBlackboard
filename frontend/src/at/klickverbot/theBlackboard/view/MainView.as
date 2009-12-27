@@ -1,5 +1,6 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.data.List;
+import at.klickverbot.debug.Debug;
 import at.klickverbot.debug.Logger;
 import at.klickverbot.event.events.CollectionEvent;
 import at.klickverbot.event.events.PropertyChangeEvent;
@@ -40,7 +41,9 @@ import at.klickverbot.ui.components.Stack;
 import at.klickverbot.ui.components.themed.MultiContainer;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.components.themed.StaticContainer;
+import at.klickverbot.ui.layout.horizontalAlign.HorizontalAligns;
 import at.klickverbot.ui.layout.stretching.StretchModes;
+import at.klickverbot.ui.layout.verticalAlign.VerticalAligns;
 import at.klickverbot.ui.mouse.PointerManager;
 import at.klickverbot.ui.mouse.ThemeMcCreator;
 import at.klickverbot.util.Delegate;
@@ -95,19 +98,21 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
       m_mainContainer.addContent( ContainerElement.MAIN_NAVIGATION,
          m_navigation );
 
-      // Setup the overlay stack, which is displayed at the position of the
-      // selected entry and is not scaled when zooming in.
+      // Setup the overlay stack, which spans the whole screen and contains the
+      // additional UI displayed when creating a new entry.
       m_overlayStack = new Stack();
 
-      m_drawEntryView = new Container();
-      m_drawEntryView.addContent( new DrawEntryView(),
-         StretchModes.UNIFORM_FILL );
-      m_overlayStack.addContent( m_drawEntryView );
+      m_drawEntryViewContainer = new Container();
+      m_drawEntryView = new DrawEntryView();
+      m_drawEntryViewContainer.addContent( m_drawEntryView,
+         StretchModes.UNIFORM, HorizontalAligns.LEFT, VerticalAligns.TOP );
+      m_overlayStack.addContent( m_drawEntryViewContainer );
 
-      m_editEntryDetailsView = new Container();
-      m_editEntryDetailsView.addContent( new EditEntryDetailsView(),
-         StretchModes.UNIFORM_FILL );
-      m_overlayStack.addContent( m_editEntryDetailsView );
+      m_editEntryDetailsViewContainer = new Container();
+      m_editEntryDetailsView = new EditEntryDetailsView();
+      m_editEntryDetailsViewContainer.addContent( m_editEntryDetailsView,
+         StretchModes.UNIFORM, HorizontalAligns.LEFT, VerticalAligns.TOP );
+      m_overlayStack.addContent( m_editEntryDetailsViewContainer );
 
       m_overlayStack.selectComponent( null );
 
@@ -167,7 +172,6 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
       }
 
       // Create the overlay stack.
-      // It will be positioned correctly if an entry is selected.
       if ( !m_overlayStack.create( event.themeTarget ) ) {
          Logger.getLog( "MainView" ).error( "Could not create the overlay stack!" );
       }
@@ -233,50 +237,57 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
       PointerManager.getInstance().useCustomPointer( false );
    }
 
-   private function goToActiveEntry( animate :Boolean ) :Void {
-      // TODO: Should we reset the view here?
-      // goToGeneralView( false );
+   private function goToEditedEntry( animate :Boolean ) :Void {
+      // TODO: Use polymorphy here instead.
+      var state :ApplicationState = Model.getInstance().applicationState;
+      if ( state == ApplicationState.DRAW_ENTRY ) {
+         Debug.assertFuzzyEqual(
+            m_drawEntryView.getDrawingAreaSize().x,
+            m_drawEntryView.getDrawingAreaSize().y,
+            "The drawing area must be a square."
+          );
+         var drawingSize :Number = m_drawEntryView.getDrawingAreaSize().x;
+         var drawingPosition :Point2D = m_drawEntryView.getDrawingAreaPosition();
 
-      var entryPosition :Point2D = McUtils.globalToLocal( m_mainContentClip,
+         goToEntry( drawingPosition, drawingSize, animate );
+      } else if ( state == ApplicationState.EDIT_ENTRY_DETAILS ) {
+         Debug.assertFuzzyEqual(
+            m_editEntryDetailsView.getDrawingAreaSize().x,
+            m_editEntryDetailsView.getDrawingAreaSize().y,
+            "The drawing area must be a square."
+          );
+         var drawingSize :Number = m_editEntryDetailsView.getDrawingAreaSize().x;
+         var drawingPosition :Point2D = m_editEntryDetailsView.getDrawingAreaPosition();
+
+         goToEntry( drawingPosition, drawingSize, animate );
+      } else {
+         // If we are not editing an entry, nothing needs to be done.
+      }
+   }
+
+   private function goToEntry( targetPosition :Point2D, targetSize :Number,
+      animate :Boolean ) :Void {
+      // The factor the main container has to be scaled with so that a cell of
+      // the entry grid it contains has the same size as the drawing area in the
+      // overlay stack.
+      var scaleFactor :Number =
+         targetSize / Model.getInstance().config.drawingSize;
+
+      var position :Point2D = McUtils.globalToLocal( m_mainContentClip,
          m_entriesView.getSelectedEntryPosition() );
 
-      var drawingSize :Number = Model.getInstance().config.drawingSize;
-      var displaySize :Number = drawingSize + ZOOM_VIEW_PADDING;
+      position.scale( scaleFactor );
+      position.substract( targetPosition );
 
-      var widthFactor :Number = Stage.width / displaySize;
-      var heightFactor :Number = Stage.height / displaySize;
-      var scaleFactor :Number = Math.min( widthFactor, heightFactor );
-
-      var effectiveEntrySize :Number = drawingSize * scaleFactor;
-
-      // TODO: Always place the entry on the left side of the stage.
-      var positionX :Number = entryPosition.x * scaleFactor;
-      positionX -= ( Stage.width - effectiveEntrySize ) / 2;
-      if ( positionX < 0 ) {
-         positionX = 0;
-      }
-
-      var positionY :Number = entryPosition.y * scaleFactor;
-      positionY -= ( Stage.height - effectiveEntrySize ) / 2;
-      if ( positionY < 0 ) {
-         positionY = 0;
-      }
-
-      zoomTo( positionX, positionY, scaleFactor, animate );
-
-      var finalPosition :Point2D = entryPosition.product( scaleFactor );
-      finalPosition.x -= positionX;
-      finalPosition.y -= positionY;
-      m_overlayStack.resize( effectiveEntrySize, effectiveEntrySize );
-      m_overlayStack.setPosition( finalPosition );
+      zoomTo( position, scaleFactor, animate );
    }
 
    private function goToGeneralView( animate :Boolean ) :Void {
-      zoomTo( 0, 0, 1, animate );
+      zoomTo( new Point2D( 0, 0 ), 1, animate );
    }
 
-   private function zoomTo( positionX :Number, positionY :Number,
-      scaleFactor :Number, animate :Boolean ) :Void {
+   private function zoomTo( position :Point2D, scaleFactor :Number,
+      animate :Boolean ) :Void {
 
       var duration :Number;
       if ( animate ) {
@@ -286,8 +297,8 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
       }
 
       var tweens :Array = [
-         new PropertyTween( m_mainContentClip, "_x", -positionX ),
-         new PropertyTween( m_mainContentClip, "_y", -positionY ),
+         new PropertyTween( m_mainContentClip, "_x", -position.x ),
+         new PropertyTween( m_mainContentClip, "_y", -position.y ),
          new PropertyTween( m_mainContentClip, "_xscale", scaleFactor * 100 ),
          new PropertyTween( m_mainContentClip, "_yscale", scaleFactor * 100 )
       ];
@@ -307,10 +318,9 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
       m_backScenery.resize( width, height );
       m_mainContainer.resize( width, height );
       m_frontScenery.resize( width, height );
+      m_overlayStack.resize( width, height );
 
-      if ( Model.getInstance().applicationState == ApplicationState.DRAW_ENTRY ) {
-         goToActiveEntry( false );
-      }
+      goToEditedEntry( false );
    }
 
    private function handleStageResize() :Void {
@@ -342,14 +352,14 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
 
       // The correct overlay will be selected in handleZoomComplete.
       if ( event.newValue == ApplicationState.VIEW_ENTRIES ) {
-         goToGeneralView( true );
          m_overlayStack.selectComponent( null );
+         goToGeneralView( true );
       } else if ( event.newValue == ApplicationState.DRAW_ENTRY ) {
-         goToActiveEntry( true );
-         m_overlayStack.selectComponent( m_drawEntryView );
+         m_overlayStack.selectComponent( m_drawEntryViewContainer );
+         goToEditedEntry( true );
       } else if ( event.newValue == ApplicationState.EDIT_ENTRY_DETAILS ) {
-         goToActiveEntry( true );
-         m_overlayStack.selectComponent( m_editEntryDetailsView );
+         m_overlayStack.selectComponent( m_editEntryDetailsViewContainer );
+         goToEditedEntry( true );
       }
    }
 
@@ -368,8 +378,6 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
    private static var RESIZE_REFRESH_INTERVAL :Number = 500;
    private static var MIN_WIDTH :Number = 400;
    private static var MIN_HEIGHT :Number = 400;
-
-   private static var ZOOM_VIEW_PADDING :Number = 20;
 
    private static var FADE_DURATION :Number = 0.7;
    private static var FULL_WHITE :Tint = new Tint( new Color( 1, 1, 1 ), 0.5 );
@@ -391,8 +399,10 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
    private var m_entriesView :EntriesView;
 
    private var m_overlayStack :Stack;
-   private var m_drawEntryView :Container;
-   private var m_editEntryDetailsView :Container;
+   private var m_drawEntryView :DrawEntryView;
+   private var m_drawEntryViewContainer :Container;
+   private var m_editEntryDetailsView :EditEntryDetailsView;
+   private var m_editEntryDetailsViewContainer :Container;
 
    private var m_navigation :NavigationView;
 }

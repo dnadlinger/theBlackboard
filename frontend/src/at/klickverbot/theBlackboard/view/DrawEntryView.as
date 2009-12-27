@@ -1,4 +1,5 @@
 import at.klickverbot.debug.Logger;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theBlackboard.view.DrawingAreaContainer;
 import at.klickverbot.theBlackboard.view.DrawingToolbox;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
@@ -55,6 +56,14 @@ class at.klickverbot.theBlackboard.view.DrawEntryView extends CustomSizeableComp
 
       super.resize( width, height );
       m_drawEntryContainer.resize( width, height );
+   }
+
+   public function getDrawingAreaPosition() :Point2D {
+      return m_drawingAreaContainer.getGlobalPosition();
+   }
+
+   public function getDrawingAreaSize() :Point2D {
+      return m_drawingAreaContainer.getSize();
    }
 
    private var m_drawEntryContainer :MultiContainer;

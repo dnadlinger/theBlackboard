@@ -1,5 +1,6 @@
 import at.klickverbot.debug.Debug;
 import at.klickverbot.event.events.ButtonEvent;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theBlackboard.control.SaveEntryEvent;
 import at.klickverbot.theBlackboard.model.Model;
 import at.klickverbot.theBlackboard.view.DrawingAreaContainer;
@@ -83,6 +84,14 @@ class at.klickverbot.theBlackboard.view.EditEntryDetailsView extends CustomSizea
 
       super.resize( width, height );
       m_editEntryDetailsContainer.resize( width, height );
+   }
+
+   public function getDrawingAreaPosition() :Point2D {
+      return m_drawingAreaContainer.getGlobalPosition();
+   }
+
+   public function getDrawingAreaSize() :Point2D {
+      return m_drawingAreaContainer.getSize();
    }
 
    private function handleSubmitPress( event :ButtonEvent ) :Void {
