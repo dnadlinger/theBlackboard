@@ -7,14 +7,11 @@ import at.klickverbot.drawing.IOperationOptimizer;
 import at.klickverbot.drawing.LineOperation;
 import at.klickverbot.drawing.LineStyle;
 import at.klickverbot.drawing.NullOptimizer;
-import at.klickverbot.graphics.Point2D;
-import at.klickverbot.graphics.Rect2D;
-import at.klickverbot.event.IEventDispatcher;
 import at.klickverbot.event.MixinDispatcher;
 import at.klickverbot.event.events.DrawingAreaEvent;
-import at.klickverbot.event.events.Event;
+import at.klickverbot.graphics.Point2D;
+import at.klickverbot.graphics.Rect2D;
 import at.klickverbot.ui.clips.BitmapCachedDrawing;
-import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.McComponent;
 import at.klickverbot.ui.components.drawingArea.DrawingTool;
 import at.klickverbot.ui.components.drawingArea.HistoryStack;
@@ -28,8 +25,7 @@ import at.klickverbot.util.IMouseListener;
  * An UiComponent where the user can draw into.
  * Tools: pen (custom color and size), eraser (deletes the clicked line).
  */
-class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent
-   implements IUiComponent, IEventDispatcher {
+class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
 
    /**
     * Constructor.
@@ -92,9 +88,6 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent
 
       m_mouseListener = new IMouseListener();
       m_mouseListener.onMouseDown = Delegate.create( this, onMouseDown );
-
-      m_dispatcher = new MixinDispatcher();
-      m_dispatcher.overwriteMethods( this );
    }
 
    //--------------------------------------------------------------------------
@@ -560,23 +553,6 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent
       drawBorderAndBackground();
    }
 
-   // The IEventDispatcer methods will be overwritten by the MixinDispatcher.
-   // Only here to satisfy the compiler.
-   public function addEventListener( eventType :String, listenerOwner :Object,
-      listener :Function ) :Void {
-   }
-
-   public function removeEventListener( eventType :String, listenerOwner :Object,
-      listener :Function ) :Boolean {
-      return null;
-   }
-
-   public function getListenerCount( eventType :String ) :Number {
-      return null;
-   }
-
-   public function dispatchEvent( event :Event ) :Void {
-   }
 
    /**
     * Helper function that checks if the specified point lies inside the
