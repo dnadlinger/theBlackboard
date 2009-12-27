@@ -1,3 +1,4 @@
+import at.klickverbot.util.NumberUtils;
 import at.klickverbot.debug.DebugLevel;
 import at.klickverbot.debug.Log;
 import at.klickverbot.debug.LogLevel;
@@ -46,6 +47,15 @@ class at.klickverbot.debug.Debug {
          return;
       }
       assert( first === second, failMessage );
+   }
+
+   public static function assertFuzzyEqual( first :Number, second :Number,
+      failMessage :String ) :Void {
+
+      if ( LEVEL == DebugLevel.NONE ) {
+         return;
+      }
+      assert( NumberUtils.fuzzyEquals( first, second ), failMessage );
    }
 
    public static function assertNotEqual( first :Object, second :Object,
