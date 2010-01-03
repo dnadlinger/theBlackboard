@@ -6,7 +6,6 @@ import at.klickverbot.theBlackboard.model.Model;
 import at.klickverbot.theBlackboard.model.ModelChangeEvent;
 import at.klickverbot.theBlackboard.view.EntryDisplay;
 import at.klickverbot.theBlackboard.vo.ApplicationState;
-import at.klickverbot.theBlackboard.vo.EntriesSortingType;
 import at.klickverbot.theBlackboard.vo.Entry;
 import at.klickverbot.theBlackboard.vo.EntrySet;
 import at.klickverbot.ui.components.Grid;

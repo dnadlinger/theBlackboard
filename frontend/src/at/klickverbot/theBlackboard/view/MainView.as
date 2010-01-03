@@ -190,9 +190,7 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
 
       fitToStage();
 
-      // Activate entry updating.
-      var updatingEvent :ActivateEntryUpdatingEvent = new ActivateEntryUpdatingEvent();
-      updatingEvent.dispatch();
+      ( new ActivateEntryUpdatingEvent() ).dispatch();
 
       // Fade in the scenery and the main container;
       Animator.getInstance().add( fadeIn( m_backScenery ) );
@@ -326,8 +324,7 @@ class at.klickverbot.theBlackboard.view.MainView extends CoreObject {
    private function handleStageResize() :Void {
       if ( !m_resizeTimer.isRunning ) {
          m_entryUpdatingActiveBeforeResize = Model.getInstance().entryUpdatingActive;
-         var updatingEvent :SuspendEntryUpdatingEvent = new SuspendEntryUpdatingEvent();
-         updatingEvent.dispatch();
+         ( new SuspendEntryUpdatingEvent() ).dispatch();
 
          m_resizeTimer.start();
       }

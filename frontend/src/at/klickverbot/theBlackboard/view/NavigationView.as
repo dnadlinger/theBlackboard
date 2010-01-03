@@ -50,6 +50,7 @@ class at.klickverbot.theBlackboard.view.NavigationView extends CustomSizeableCom
 
       super.destroy();
    }
+
    public function move( x: Number, y :Number ) :Void {
       super.move( x, y );
    }

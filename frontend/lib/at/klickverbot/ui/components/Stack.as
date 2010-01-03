@@ -210,7 +210,9 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
    private var m_selectedContent :IUiComponent;
    private var m_oldSelectedContent :IUiComponent;
 
+   // TODO: Use a factory instead of copying a template object.
    private var m_fadeTemplate :Animation;
+
    private var m_runningFadeIn :Animation;
    private var m_runningFadeOut :Animation;
 }
