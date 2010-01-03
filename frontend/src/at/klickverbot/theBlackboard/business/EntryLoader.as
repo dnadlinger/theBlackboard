@@ -81,7 +81,9 @@ class at.klickverbot.theBlackboard.business.EntryLoader extends CoreObject {
 
       // Now we can get the ids for the entries we want to load.
       var sortingString :String;
-      if ( m_currentRequest.sortingType == EntriesSortingType.NEW_TO_OLD ) {
+      if ( m_currentRequest.sortingType == EntriesSortingType.OLD_TO_NEW ) {
+         sortingString = "oldToNew";
+      } else if ( m_currentRequest.sortingType == EntriesSortingType.NEW_TO_OLD ) {
          sortingString = "newToOld";
       } else {
          failCurrentTaskWithMessage( "Unknown sorting type." );

@@ -6,5 +6,6 @@ class at.klickverbot.theBlackboard.vo.EntriesSortingType {
    private function EntriesSortingType() {
    }
 
+   public static var OLD_TO_NEW :EntriesSortingType = new EntriesSortingType();
    public static var NEW_TO_OLD :EntriesSortingType = new EntriesSortingType();
 }

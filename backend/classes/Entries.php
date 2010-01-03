@@ -16,7 +16,9 @@ class Entries {
    public function getIdsForRange( $sortingType, $startIndex, $entryCount ) {
       $querySql = 'SELECT id FROM entries ORDER BY ';
 
-      if ( $sortingType == 'newToOld' ) {
+      if ( $sortingType == 'oldToNew' ) {
+         $querySql .= 'timestamp ASC';
+      } elseif ( $sortingType == 'newToOld' ) {
          $querySql .= 'timestamp DESC';
       } else {
          throw new InvalidArgumentException( 'Unknown sorting type: ' . $sortingType );
