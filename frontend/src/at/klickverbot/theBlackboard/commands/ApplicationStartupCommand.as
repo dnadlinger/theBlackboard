@@ -2,6 +2,7 @@ import at.klickverbot.cairngorm.commands.ICommand;
 import at.klickverbot.cairngorm.commands.SequenceCommand;
 import at.klickverbot.theBlackboard.commands.GetConfigCommand;
 import at.klickverbot.theBlackboard.commands.GetConfigLocationCommand;
+import at.klickverbot.theBlackboard.commands.GetEntryCountCommand;
 import at.klickverbot.theBlackboard.commands.ViewEntriesCommand;
 
 class at.klickverbot.theBlackboard.commands.ApplicationStartupCommand
@@ -10,6 +11,7 @@ class at.klickverbot.theBlackboard.commands.ApplicationStartupCommand
    private function initSequence() :Void {
       addCommand( GetConfigLocationCommand );
       addCommand( GetConfigCommand );
+      addCommand( GetEntryCountCommand );
       addCommand( ViewEntriesCommand );
    }
 }

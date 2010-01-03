@@ -56,13 +56,6 @@ class at.klickverbot.theBlackboard.vo.EntrySet extends CoreObject {
       return m_sortingType;
    }
 
-   /**
-    * How many entries are available from the first entry in the set.
-    */
-   public function get availableCount() :Number {
-      return m_availableCount;
-   }
-
    // TODO: Clean up this hacky mess.
    public function get entryLimit() :Number {
       return m_entryLimit;

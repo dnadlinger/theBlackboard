@@ -36,7 +36,6 @@ class at.klickverbot.theBlackboard.model.Model
    public function get config() :Configuration {
       return m_config;
    }
-
    public function set config( to :Configuration ) :Void {
       var oldValue :Configuration = m_config;
       if ( oldValue != to ) {
@@ -46,11 +45,9 @@ class at.klickverbot.theBlackboard.model.Model
       }
    }
 
-
    public function get serviceErrors() :List {
       return m_serviceErrors;
    }
-
    public function set serviceErrors( to :List ) :Void {
       var oldValue :List = m_serviceErrors;
       if ( oldValue != to ) {
@@ -60,10 +57,21 @@ class at.klickverbot.theBlackboard.model.Model
       }
    }
 
+   public function get entryCount() :Number {
+      return m_entryCount;
+   }
+   public function set entryCount( to :Number ) :Void {
+      var oldValue :Number = m_entryCount;
+      if ( oldValue != to ) {
+         m_entryCount = to;
+         dispatchEvent( new ModelChangeEvent(
+            ModelChangeEvent.ENTRY_COUNT, this, oldValue, to ) );
+      }
+   }
+
    public function get currentEntries() :EntrySet {
       return m_currentEntries;
    }
-
    public function set currentEntries( to :EntrySet ) :Void {
       var oldValue :EntrySet = m_currentEntries;
       if ( oldValue != to ) {
@@ -76,7 +84,6 @@ class at.klickverbot.theBlackboard.model.Model
    public function get newEntry() :Entry {
       return m_newEntry;
    }
-
    public function set newEntry( to :Entry ) :Void {
       var oldValue :Entry = m_newEntry;
       if ( oldValue != to ) {
@@ -89,7 +96,6 @@ class at.klickverbot.theBlackboard.model.Model
    public function get selectedEntry() :Entry {
       return m_selectedEntry;
    }
-
    public function set selectedEntry( to :Entry ) :Void {
       var oldValue :Entry = m_selectedEntry;
       if ( oldValue != to ) {
@@ -102,7 +108,6 @@ class at.klickverbot.theBlackboard.model.Model
    public function get entryUpdatingActive() :Boolean {
       return m_entryUpdatingActive;
    }
-
    public function set entryUpdatingActive( to :Boolean ) :Void {
       var oldValue :Boolean = m_entryUpdatingActive;
       if ( oldValue != to ) {
@@ -115,7 +120,6 @@ class at.klickverbot.theBlackboard.model.Model
    public function get applicationState() :ApplicationState {
       return m_applicationState;
    }
-
    public function set applicationState( to :ApplicationState ) :Void {
       var oldValue :ApplicationState = m_applicationState;
       if ( oldValue != to ) {
@@ -130,6 +134,7 @@ class at.klickverbot.theBlackboard.model.Model
 
    private var m_config :Configuration;
    private var m_serviceErrors :List;
+   private var m_entryCount :Number;
    private var m_currentEntries :EntrySet;
    private var m_newEntry :Entry;
    private var m_selectedEntry :Entry;

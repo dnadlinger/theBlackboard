@@ -3,6 +3,7 @@ import at.klickverbot.event.events.PropertyChangeEvent;
 class at.klickverbot.theBlackboard.model.ModelChangeEvent extends PropertyChangeEvent {
    public static var CONFIG :String = "configurationChange";
    public static var SERVICE_ERRORS :String = "serviceErrorsChange";
+   public static var ENTRY_COUNT :String = "entryCountChange";
    public static var CURRENT_ENTRIES :String = "currentEntriesChange";
    public static var ENTRY_UPDATING_ACTIVE :String = "entryUpdatingActiveChange";
    public static var APPLICATION_STATE :String = "applicationStateChange";

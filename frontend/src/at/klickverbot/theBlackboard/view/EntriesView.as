@@ -121,18 +121,17 @@ class at.klickverbot.theBlackboard.view.EntriesView extends McComponent
 
    private function updateGridCapacity() :Void {
       if ( Model.getInstance().entryUpdatingActive ) {
-         var entriesEvent :GetEntriesEvent;
+         var currentSet :EntrySet = Model.getInstance().currentEntries;
+         Debug.assertNotNull( currentSet,
+            "When EntriesView.updateGridCapacity is called, " +
+            "Model.currentEntries must not be null anymore." );
 
-         var currentEntries :EntrySet = Model.getInstance().currentEntries;
-         if ( currentEntries != null ) {
-            entriesEvent = new GetEntriesEvent(	currentEntries.sortingType,
-               currentEntries.startOffset, m_normalGrid.getCapacity(), false );
-         } else {
-            entriesEvent = new GetEntriesEvent( DEFAULT_SORTING_TYPE,
-               0, m_normalGrid.getCapacity(), false );
-         }
+         var entryCount :Number = m_normalGrid.getCapacity();
+         var startOffset :Number =
+            Math.floor( currentSet.startOffset / entryCount ) * entryCount;
 
-         entriesEvent.dispatch();
+         ( new GetEntriesEvent( currentSet.sortingType, startOffset,
+            entryCount, false ) ).dispatch();
       }
    }
 
@@ -226,15 +225,6 @@ class at.klickverbot.theBlackboard.view.EntriesView extends McComponent
 
    private static var OPTIMIZE_MIN_DISTANCE :Number = 10;
    private static var OPTIMIZE_STRAIGHTEN :Number = 1;
-
-   private static var FADE_DURATION :Number = 0.7;
-
-   // TODO: This does not really belong into the view.
-   // On the other hand, it neither fits into the configuration because the view
-   // concept is not flexible enough to support arbitrary sorting modes when it
-   // comes to adding an entry.
-   private static var DEFAULT_SORTING_TYPE :EntriesSortingType =
-      EntriesSortingType.OLD_TO_NEW;
 
    private var m_gridStack :Stack;
 

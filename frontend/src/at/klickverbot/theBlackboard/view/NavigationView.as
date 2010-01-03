@@ -90,14 +90,15 @@ class at.klickverbot.theBlackboard.view.NavigationView extends CustomSizeableCom
    }
 
    private function updateNavigationButtonStates() :Void {
-      if( Model.getInstance().currentEntries.startOffset > 0 ) {
+      var entrySet :EntrySet = Model.getInstance().currentEntries;
+      if ( entrySet.startOffset > 0 ) {
          m_previousPageButton.setActive( true );
       } else {
          m_previousPageButton.setActive( false );
       }
 
-      if ( Model.getInstance().currentEntries.entryCount <
-         Model.getInstance().currentEntries.availableCount ) {
+      if ( entrySet.startOffset + entrySet.entryCount <
+         Model.getInstance().entryCount ) {
          m_nextPageButton.setActive( true );
       } else {
          m_nextPageButton.setActive( false );
@@ -123,7 +124,7 @@ class at.klickverbot.theBlackboard.view.NavigationView extends CustomSizeableCom
 
       // We don't need to care about how many entries exist, because if there are
       // less than we request, we'll get only as many back as exist.
-
+      // FIXME: We have to take the grid capatity into account.
       var entriesEvent :GetEntriesEvent = new GetEntriesEvent(
          currentSet.sortingType, startOffset, currentSet.entryCount, true );
       entriesEvent.dispatch();
