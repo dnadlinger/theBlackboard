@@ -79,16 +79,19 @@ class at.klickverbot.drawing.LineOperation extends CoreObject
 
    /**
     * Draws only a part of the line to the target MovieClip.
+    *
     * The first point that is drawn specifies the starting point (where to move
-    * the drawing cursor), so if you want to draw the last segment, use:
-    * drawPart( -2, null, target );
+    * the drawing cursor), so e. g. use the following for drawing the last
+    * segment: drawPart( -2, null, target );
     *
     * @param start The index of the point where to start drawing
     *        (starting with zero). If negative, the starting point is specified
-    *        from the last point on backwards, -1 being the last point.
+    *        from the last point on backwards, -1 being the last point. Defaults
+    *        to the first point.
     * @param end The index of the point where to end drawing
     *        (starting with zero). If negative, the end point is specified
-    *        from the last point on backwards, -1 being the last point.
+    *        from the last point on backwards, -1 being the last point. Defaults
+    *        to the last point.
     */
    public function drawPart( start :Number, end :Number, target :MovieClip ) :Void {
       if ( start == null ) {

@@ -7,7 +7,6 @@ import at.klickverbot.drawing.IOperationOptimizer;
 import at.klickverbot.drawing.LineOperation;
 import at.klickverbot.drawing.LineStyle;
 import at.klickverbot.drawing.NullOptimizer;
-import at.klickverbot.event.MixinDispatcher;
 import at.klickverbot.event.events.DrawingAreaEvent;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.graphics.Rect2D;
@@ -26,7 +25,6 @@ import at.klickverbot.util.IMouseListener;
  * Tools: pen (custom color and size), eraser (deletes the clicked line).
  */
 class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
-
    /**
     * Constructor.
     *
@@ -135,6 +133,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
    /**
     * Resizes the component, which sets the bounds for future drawing actions.
     * Already drawn elements are not affected.
+    *
     * Drawing actions in the negative coordinate region (to the top and left of
     * the current position) are always discarded.
     *
@@ -343,9 +342,11 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
 
    /**
     * Clears the drawing.
+    *
+    * On completion, an OP_COMPLETED-DrawingAreaEvent is broadcast.
+    *
     * Note that the history is <strong>not</strong> cleared, but a empty drawing
     * is added as the last step.
-    * When completed, a OP_COMPLETED-DrawingAreaEvent is broadcast.
     *
     * @return If the drawing could be cleared (not possible while in drawing).
     */
@@ -651,7 +652,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
       var pointerY :Number = m_container._ymouse;
 
       // FIXME: This simple logic fails if the mouse button is released unnoticed
-      // by flash. This happens if it is released while the mouse is over
+      // by Flash. This happens if it is released while the mouse is over
       // another window.
 
       // If currently drawing, simple draw a line to the current mouse position,
@@ -751,6 +752,4 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
 
    private var m_backgroundStyle :FillStyle;
    private var m_borderStyle :LineStyle;
-
-   private var m_dispatcher :MixinDispatcher;
 }
