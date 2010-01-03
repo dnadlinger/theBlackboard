@@ -1,5 +1,6 @@
 import at.klickverbot.core.CoreMovieClip;
 import at.klickverbot.event.events.TimerEvent;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.util.Timer;
 
 import flash.display.BitmapData;
@@ -15,11 +16,8 @@ import flash.geom.Rectangle;
  *
  * It can be either assigned to a library symbol or instantiated in a target
  * MovieClip using the create method.
- *
  */
-
 class at.klickverbot.ui.clips.BitmapCachedDrawing extends CoreMovieClip {
-
    /**
     * Constructor.
     * Private because it should only be called by <code>create()</code>.
@@ -71,6 +69,8 @@ class at.klickverbot.ui.clips.BitmapCachedDrawing extends CoreMovieClip {
 
       m_tempClip = this.createEmptyMovieClip( "tempClip",
          this.getNextHighestDepth() );
+
+      m_fixedSize = null;
    }
 
    /**
@@ -209,6 +209,8 @@ class at.klickverbot.ui.clips.BitmapCachedDrawing extends CoreMovieClip {
       translateMatrix.translate( -m_bitmapContainer._x, -m_bitmapContainer._y );
 
       m_cachingBitmap.draw( m_tempClip, translateMatrix );
+
+      // TODO: Is it neccessary to attach it every time?
       m_bitmapContainer.attachBitmap( m_cachingBitmap, CACHE_DEPTH, "auto", m_smoothing );
 
       m_tempClip.clear();
@@ -250,6 +252,49 @@ class at.klickverbot.ui.clips.BitmapCachedDrawing extends CoreMovieClip {
       delete m_bitmapContainer;
 
       super.removeMovieClip();
+   }
+
+   /**
+    * If a non-null fixed size value is set, drawed content is clipped to the
+    * size specified as soon as it is drawn to the bitmap buffer.
+    */
+   public function get fixedSize() :Point2D {
+      return m_fixedSize;
+   }
+   public function set fixedSize( to :Point2D ) :Void {
+      if ( to && to != m_fixedSize ) {
+         cacheBuffer();
+
+         // Create a new caching bitmap with the appropriate size and copy over
+         // the old cached contents which fit into it.
+         var bufferRect :Rectangle = new Rectangle(
+            -m_bitmapContainer._x, -m_bitmapContainer._y,
+            -m_bitmapContainer._x + to.x, -m_bitmapContainer._y + to.y );
+         var destPoint :Point = new Point( 0, 0 );
+
+         var tempBitmap :BitmapData = new BitmapData( to.x, to.y,
+            true, 0x00000000 );
+         tempBitmap.copyPixels( m_cachingBitmap, bufferRect, destPoint );
+
+         // Attach the new bitmap to the container (the old one gets removed
+         // because it is at the same depth.
+         m_bitmapContainer.attachBitmap( tempBitmap, CACHE_DEPTH, "auto", m_smoothing );
+
+         // Try to free the resources used by the old caching bitmap. I am not
+         // sure what is actually necessary.
+         m_cachingBitmap.dispose();
+         delete m_cachingBitmap;
+
+         // From now on, use the new bitmap.
+         m_cachingBitmap = tempBitmap;
+
+         // Move the container to the origin, it might have been placed
+         // elsewhere in expandCachingBitmap before.
+         m_bitmapContainer._x = 0;
+         m_bitmapContainer._y = 0;
+      }
+
+      m_fixedSize = to;
    }
 
    /**
@@ -296,8 +341,6 @@ class at.klickverbot.ui.clips.BitmapCachedDrawing extends CoreMovieClip {
    }
 
 
-
-
    /**
     * Increments the counter for the buffered operations (that ones that are
     * currently in the temp clip) and flushed the buffer if needed.
@@ -337,6 +380,10 @@ class at.klickverbot.ui.clips.BitmapCachedDrawing extends CoreMovieClip {
     * the caching bitmap and resizes it if neccessary.
     */
    private function expandCachingBitmap() :Void {
+      if ( m_fixedSize != null ) {
+         return;
+      }
+
       // Check if and where we need extra space in the bitmap for the
       // pending events.
       var leftXNeeded :Number = 0;
@@ -389,8 +436,8 @@ class at.klickverbot.ui.clips.BitmapCachedDrawing extends CoreMovieClip {
          // because it is at the same depth.
          m_bitmapContainer.attachBitmap( tempBitmap, CACHE_DEPTH, "auto", m_smoothing );
 
-         // Trying to free the ressources used by m_cachingBitmap. I don't know
-         // if it actually works.
+         // Try to free the resources used by the old caching bitmap. I am not
+         // sure what is actually necessary.
          m_cachingBitmap.dispose();
          delete m_cachingBitmap;
 
@@ -413,13 +460,18 @@ class at.klickverbot.ui.clips.BitmapCachedDrawing extends CoreMovieClip {
 
    private static var MIN_WIDTH :Number = 100;
    private static var MIN_HEIGHT :Number = 100;
-   private static var SAFETY_BORDER_SIZE :Number = 10;
    private static var CACHE_DEPTH :Number = 1;
+
+   // The size of the safety border around the drawing content in the caching
+   // bitmap in pixels.
+   private static var SAFETY_BORDER_SIZE :Number = 10;
 
    private var m_tempClip :MovieClip;
    private var m_bitmapContainer :MovieClip;
    private var m_cachingBitmap :BitmapData;
    private var m_smoothing :Boolean;
+
+   private var m_fixedSize :Point2D;
 
    private var m_currentThickness :Number;
    private var m_currentColor :Number;

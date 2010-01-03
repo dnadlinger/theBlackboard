@@ -98,8 +98,14 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
       if( !super.createUi() ) {
          return false;
       }
+
       m_finalDrawing = BitmapCachedDrawing.create( m_container );
       m_tempDrawing = BitmapCachedDrawing.create( m_container );
+
+      // This clip is non-empty because of minimum size for the cache bitmaps,
+      // we can set the fixedSize right away.
+      m_tempDrawing.fixedSize = getSize();
+      m_finalDrawing.fixedSize = getSize();
 
       m_eraserTestClip = m_container.createEmptyMovieClip( "eraserTestClip",
          m_container.getNextHighestDepth() );
@@ -137,9 +143,11 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
     */
    public function resize( width :Number, height :Number ) :Void {
       Debug.assertLess( 0, width, "The drawing area's width must be larger than 0!" );
-      Debug.assertLess( 0, width, "The drawing area's height must be larger than 0!" );
+      Debug.assertLess( 0, height, "The drawing area's height must be larger than 0!" );
 
-      // TODO: If the drawing area is shrinked, the result may be larger than the specified values. This might cause problems in layout.
+      var newSize :Point2D = new Point2D( width, height );
+      m_tempDrawing.fixedSize = newSize;
+      m_finalDrawing.fixedSize = newSize;
 
       m_clipRect.setRight( width );
       m_clipRect.setBottom( height );
@@ -288,8 +296,10 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
             newSmoothedDrawing = currentStep.smoothedDrawing.clone( false );
             newSmoothedDrawing.addOperation( smoothedOp );
 
-            // Then draw it to the screen.
+            // Then draw it to the screen (and force caching it to the bitmap
+            // to enforce the fixedSize limits).
             drawStep( optimizedOp, smoothedOp );
+            m_finalDrawing.cacheBuffer();
 
             // Finally, make a new history step with the two version of the
             // operation and add it to the history.
@@ -597,6 +607,9 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
          }
       }
       m_history.getCurrent().smoothedDrawing.draw( m_finalDrawing );
+
+      // Draw everything to the caching bitmap to enforce the fixedSize limits.
+      m_finalDrawing.cacheBuffer();
    }
 
    /**
