@@ -278,6 +278,16 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
       return success;
    }
 
+   private function checkOnStage( action :String ) :Boolean {
+      if ( m_onStage ) {
+         return true;
+      } else {
+         Debug.LIBRARY_LOG.warn( "Attempted to " + action + " a component " +
+            "that is not on stage: " + this );
+         return false;
+      }
+   }
+
    /**
     * Returns a MovieClip which represents the area of the component which is
     * sensitive for mouseover events.
