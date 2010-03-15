@@ -5,7 +5,6 @@ import at.klickverbot.ui.components.themed.Button;
  * Class for symbolizing a DrawingToolbox button to number value mapping.
  * Would not be needed if ActionScript 2 supported "real" hashes with Objects
  * as keys.
- *
  */
 class at.klickverbot.theBlackboard.view.ButtonForNumber extends CoreObject {
    /**

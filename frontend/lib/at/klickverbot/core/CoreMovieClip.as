@@ -3,7 +3,6 @@ import at.klickverbot.util.TypeUtils;
 
 /**
  * Like CoreObject, but inherits from MovieClip.
- *
  */
 class at.klickverbot.core.CoreMovieClip extends MovieClip
    implements ICoreInterface {

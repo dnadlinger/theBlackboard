@@ -1,6 +1,5 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.theme.ClipId;
 import at.klickverbot.theme.IClipFactory;
 import at.klickverbot.util.McUtils;
@@ -8,9 +7,7 @@ import at.klickverbot.util.McUtils;
 /**
  * A <code>IClipFactory</code> that creates the MovieClips by attaching them
  * from the library.
- *
  */
-
 class at.klickverbot.theme.LibraryClipFactory extends CoreObject
    implements IClipFactory {
 
@@ -35,8 +32,8 @@ class at.klickverbot.theme.LibraryClipFactory extends CoreObject
 
       // This is a Flash restriction.
       Debug.assert( McUtils.isParentOf( m_libraryRoot, target ),
-         "Cannot attach a clip from " + m_libraryRoot + " into a MovieClip" +
-         "that is no child of it." );
+         "Cannot attach a clip from " + m_libraryRoot + " into " + target +
+         ", because it is no child of it." );
 
       if ( depth == null ) {
          depth = target.getNextHighestDepth();
@@ -49,8 +46,8 @@ class at.klickverbot.theme.LibraryClipFactory extends CoreObject
          depth );
 
       if ( newClip == null ) {
-         Debug.LIBRARY_LOG.log( LogLevel.ERROR, "Could not attach a clip with" +
-            " the library id " + clipId.getId() + " because it does not exist!" );
+         Debug.LIBRARY_LOG.error( "Could not attach a clip with the library id " +
+            clipId.getId() + " because it does not exist!" );
       }
 
       return newClip;

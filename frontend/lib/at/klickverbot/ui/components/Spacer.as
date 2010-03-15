@@ -4,7 +4,6 @@ import at.klickverbot.ui.components.IUiComponent;
 
 /**
  * Placeholder component that is completely empty.
- *
  */
 class at.klickverbot.ui.components.Spacer extends CustomSizeableComponent
    implements IUiComponent {
