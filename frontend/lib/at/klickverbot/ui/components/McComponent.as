@@ -63,11 +63,8 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
    }
 
    public function destroy() :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to destroy a component that has not been created: " + this );
-         return;
-      }
+      if ( !checkOnStage( "destroy" ) ) return;
+
       m_container.removeMovieClip();
       m_container = null;
 
@@ -79,49 +76,29 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
    }
 
    public function move( x :Number, y :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to move a component that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "move" ) ) return;
+
       m_container._x = x;
       m_container._y = y;
    }
 
    public function setPosition( newPosition :Point2D ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attempted to set the position of a component " +
-            "that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "set the position of" ) ) return;
       move( newPosition.x, newPosition.y );
    }
 
    public function getPosition() :Point2D {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attempted to get the position of a component " +
-            "that is not on stage: " + this );
-         return new Point2D( 0, 0 );
-      }
+      if ( !checkOnStage( "get the position of" ) ) return null;
       return new Point2D( m_container._x, m_container._y );
    }
 
    public function getGlobalPosition() :Point2D {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attempted to get the global position of a " +
-            "component that is not on stage: " + this );
-         return new Point2D( 0, 0 );
-      }
-
+      if ( !checkOnStage( "get the global position of" ) ) return null;
       return McUtils.localToGlobal( m_container._parent, getPosition() );
    }
 
    public function getSize() :Point2D {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attempted to get the size of a component " +
-            "that is not on stage: " + this );
-         return null;
-      }
+      if ( !checkOnStage( "get the size of" ) ) return null;
 
       // Using getBounds() is necessary because our convention specifies that
       // the size of a component is always measured from its registration point
@@ -149,11 +126,7 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
    }
 
    public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attempted to resize a component " +
-            "that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "resize" ) ) return;
 
       // Warn on setting zero width or height for this could lead to troubles
       // because we are using scale factors.
@@ -196,11 +169,7 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
    }
 
    public function scale( xScaleFactor :Number, yScaleFactor :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attempted to scale a component " +
-            "that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "scale" ) ) return;
 
       m_container._xscale *= xScaleFactor;
       m_container._yscale *= yScaleFactor;
@@ -211,11 +180,7 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
    }
 
    public function fade( alpha :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to fade a component that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "fade" ) ) return;
 
       Debug.assertInRange( 0, alpha, 1,
          "Alpha must be between 0 and 1, but is " + alpha + "!" );
@@ -223,32 +188,20 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
    }
 
    public function getAlpha() :Number {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attempted to get the alpha of a component " +
-            "that is not on stage: " + this );
-         return 0;
-      }
+      if ( !checkOnStage( "get the alpha of" ) ) return null;
 
       return m_container._alpha / 100;
    }
 
    public function tint( tint :Tint ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to tint a component that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "tint" ) ) return;
 
       // Note: This will discard any previously set color transform.
       m_container.transform.colorTransform = tint.getColorTransform();
    }
 
    public function getTint() :Tint {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to get the tint a component that is not on stage: " + this );
-         return null;
-      }
+      if ( !checkOnStage( "get the tint of" ) ) return null;
 
       return Tint.fromColorTransform( m_container.transform.colorTransform );
    }

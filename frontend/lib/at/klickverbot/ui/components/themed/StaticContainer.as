@@ -58,11 +58,7 @@ class at.klickverbot.ui.components.themed.StaticContainer extends Static
    }
 
    public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "Attemped to resize a " +
-            "SingleContainer that is not on stage." );
-         return;
-      }
+      if ( !checkOnStage( "resize" ) ) return;
 
       var oldSize :Point2D = getSize();
       var overallXFactor :Number = width / oldSize.x;
@@ -82,11 +78,7 @@ class at.klickverbot.ui.components.themed.StaticContainer extends Static
    }
 
    public function scale( xScaleFactor :Number, yScaleFactor :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "Attemped to scale a " +
-            "SingleContainer that is not on stage." );
-         return;
-      }
+      if ( !checkOnStage( "scale" ) ) return;
       var size :Point2D = getSize();
       resize( size.x * xScaleFactor, size.y * yScaleFactor );
    }

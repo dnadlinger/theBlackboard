@@ -34,21 +34,13 @@ class at.klickverbot.ui.components.CustomSizeableComponent extends McComponent
    }
 
    public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attemped to resize a component that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "resize" ) ) return;
       m_sizeDummy._width = width;
       m_sizeDummy._height = height;
    }
 
    public function scale( xScaleFactor :Number, yScaleFactor :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attemped to scale a component that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "scale" ) ) return;
       var size :Point2D = getSize();
       resize( size.x * xScaleFactor, size.y * yScaleFactor );
    }

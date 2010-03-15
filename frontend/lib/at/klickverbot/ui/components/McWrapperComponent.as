@@ -14,7 +14,7 @@ class at.klickverbot.ui.components.McWrapperComponent extends McComponent
     * Constructor.
     */
    public function McWrapperComponent( wrappedClip :MovieClip ) {
-   	super();
+      super();
       m_container = wrappedClip;
 
       // Since we are wrapping a MovieClip on the stage, we are always on stage.

@@ -1,5 +1,4 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.drawing.Drawing;
 import at.klickverbot.drawing.FillStyle;
 import at.klickverbot.drawing.IDrawingOperation;
@@ -172,8 +171,8 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
     */
    public function startLine( xPos :Number, yPos :Number ) :Boolean {
       if ( m_drawMode ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
-            "Attempted to start drawing mode, but already started!");
+         Debug.LIBRARY_LOG.warn(
+            "Attempted to start drawing mode, but it is already active!" );
          return false;
       }
 
@@ -219,7 +218,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
     */
    public function drawTo( xPos :Number, yPos :Number ) :Boolean {
       if ( !m_drawMode ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
+         Debug.LIBRARY_LOG.warn(
             "Attempted to draw, but not currently in drawing mode!" );
          return false;
       }
@@ -264,7 +263,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
     */
    public function endLine() :Boolean {
       if ( !m_drawMode ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
+         Debug.LIBRARY_LOG.warn(
             "Attempted to end drawing mode, but not currently drawing!" );
          return false;
       }
@@ -352,7 +351,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
     */
    public function clear() :Boolean {
       if ( m_drawMode ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
+         Debug.LIBRARY_LOG.warn(
             "Cannot clear drawing while drawing mode is active!" );
          return false;
       }
@@ -375,7 +374,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
     */
    public function undo( steps :Number ) :Boolean {
       if ( m_drawMode ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "Cannot undo while drawing!" );
+         Debug.LIBRARY_LOG.warn( "Cannot undo while drawing!" );
          return false;
       }
       if ( !m_history.undo( steps ) ) {
@@ -399,7 +398,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
     */
    public function redo( steps :Number ) :Boolean {
       if ( m_drawMode ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "Cannot redo while drawing!" );
+         Debug.LIBRARY_LOG.warn( "Cannot redo while drawing!" );
          return false;
       }
       if ( !m_history.redo( steps ) ) {
@@ -421,8 +420,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
     */
    public function clearHistory() :Boolean {
       if ( m_drawMode ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
-            "Cannot clear the drawing while drawing!" );
+         Debug.LIBRARY_LOG.warn( "Cannot clear the drawing while drawing!" );
          return false;
       }
 
@@ -445,7 +443,7 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
    }
    public function setMouseDrawMode( mouseDraw :Boolean ) :Boolean {
       if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
+         Debug.LIBRARY_LOG.warn(
             "Cannot switch to mouse drawing mode when not on stage!" );
          return false;
       }

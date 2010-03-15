@@ -89,11 +89,7 @@ class at.klickverbot.ui.components.ScaleGrid extends CustomSizeableComponent
    }
 
    public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attempted to resize a ScaleGrid " +
-            "that is not on stage." );
-         return;
-      }
+      if ( !checkOnStage( "resize" ) ) return;
 
       var oldSize :Point2D = getSize();
 

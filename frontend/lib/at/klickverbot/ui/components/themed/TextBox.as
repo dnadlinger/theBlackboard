@@ -74,11 +74,7 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
    }
 
    public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to resize a Textbox that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "resize" ) ) return;
 
       m_textFieldContainer.resize( width, height );
 
@@ -89,11 +85,7 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
    }
 
    public function scale( xScaleFactor :Number, yScaleFactor :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to scale a Textbox that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "scale" ) ) return;
 
       var size :Point2D = getSize();
       resize( size.x * xScaleFactor, size.y * yScaleFactor );
@@ -106,7 +98,6 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
    public function set text( to :String ) :Void {
       m_textField.text = to;
    }
-
 
    private function gotFocus() :Void {
       if ( m_background != null ) {

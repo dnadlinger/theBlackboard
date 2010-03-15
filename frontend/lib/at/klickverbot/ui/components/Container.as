@@ -63,12 +63,7 @@ class at.klickverbot.ui.components.Container extends CustomSizeableComponent
    }
 
    public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attempted to resize a Container that is " +
-            "not on stage: " + this );
-         return;
-      }
-
+      if ( !checkOnStage( "resize" ) ) return;
       super.resize( width, height );
 
       var currentContent :ContainerContent;

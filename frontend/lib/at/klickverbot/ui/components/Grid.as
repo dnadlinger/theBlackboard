@@ -39,11 +39,7 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
    }
 
    public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to resize a Grid that is not stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "resize" ) ) return;
       super.resize( width, height );
       createContents();
    }
@@ -98,7 +94,7 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
    public function getColumnCount() :Number {
       if ( !m_onStage ) {
          Debug.LIBRARY_LOG.warn( "getColumnCount() called on a Grid which is " +
-            "not on stage, will return 0." );
+            "not on stage will return 0." );
          return 0;
       }
 
@@ -114,7 +110,7 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
    public function getRowCount() :Number {
       if ( !m_onStage ) {
          Debug.LIBRARY_LOG.warn( "getRowCount() called on a Grid which is " +
-            "not on stage, will return 0." );
+            "not on stage will return 0." );
          return 0;
       }
       var size :Point2D = getSize();
@@ -176,7 +172,7 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
 
    public function suspendLayout() :Void {
       if ( m_layoutSuspended ) {
-         Debug.LIBRARY_LOG.warn(	"Grid layout was already suspended, " +
+         Debug.LIBRARY_LOG.warn( "Grid layout was already suspended, " +
             "forgot to resume it? " + this );
          return;
       }
@@ -186,7 +182,7 @@ class at.klickverbot.ui.components.Grid extends CustomSizeableComponent
 
    public function resumeLayout() :Void {
       if ( !m_layoutSuspended ) {
-         Debug.LIBRARY_LOG.warn(	"Grid layout was not suspended, " +
+         Debug.LIBRARY_LOG.warn( "Grid layout was not suspended, " +
             "forgot to suspend it? " + this );
          return;
       }

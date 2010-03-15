@@ -43,11 +43,7 @@ class at.klickverbot.ui.components.HStrip extends CustomSizeableComponent
    }
 
    public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "Attempted to resize a HStrip " +
-            "that is not on stage!" );
-         return;
-      }
+      if ( !checkOnStage( "resize" ) ) return;
       super.resize( width, height );
 
       // Do not react to height changes, but set the width limit according to the

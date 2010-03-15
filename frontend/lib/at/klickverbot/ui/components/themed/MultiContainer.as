@@ -102,11 +102,7 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
    }
 
    public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to resize a MultiContainer that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "resize" ) ) return;
 
       // Scale any content that might be in the MovieClip skeleton of the
       // container (-> Static). Apply the transformations individually instead
@@ -135,11 +131,7 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
    }
 
    public function scale( xScaleFactor :Number, yScaleFactor :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to scale a MultiContainer that is not on stage: " + this );
-         return;
-      }
+      if ( !checkOnStage( "scale" ) ) return;
 
       var size :Point2D = getSize();
       resize( size.x * xScaleFactor, size.y * yScaleFactor );
