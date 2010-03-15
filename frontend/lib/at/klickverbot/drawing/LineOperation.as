@@ -1,6 +1,5 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.drawing.IDrawingOperation;
 import at.klickverbot.drawing.LineStyle;
 import at.klickverbot.graphics.Point2D;
@@ -112,8 +111,7 @@ class at.klickverbot.drawing.LineOperation extends CoreObject
 
       // Nothing to draw.
       if ( end <= start ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
-            "Nothing to draw because end <= start." );
+         Debug.LIBRARY_LOG.warn( "Nothing to draw because end <= start." );
          return;
       }
 

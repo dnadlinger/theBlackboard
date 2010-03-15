@@ -1,5 +1,4 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.IUiComponent;
 
@@ -60,7 +59,7 @@ class at.klickverbot.ui.components.HStrip extends CustomSizeableComponent
 
       if ( component.isOnStage() ) {
          trace( "HStrip::addContent( component )" );
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
+         Debug.LIBRARY_LOG.warn(
             "Attempted to add a component that is already on stage!" );
          return false;
       }

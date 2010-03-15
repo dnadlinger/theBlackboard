@@ -1,5 +1,4 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.theme.ClipId;
 import at.klickverbot.theme.ITheme;
 import at.klickverbot.theme.ThemeManager;
@@ -9,7 +8,6 @@ import at.klickverbot.ui.components.McComponent;
 /**
  * A IUi component that is completely static – it only creates the theme clip
  * with the specified clipId and provides no additional interaction.
- *
  */
 class at.klickverbot.ui.components.themed.Static extends McComponent
    implements IUiComponent {
@@ -34,7 +32,7 @@ class at.klickverbot.ui.components.themed.Static extends McComponent
          m_clipId, m_container );
 
       if ( clip == null ) {
-         Debug.LIBRARY_LOG.log( LogLevel.ERROR,
+         Debug.LIBRARY_LOG.error(
             "Could not create theme clip for Static: id: " + m_clipId );
          super.destroy();
          return false;

@@ -1,6 +1,5 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.drawing.BezierOperation;
 import at.klickverbot.drawing.BezierSegment2D;
 import at.klickverbot.drawing.Drawing;
@@ -78,8 +77,7 @@ class at.klickverbot.drawing.DrawingStringifier extends CoreObject {
                out += tempSegment.endPoint.y;
             }
          } else {
-            Debug.LIBRARY_LOG.log( LogLevel.WARN,
-               "Unsupported drawing operation, skipping..." );
+            Debug.LIBRARY_LOG.warn( "Unsupported drawing operation, skipping..." );
          }
       }
 
@@ -102,8 +100,7 @@ class at.klickverbot.drawing.DrawingStringifier extends CoreObject {
 
       var header :String = String( opStrings.shift() );
       if ( header != EXPORT_HEADER ) {
-         Debug.LIBRARY_LOG.log( LogLevel.ERROR,
-            "Corrupt drawing string: Wrong header!" );
+         Debug.LIBRARY_LOG.error( "Corrupt drawing string: Wrong header!" );
          return drawing;
       }
 
@@ -172,8 +169,7 @@ class at.klickverbot.drawing.DrawingStringifier extends CoreObject {
          }
          // Unsupported operation type.
          else {
-            Debug.LIBRARY_LOG.log( LogLevel.ERROR,
-               "Unsupported drawing operation type found!" );
+            Debug.LIBRARY_LOG.error( "Unsupported drawing operation type found!" );
             return drawing;
          }
 

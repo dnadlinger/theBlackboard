@@ -1,13 +1,11 @@
-import at.klickverbot.util.NumberUtils;
 import at.klickverbot.debug.DebugLevel;
 import at.klickverbot.debug.Log;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.debug.Logger;
+import at.klickverbot.util.NumberUtils;
 
 /**
  * Main debug class.
  * Provides helper functions for debbuging such as assert.
- *
  */
 class at.klickverbot.debug.Debug {
    /**
@@ -27,7 +25,7 @@ class at.klickverbot.debug.Debug {
       }
 
       if ( !condition ) {
-         LIBRARY_LOG.log( LogLevel.FATAL, "Assertion failed: " + failMessage );
+         LIBRARY_LOG.fatal( "Assertion failed: " + failMessage );
          // throw new Error( "Assert failed: " + failMessage );
       }
    }

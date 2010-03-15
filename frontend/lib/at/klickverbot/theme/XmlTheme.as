@@ -1,5 +1,4 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
@@ -39,8 +38,8 @@ class at.klickverbot.theme.XmlTheme
 
    public function initTheme( target :MovieClip ) :Boolean {
       if ( m_loading || m_ready ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "Cannot init theme because it is " +
-            "already loading or ready." );
+         Debug.LIBRARY_LOG.warn(
+            "Cannot init theme because it is already loading or ready." );
          return false;
       }
 
@@ -55,8 +54,7 @@ class at.klickverbot.theme.XmlTheme
 
    public function destroyTheme() :Void {
       if ( !m_ready ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
-            "Attemped to destroy theme that is not ready." );
+         Debug.LIBRARY_LOG.warn( "Attemped to destroy theme that is not ready." );
          return;
       }
 
@@ -71,7 +69,7 @@ class at.klickverbot.theme.XmlTheme
    public function createClipById( clipId :ClipId, target :MovieClip, name :String,
       depth :Number ) :MovieClip {
       if ( !m_ready ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
+         Debug.LIBRARY_LOG.warn(
             "Cannot create clip by id because theme is not ready yet." );
          return null;
       }
@@ -97,22 +95,22 @@ class at.klickverbot.theme.XmlTheme
 
       m_themeConfig = ThemeConfig.fromObject( resultObject );
       if ( m_themeConfig == null ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "Invalid theme config xml." );
+         Debug.LIBRARY_LOG.warn( "Invalid theme config xml." );
          dispatchEvent( new ThemeEvent( ThemeEvent.THEME_MISMATCH, this,
             m_themeTarget ) );
          return;
       }
 
       if ( m_themeConfig.getApplicationName() != m_expectedAppName ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "The theme is not for this " +
-            "application (" + m_expectedAppName + ")." );
+         Debug.LIBRARY_LOG.warn( "The theme is not for this application (" +
+            m_expectedAppName + "), but for " + m_themeConfig.getApplicationName() );
          dispatchEvent( new ThemeEvent( ThemeEvent.THEME_MISMATCH, this,
             m_themeTarget ) );
          return;
       }
 
       if ( m_themeConfig.getApplicationVersion() != m_expectedAppVersion ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "The theme is not for the right " +
+         Debug.LIBRARY_LOG.warn( "The theme is not for the right " +
             "version of this application (" + m_expectedAppVersion +
             ", but the theme is for " + m_themeConfig.getApplicationVersion() + ")." );
          dispatchEvent( new ThemeEvent( ThemeEvent.THEME_MISMATCH, this,
@@ -132,8 +130,7 @@ class at.klickverbot.theme.XmlTheme
    }
 
    private function handleXmlFault( event :FaultEvent ) :Void {
-      Debug.LIBRARY_LOG.log( LogLevel.WARN, "Loading theme xml failed: " +
-         event.faultString );
+      Debug.LIBRARY_LOG.warn( "Loading theme xml failed: " + event.faultString );
       dispatchEvent( new ThemeEvent( ThemeEvent.EXTERN_FAILED, this,
          m_themeTarget ) );
    }
@@ -146,7 +143,7 @@ class at.klickverbot.theme.XmlTheme
       } else if ( m_themeConfig.getClipFactoryType() == CUSTOM_CLIP_FACTORY ) {
          m_clipFactory = IClipFactory( m_themeTarget[ "getClipFactory" ]() );
       } else {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "Invalid clip factory type in " +
+         Debug.LIBRARY_LOG.warn( "Invalid clip factory type in " +
             "theme config, defaulting to LibraryMcFactory." );
          m_clipFactory = new LibraryClipFactory( m_themeTarget );
       }
@@ -156,7 +153,7 @@ class at.klickverbot.theme.XmlTheme
 
    private function onLoadError( target :MovieClip, errorCode :String,
       httpStatus :Number ) :Void {
-      Debug.LIBRARY_LOG.log( LogLevel.WARN, "Loading theme swf failed due to " +
+      Debug.LIBRARY_LOG.warn( "Loading theme swf failed due to " +
          errorCode + ( ( httpStatus == 0 ) ? "" : httpStatus ) );
       dispatchEvent( new ThemeEvent( ThemeEvent.EXTERN_FAILED, this,
          m_themeTarget ) );

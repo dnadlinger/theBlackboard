@@ -1,5 +1,4 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.Event;
 import at.klickverbot.event.events.ProgressEvent;
@@ -28,8 +27,7 @@ class at.klickverbot.theme.SwfTheme extends EventDispatcher
 
    public function initTheme( target :MovieClip ) :Boolean {
       if ( m_initialized || m_loading ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
-            "Theme is already initialized or loading!" );
+         Debug.LIBRARY_LOG.warn( "Theme is already initialized or loading!" );
          return false;
       }
 
@@ -46,7 +44,7 @@ class at.klickverbot.theme.SwfTheme extends EventDispatcher
 
    public function destroyTheme() :Void {
       if ( !m_initialized ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
+         Debug.LIBRARY_LOG.warn(
             "Attempted to destroy theme that is not initialized" );
          return;
       }
@@ -62,7 +60,7 @@ class at.klickverbot.theme.SwfTheme extends EventDispatcher
    public function createClipById( clipId :ClipId, target :MovieClip,
       name :String, depth :Number ) :MovieClip {
       if ( !m_initialized ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
+         Debug.LIBRARY_LOG.warn(
             "Cannot create clip because theme is not yet loaded!" );
          return null;
       }
@@ -96,9 +94,8 @@ class at.klickverbot.theme.SwfTheme extends EventDispatcher
 
       var themeApp :String = String( m_themeTarget[ "getAppName" ]() );
       if ( themeApp != m_appName ) {
-         Debug.LIBRARY_LOG.log( LogLevel.ERROR,
-            "The theme is for the wrong application: " + themeApp +
-            " (" + m_fileUrl + ")!" );
+         Debug.LIBRARY_LOG.error( "The theme is for the wrong application: " +
+            themeApp + " (" + m_fileUrl + ")!" );
          dispatchEvent( new ThemeEvent( ThemeEvent.THEME_MISMATCH, this,
             m_themeTarget ) );
          return;
@@ -106,7 +103,7 @@ class at.klickverbot.theme.SwfTheme extends EventDispatcher
 
       var themeVersion :Number = Number( m_themeTarget[ "getAppVersion" ]() );
       if ( themeVersion != m_appThemeVersion ) {
-         Debug.LIBRARY_LOG.log( LogLevel.ERROR,
+         Debug.LIBRARY_LOG.error(
             "The theme is not for the right version of this application: " +
             themeVersion + " (" + m_fileUrl + ")!" );
          dispatchEvent( new ThemeEvent( ThemeEvent.THEME_MISMATCH, this,
@@ -116,7 +113,7 @@ class at.klickverbot.theme.SwfTheme extends EventDispatcher
 
       m_clipFactory = IClipFactory( m_themeTarget[ "getClipFactory" ]() );
       if ( !( m_clipFactory instanceof IClipFactory ) ) {
-         Debug.LIBRARY_LOG.log( LogLevel.ERROR,
+         Debug.LIBRARY_LOG.error(
             "Could not get a clip factory from the theme (" + m_fileUrl + ")!" );
          dispatchEvent( new ThemeEvent( ThemeEvent.THEME_MISMATCH, this,
             m_themeTarget ) );

@@ -1,5 +1,4 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theme.ClipId;
 import at.klickverbot.ui.components.IUiComponent;
@@ -92,7 +91,7 @@ class at.klickverbot.ui.components.themed.StaticContainer extends Static
     */
    public function setContent( contentComponent :IUiComponent ) :Boolean {
       if ( m_onStage ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "Cannot set the container content" +
+         Debug.LIBRARY_LOG.warn( "Cannot set the container content" +
             "when the container is already on stage." );
          return false;
       }

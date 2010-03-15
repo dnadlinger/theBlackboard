@@ -1,6 +1,5 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.drawing.Drawing;
 import at.klickverbot.ui.components.drawingArea.HistoryAddMode;
 import at.klickverbot.ui.components.drawingArea.HistoryStep;
@@ -55,8 +54,7 @@ class at.klickverbot.ui.components.drawingArea.HistoryStack extends CoreObject {
     */
    public function undo( steps :Number ) :Boolean {
       if ( steps > getUndoStepsPossible() ) {
-         Debug.LIBRARY_LOG.log( LogLevel.ERROR,
-            "Not so much undo steps available: " + steps );
+         Debug.LIBRARY_LOG.warn( "Not so much undo steps available: " + steps );
          return false;
       }
       m_currentStep -= steps;
@@ -72,8 +70,7 @@ class at.klickverbot.ui.components.drawingArea.HistoryStack extends CoreObject {
     */
    public function redo( steps :Number ) :Boolean {
       if ( steps > getRedoStepsPossible() ) {
-         Debug.LIBRARY_LOG.log( LogLevel.ERROR,
-            "Not so much redo steps available: " + steps );
+         Debug.LIBRARY_LOG.warn( "Not so much redo steps available: " + steps );
          return false;
       }
       m_currentStep += steps;
@@ -101,8 +98,8 @@ class at.klickverbot.ui.components.drawingArea.HistoryStack extends CoreObject {
       var stepsToRemove :Number = m_buffer.length - steps;
       if ( stepsToRemove > 0 ) {
          if ( m_currentStep < stepsToRemove ) {
-            Debug.LIBRARY_LOG.log( LogLevel.WARN, "Cannot change undo buffer" +
-               "size because the currently active step would be discarded" );
+            Debug.LIBRARY_LOG.warn( "Cannot change undo buffer size " +
+               "because the currently active step would be discarded" );
             return false;
          }
          m_buffer.splice( 0, stepsToRemove );

@@ -1,6 +1,5 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
 import at.klickverbot.external.xml.XmlNodeTypes;
 import at.klickverbot.external.xmlrpc.DataFormatter;
 import at.klickverbot.external.xmlrpc.DataType;
@@ -58,7 +57,7 @@ class at.klickverbot.external.xmlrpc.Response extends CoreObject {
          return null;
       }
       if ( !m_isFault ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "Attempted to use getFault() " +
+         Debug.LIBRARY_LOG.warn( "Attempted to use getFault() " +
             "on a non-fault xmlrpc response" );
          return null;
       }
@@ -70,7 +69,7 @@ class at.klickverbot.external.xmlrpc.Response extends CoreObject {
          return null;
       }
       if ( m_isFault ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "Attempted to use " +
+         Debug.LIBRARY_LOG.warn( "Attempted to use " +
             "getReturnValue() on a faulty xmlrpc response" );
          return null;
       }
@@ -268,7 +267,7 @@ class at.klickverbot.external.xmlrpc.Response extends CoreObject {
 
    private function checkIfAlreadyParsed() :Boolean {
       if( ( m_returnValue == null ) && ( !m_isFault ) ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN, "No response parsed yet!" );
+         Debug.LIBRARY_LOG.warn( "No response parsed yet!" );
          return false;
       } else {
          return true;
