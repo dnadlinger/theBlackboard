@@ -73,14 +73,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
 
       // If the component is the first one, select it.
       if ( m_contents.length == 1 ) {
-         m_selectedContent = component;
-         if ( m_onStage ) {
-            component.create( m_container );
-
-            trace( getSize() );
-            // The stack could have been resized before.
-            m_selectedContent.setSize( getSize() );
-         }
+         selectComponent( component );
       }
    }
 
@@ -146,16 +139,21 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
       m_selectedContent = component;
 
       if ( m_onStage ) {
-         // Check if there is some old animations running; if so, jump to their end.
+         // Check if the fade in animation of the old entry is still running;
+         // if so, jump to its end.
          if ( m_runningFadeIn != null ) {
             m_runningFadeIn.end();
-         }
-         if ( m_runningFadeOut != null ) {
-            m_runningFadeOut.end();
          }
 
          // Fade the old component out.
          if ( m_oldSelectedContent != null ) {
+            // We do not support concurrently running more than one fade out
+            // animation. This might as well never be the case in practice, but
+            // to be sure, if there still is one running, end it.
+            if ( m_runningFadeOut != null ) {
+               m_runningFadeOut.end();
+            }
+
             m_runningFadeOut = m_fadeTemplate.clone();
             m_runningFadeOut.setTween( new AlphaTween( m_oldSelectedContent, 0 ) );
             m_runningFadeOut.addEventListener( Event.COMPLETE, this, handleFadeOutComplete );
