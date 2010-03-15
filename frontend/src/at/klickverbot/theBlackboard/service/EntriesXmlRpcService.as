@@ -17,6 +17,11 @@ class at.klickverbot.theBlackboard.service.EntriesXmlRpcService extends CoreObje
       return new XmlRpcOperation( m_url, OBJECT_NAME + ".getEntryCount", [] );
    }
 
+   public function getAllIds( sortingType :String ) :IOperation {
+      return new XmlRpcOperation( m_url, OBJECT_NAME + ".getAllIds",
+         [ sortingType ] );
+   }
+
    public function getIdsForRange( sortingType :String, startOffset :Number,
       entryCount :Number ) :IOperation {
       return new XmlRpcOperation( m_url, OBJECT_NAME + ".getIdsForRange",

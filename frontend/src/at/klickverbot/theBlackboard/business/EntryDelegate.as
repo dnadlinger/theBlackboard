@@ -1,27 +1,17 @@
-import at.klickverbot.cairngorm.business.IResponder;
-import at.klickverbot.core.CoreObject;
+import at.klickverbot.debug.Logger;
 import at.klickverbot.drawing.DrawingStringifier;
+import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.rpc.IOperation;
-import at.klickverbot.theBlackboard.business.EntryLoader;
-import at.klickverbot.theBlackboard.business.EntrySetRequest;
+import at.klickverbot.theBlackboard.business.EntryParser;
 import at.klickverbot.theBlackboard.business.ServiceLocation;
 import at.klickverbot.theBlackboard.business.ServiceLocator;
 import at.klickverbot.theBlackboard.vo.EntriesSortingType;
 import at.klickverbot.theBlackboard.vo.Entry;
 
-class at.klickverbot.theBlackboard.business.EntryDelegate extends CoreObject
-   implements IResponder {
-
-   /**
-    * Constructor.
-    */
-   public function EntryDelegate( responder :IResponder ) {
-      m_responder = responder;
-   }
-
-   public static function setEntriesService( location :ServiceLocation ) :Boolean {
+class at.klickverbot.theBlackboard.business.EntryDelegate extends EventDispatcher {
+   public static function setServiceLocation( location :ServiceLocation ) :Boolean {
       return ServiceLocator.getInstance().initEntriesService( location );
    }
 
@@ -31,15 +21,19 @@ class at.klickverbot.theBlackboard.business.EntryDelegate extends CoreObject
 
       // The result is already in the correct format (it is just a plain number),
       // so we just pass it to the responder.
-      countOperation.addEventListener( ResultEvent.RESULT, this, onResult );
-      countOperation.addEventListener( FaultEvent.FAULT, this, onFault );
+      countOperation.addEventListener( ResultEvent.RESULT, this, dispatchEvent );
+      countOperation.addEventListener( FaultEvent.FAULT, this, dispatchEvent );
       countOperation.execute();
    }
 
-   public function getEntryRange( sortingType :EntriesSortingType,
-      startOffset :Number, entryLimit :Number ) :Void {
-      EntryLoader.getInstance().processRequest( new EntrySetRequest(
-         this, sortingType, startOffset, entryLimit ) );
+   public function getAllEntries( sortingType :EntriesSortingType ) :Void {
+      var idsOperation :IOperation =
+         ServiceLocator.getInstance().entriesService.getAllIds(
+            getSortingString( sortingType ) );
+
+      idsOperation.addEventListener( ResultEvent.RESULT, this, handleAllIdsResult );
+      idsOperation.addEventListener( FaultEvent.FAULT, this, dispatchEvent );
+      idsOperation.execute();
    }
 
    public function addEntry( entry :Entry ) :Void {
@@ -51,18 +45,47 @@ class at.klickverbot.theBlackboard.business.EntryDelegate extends CoreObject
             entry.caption, entry.author, drawingString );
 
       // addEntry returns nothing if everything went correctly.
-      addOperation.addEventListener( ResultEvent.RESULT, this, onResult );
-      addOperation.addEventListener( FaultEvent.FAULT, this, onFault );
+      addOperation.addEventListener( ResultEvent.RESULT, this, dispatchEvent );
+      addOperation.addEventListener( FaultEvent.FAULT, this, dispatchEvent );
       addOperation.execute();
    }
 
-   public function onResult( data :ResultEvent ) :Void {
-      m_responder.onResult( data );
+   public function getEntryById( id :Number ) :Void {
+      var entryOperation :IOperation =
+         ServiceLocator.getInstance().entriesService.getEntryById( id );
+
+      entryOperation.addEventListener( ResultEvent.RESULT, this, handleEntryResult );
+      entryOperation.addEventListener( FaultEvent.FAULT, this, dispatchEvent );
+      entryOperation.execute();
    }
 
-   public function onFault( info :FaultEvent ) :Void {
-      m_responder.onFault( info );
+   private function handleAllIdsResult( event :ResultEvent ) :Void {
+      var result :Array = new Array();
+
+      var ids :Array = Array( event.result );
+      for ( var i :Number = 0; i < ids.length; ++i ) {
+         var entry :Entry = new Entry();
+         entry.id = ids[ i ];
+         result.push( entry );
+      }
+
+      dispatchEvent( new ResultEvent( ResultEvent.RESULT, this, result ) );
    }
 
-   private var m_responder :IResponder;
+   private function handleEntryResult( event :ResultEvent ) :Void {
+      dispatchEvent( new ResultEvent( ResultEvent.RESULT, this,
+         ( new EntryParser() ).parseEntry( event.result ) ) );
+   }
+
+   private function getSortingString( type :EntriesSortingType ) :String {
+      // Now we can get the ids for the entries we want to load.
+      if ( type == EntriesSortingType.OLD_TO_NEW ) {
+         return "oldToNew";
+      } else if ( type == EntriesSortingType.NEW_TO_OLD ) {
+         return "newToOld";
+      } else {
+         Logger.getLog( "EntryDelegate" ).warn( "Unknown sorting type: " + type );
+         return "";
+      }
+   }
 }

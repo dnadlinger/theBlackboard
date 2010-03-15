@@ -1,24 +1,16 @@
-import at.klickverbot.debug.Debug;
-import at.klickverbot.graphics.Point2D;
 import at.klickverbot.event.events.ButtonEvent;
-import at.klickverbot.theBlackboard.control.AddEntryEvent;
-import at.klickverbot.theBlackboard.control.GetEntriesEvent;
-import at.klickverbot.theBlackboard.model.Model;
-import at.klickverbot.theBlackboard.model.ModelChangeEvent;
+import at.klickverbot.ui.components.data.IPaginated;
+import at.klickverbot.ui.components.data.PaginatedChangeEvent;
+import at.klickverbot.theBlackboard.view.NavigationViewEvent;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
-import at.klickverbot.theBlackboard.vo.EntrySet;
-import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.HStrip;
-import at.klickverbot.ui.components.IUiComponent;
-import at.klickverbot.ui.components.Spacer;
+import at.klickverbot.ui.components.McComponent;
 import at.klickverbot.ui.components.themed.Button;
 
-class at.klickverbot.theBlackboard.view.NavigationView extends CustomSizeableComponent
-   implements IUiComponent {
-
-   public function NavigationView() {
+class at.klickverbot.theBlackboard.view.NavigationView extends McComponent {
+   public function NavigationView( model :IPaginated ) {
       super();
-
+      m_model = model;
       setupUi();
    }
 
@@ -32,36 +24,24 @@ class at.klickverbot.theBlackboard.view.NavigationView extends CustomSizeableCom
          return false;
       }
 
-      Model.getInstance().addEventListener( ModelChangeEvent.CURRENT_ENTRIES,
-         this, handleCurrentEntriesChange );
+      m_model.addEventListener( PaginatedChangeEvent.CURRENT_PAGE,
+         this, updateNavigationButtonStates );
+      m_model.addEventListener( PaginatedChangeEvent.PAGE_COUNT,
+         this, updateNavigationButtonStates );
       updateNavigationButtonStates();
-
-      updateSizeDummy();
-      updateStripPosition();
 
       return true;
    }
 
    public function destroy() :Void {
-      Model.getInstance().removeEventListener( ModelChangeEvent.CURRENT_ENTRIES,
-         this, handleCurrentEntriesChange );
+      m_model.removeEventListener( PaginatedChangeEvent.CURRENT_PAGE,
+         this, updateNavigationButtonStates );
+      m_model.removeEventListener( PaginatedChangeEvent.PAGE_COUNT,
+         this, updateNavigationButtonStates );
 
       m_iconStrip.destroy();
 
       super.destroy();
-   }
-
-   public function move( x: Number, y :Number ) :Void {
-      super.move( x, y );
-   }
-
-   public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn( "Attemped to resize a NavigationView that is not on stage." );
-         return;
-      }
-      super.resize( width, height );
-      updateStripPosition();
    }
 
    private function setupUi() :Void {
@@ -75,31 +55,19 @@ class at.klickverbot.theBlackboard.view.NavigationView extends CustomSizeableCom
       m_nextPageButton.addEventListener( ButtonEvent.RELEASE, this, nextPage );
       m_iconStrip.addContent( m_nextPageButton );
 
-      // TODO: Get this from the theme config?
-      m_iconStrip.addContent( new Spacer( new Point2D( 20, 20 ) ) );
-
       m_newEntryButton = new Button( AppClipId.NEW_ENTRY_BUTTON );
       m_newEntryButton.addEventListener( ButtonEvent.RELEASE, this, newEntry );
       m_iconStrip.addContent( m_newEntryButton );
    }
 
-   private function updateStripPosition() :Void {
-      var stripSize :Point2D = m_iconStrip.getSize();
-      var xPosition :Number = m_sizeDummy._width / 2 - stripSize.x / 2;
-      var yPosition :Number = m_sizeDummy._height / 2 - stripSize.y / 2;
-      m_iconStrip.move( xPosition, yPosition );
-   }
-
    private function updateNavigationButtonStates() :Void {
-      var entrySet :EntrySet = Model.getInstance().currentEntries;
-      if ( entrySet.startOffset > 0 ) {
+      if ( m_model.getCurrentPage() > 0 ) {
          m_previousPageButton.setActive( true );
       } else {
          m_previousPageButton.setActive( false );
       }
 
-      if ( entrySet.startOffset + entrySet.entryCount <
-         Model.getInstance().entryCount ) {
+      if ( m_model.getCurrentPage() < ( m_model.getPageCount() - 1 ) ) {
          m_nextPageButton.setActive( true );
       } else {
          m_nextPageButton.setActive( false );
@@ -107,41 +75,23 @@ class at.klickverbot.theBlackboard.view.NavigationView extends CustomSizeableCom
    }
 
    private function previousPage() :Void {
-      var currentSet :EntrySet = Model.getInstance().currentEntries;
-
-      var startOffset :Number = currentSet.startOffset - currentSet.entryCount;
-      if ( startOffset < 0 ) {
-         startOffset = 0;
-      }
-
-      var entriesEvent :GetEntriesEvent = new GetEntriesEvent(
-         currentSet.sortingType, startOffset, currentSet.entryCount, true );
-      entriesEvent.dispatch();
+      dispatchEvent(
+         new NavigationViewEvent( NavigationViewEvent.PREVIOUS_PAGE, this ) );
    }
 
    private function nextPage() :Void {
-      var currentSet :EntrySet = Model.getInstance().currentEntries;
-      var startOffset :Number = currentSet.startOffset + currentSet.entryCount;
-
-      // We don't need to care about how many entries exist, because if there are
-      // less than we request, we'll get only as many back as exist.
-      // FIXME: We have to take the grid capatity into account.
-      var entriesEvent :GetEntriesEvent = new GetEntriesEvent(
-         currentSet.sortingType, startOffset, currentSet.entryCount, true );
-      entriesEvent.dispatch();
+      dispatchEvent(
+         new NavigationViewEvent( NavigationViewEvent.NEXT_PAGE, this ) );
    }
 
    private function newEntry() :Void {
-      var addEvent :AddEntryEvent = new AddEntryEvent();
-      addEvent.dispatch();
+      dispatchEvent(
+         new NavigationViewEvent( NavigationViewEvent.NEW_ENTRY, this ) );
    }
 
-   private function handleCurrentEntriesChange() :Void {
-      updateNavigationButtonStates();
-   }
+   private var m_model :IPaginated;
 
    private var m_iconStrip :HStrip;
-
    private var m_previousPageButton :Button;
    private var m_nextPageButton :Button;
    private var m_newEntryButton :Button;

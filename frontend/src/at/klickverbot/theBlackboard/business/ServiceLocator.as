@@ -1,20 +1,17 @@
-import at.klickverbot.cairngorm.business.IServiceLocator;
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Logger;
 import at.klickverbot.theBlackboard.business.ServiceLocation;
 import at.klickverbot.theBlackboard.business.ServiceType;
+import at.klickverbot.theBlackboard.service.ConfigLocationXmlService;
+import at.klickverbot.theBlackboard.service.ConfigXmlRpcService;
+import at.klickverbot.theBlackboard.service.ConfigXmlService;
+import at.klickverbot.theBlackboard.service.EntriesLocalService;
+import at.klickverbot.theBlackboard.service.EntriesXmlRpcService;
 import at.klickverbot.theBlackboard.service.IConfigLocationService;
 import at.klickverbot.theBlackboard.service.IConfigService;
 import at.klickverbot.theBlackboard.service.IEntriesService;
-import at.klickverbot.theBlackboard.service.EntriesLocalService;
-import at.klickverbot.theBlackboard.service.ConfigLocationXmlService;
-import at.klickverbot.theBlackboard.service.ConfigXmlService;
-import at.klickverbot.theBlackboard.service.ConfigXmlRpcService;
-import at.klickverbot.theBlackboard.service.EntriesXmlRpcService;
 
-class at.klickverbot.theBlackboard.business.ServiceLocator extends CoreObject
-   implements IServiceLocator {
-
+class at.klickverbot.theBlackboard.business.ServiceLocator extends CoreObject {
    private function ServiceLocator() {
       m_configLocationService = null;
       m_configService = null;

@@ -1,6 +1,5 @@
-import at.klickverbot.cairngorm.business.IResponder;
-import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Logger;
+import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.rpc.IOperation;
@@ -9,15 +8,8 @@ import at.klickverbot.theBlackboard.business.ServiceLocator;
 import at.klickverbot.theBlackboard.business.ServiceType;
 import at.klickverbot.theBlackboard.vo.DirectConfiguration;
 
-class at.klickverbot.theBlackboard.business.ConfigDelegate extends CoreObject {
-   /**
-    * Constructor.
-    */
-   public function ConfigDelegate( responder :IResponder ) {
-      m_responder = responder;
-   }
-
-   public static function setConfigService( location :ServiceLocation ) :Boolean {
+class at.klickverbot.theBlackboard.business.ConfigDelegate extends EventDispatcher {
+   public static function setServiceLocation( location :ServiceLocation ) :Boolean {
       return ServiceLocator.getInstance().initConfigService( location );
    }
 
@@ -26,7 +18,7 @@ class at.klickverbot.theBlackboard.business.ConfigDelegate extends CoreObject {
          ServiceLocator.getInstance().configService.getAll();
 
       operation.addEventListener( ResultEvent.RESULT, this, handleLoadResult );
-      operation.addEventListener( FaultEvent.FAULT, this, handleFault );
+      operation.addEventListener( FaultEvent.FAULT, this, dispatchEvent );
       operation.execute();
    }
 
@@ -85,11 +77,7 @@ class at.klickverbot.theBlackboard.business.ConfigDelegate extends CoreObject {
       var serviceInfo :Object = source[ "entryServiceInfo" ];
       config.setEntryServiceLocation( new ServiceLocation( serviceType, serviceInfo ) );
 
-      m_responder.onResult( new ResultEvent( ResultEvent.RESULT, this, config ) );
-   }
-
-   private function handleFault( event :FaultEvent ) :Void {
-      m_responder.onFault( event );
+      dispatchEvent( new ResultEvent( ResultEvent.RESULT, this, config ) );
    }
 
    private function checkSettingExists( source :Object, name :String ) :Boolean {
@@ -101,13 +89,11 @@ class at.klickverbot.theBlackboard.business.ConfigDelegate extends CoreObject {
    }
 
    private function failWithMessage( message :String ) :Void {
-      m_responder.onFault( new FaultEvent( FaultEvent.FAULT, this, null, message ) );
+      dispatchEvent( new FaultEvent( FaultEvent.FAULT, this, null, message ) );
    }
 
    private static var SERVICE_TYPES :Object = {
       xmlrpc: ServiceType.XML_RPC,
       local: ServiceType.LOCAL
    };
-
-   private var m_responder :IResponder;
 }

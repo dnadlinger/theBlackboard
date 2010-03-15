@@ -1,30 +1,26 @@
-import at.klickverbot.debug.Debug;
+import at.klickverbot.theBlackboard.view.IDrawingAreaOverlay;
 import at.klickverbot.event.events.ButtonEvent;
+import at.klickverbot.event.events.Event;
 import at.klickverbot.graphics.Point2D;
-import at.klickverbot.theBlackboard.control.SaveEntryEvent;
-import at.klickverbot.theBlackboard.model.Model;
-import at.klickverbot.theBlackboard.view.DrawingAreaContainer;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
 import at.klickverbot.theBlackboard.vo.Entry;
 import at.klickverbot.ui.components.CustomSizeableComponent;
-import at.klickverbot.ui.components.IUiComponent;
+import at.klickverbot.ui.components.Spacer;
 import at.klickverbot.ui.components.themed.Button;
 import at.klickverbot.ui.components.themed.MultiContainer;
 import at.klickverbot.ui.components.themed.TextBox;
 
-class at.klickverbot.theBlackboard.view.EditEntryDetailsView extends CustomSizeableComponent
-   implements IUiComponent {
+class at.klickverbot.theBlackboard.view.EditEntryDetailsView
+   extends CustomSizeableComponent implements IDrawingAreaOverlay {
 
-   public function EditEntryDetailsView() {
+   public function EditEntryDetailsView( model :Entry ) {
       super();
+
+      m_model = model;
 
       m_editEntryDetailsContainer =
          new MultiContainer( AppClipId.EDIT_ENTRY_DETAILS_CONTAINER );
-
-      m_drawingAreaContainer = new DrawingAreaContainer();
-      m_editEntryDetailsContainer.addContent(
-         ContainerElement.EDIT_DETAILS_DRARING_AREA, m_drawingAreaContainer );
 
       m_detailsFormContainer =
          new MultiContainer( AppClipId.ENTRY_DETAILS_FORM_CONTAINER );
@@ -44,6 +40,10 @@ class at.klickverbot.theBlackboard.view.EditEntryDetailsView extends CustomSizea
 
       m_editEntryDetailsContainer.addContent(
          ContainerElement.EDIT_DETAILS_FORM, m_detailsFormContainer );
+
+      m_drawingAreaDummy = new Spacer( new Point2D( 1, 1 ) );
+      m_editEntryDetailsContainer.addContent(
+         ContainerElement.EDIT_DETAILS_DRARING_AREA, m_drawingAreaDummy );
    }
 
    private function createUi() :Boolean {
@@ -56,13 +56,8 @@ class at.klickverbot.theBlackboard.view.EditEntryDetailsView extends CustomSizea
          return false;
       }
 
-      // Use the values currently in the selected entry as defaults.
-      var entry :Entry = Model.getInstance().selectedEntry;
-
-      m_drawingAreaContainer.getDrawingArea().loadDrawing( entry.drawing );
-
-      m_authorText.text = entry.author;
-      m_captionText.text = entry.caption;
+      m_authorText.text = ( m_model.author == null ) ? "" : m_model.author;
+      m_captionText.text = ( m_model.author == null ) ? "" : m_model.author;
 
       updateSizeDummy();
       return true;
@@ -76,37 +71,35 @@ class at.klickverbot.theBlackboard.view.EditEntryDetailsView extends CustomSizea
    }
 
    public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to resize a component that is not stage: " + this );
-         return;
-      }
-
+      if ( !checkOnStage( "resize" ) ) return;
       super.resize( width, height );
+
       m_editEntryDetailsContainer.resize( width, height );
-   }
-
-   public function getDrawingAreaPosition() :Point2D {
-      return m_drawingAreaContainer.getGlobalPosition();
-   }
-
-   public function getDrawingAreaSize() :Point2D {
-      return m_drawingAreaContainer.getSize();
    }
 
    private function handleSubmitPress( event :ButtonEvent ) :Void {
       // TODO: Validity checks here.
-      var entry :Entry = Model.getInstance().selectedEntry;
-      entry.author = m_authorText.text;
-      entry.caption = m_captionText.text;
+      m_model.author = m_authorText.text;
+      m_model.caption = m_captionText.text;
 
-      ( new SaveEntryEvent( entry ) ).dispatch();
+      dispatchEvent( new Event( Event.COMPLETE, this ) );
    }
 
-   private var m_editEntryDetailsContainer :MultiContainer;
-   private var m_drawingAreaContainer :DrawingAreaContainer;
-   private var m_detailsFormContainer :MultiContainer;
+   public function getDrawingAreaPosition() :Point2D {
+      return m_drawingAreaDummy.getGlobalPosition();
+   }
 
+   public function getDrawingAreaSize() :Point2D {
+      return m_drawingAreaDummy.getSize();
+   }
+
+   private var m_model :Entry;
+
+   private var m_editEntryDetailsContainer :MultiContainer;
+
+   private var m_drawingAreaDummy :Spacer;
+
+   private var m_detailsFormContainer :MultiContainer;
    private var m_authorText :TextBox;
    private var m_captionText :TextBox;
    private var m_submitButton :Button;

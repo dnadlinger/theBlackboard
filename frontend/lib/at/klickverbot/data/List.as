@@ -9,7 +9,7 @@ class at.klickverbot.data.List extends EventDispatcher
       m_data = new Array();
    }
 
-   public function addItem( newItem :Object ) :Void {
+   public function push( newItem :Object ) :Void {
       m_data.push( newItem );
       dispatchChangeEvent();
    }
@@ -35,15 +35,15 @@ class at.klickverbot.data.List extends EventDispatcher
       return m_data[ position ];
    }
 
-   public function getFirstItem() :Object {
+   public function getFirst() :Object {
       return getItemAt( 0 );
    }
 
-   public function getLastItem() :Object {
+   public function getLast() :Object {
       return getItemAt( getLength() - 1 );
    }
 
-   public function getAllItems() :Array {
+   public function getAll() :Array {
       return m_data.slice();
    }
 
@@ -54,6 +54,11 @@ class at.klickverbot.data.List extends EventDispatcher
 
    public function getLength() :Number {
       return m_data.length;
+   }
+
+   public function setData( data: Array ) :Void {
+      m_data = data;
+      dispatchChangeEvent();
    }
 
    private function dispatchChangeEvent() :Void {

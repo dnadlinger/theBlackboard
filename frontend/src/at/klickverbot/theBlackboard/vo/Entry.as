@@ -1,11 +1,8 @@
-import at.klickverbot.cairngorm.vo.IValueObject;
 import at.klickverbot.drawing.Drawing;
 import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.theBlackboard.vo.EntryChangeEvent;
 
-class at.klickverbot.theBlackboard.vo.Entry extends EventDispatcher
-   implements IValueObject {
-
+class at.klickverbot.theBlackboard.vo.Entry extends EventDispatcher {
    public function Entry() {
       m_id = null;
       m_caption = null;
@@ -104,7 +101,10 @@ class at.klickverbot.theBlackboard.vo.Entry extends EventDispatcher
    }
 
    private function getInstanceInfo() :Array {
-      return super.getInstanceInfo().concat( "id: " + m_id );
+      return super.getInstanceInfo().concat( [
+         "id: " + m_id,
+         "loaded: " + m_loaded
+      ] );
    }
 
    private var m_id :Number;

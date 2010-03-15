@@ -1,8 +1,7 @@
+import at.klickverbot.event.events.Event;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.event.events.DrawingAreaEvent;
-import at.klickverbot.theBlackboard.control.EditEntryDetailsEvent;
-import at.klickverbot.theBlackboard.model.Model;
 import at.klickverbot.theBlackboard.view.ButtonForNumber;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
@@ -163,10 +162,7 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
    }
 
    private function handleNextStepButtonPress( event :ButtonEvent ) :Void {
-      Model.getInstance().selectedEntry.drawing = m_drawingArea.getCurrentDrawing();
-
-      var editDetailsEvent :EditEntryDetailsEvent = new EditEntryDetailsEvent();
-      editDetailsEvent.dispatch();
+      dispatchEvent( new Event( Event.COMPLETE, this ) );
    }
 
    private function updateHistoryButtons( event :DrawingAreaEvent ) :Void {

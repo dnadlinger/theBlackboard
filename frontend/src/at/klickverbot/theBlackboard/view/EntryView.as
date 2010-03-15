@@ -1,21 +1,22 @@
-import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.LogLevel;
+import at.klickverbot.theBlackboard.view.EntryViewEvent;
+import at.klickverbot.ui.components.drawingArea.DrawingArea;
 import at.klickverbot.drawing.Drawing;
 import at.klickverbot.theBlackboard.view.DrawingAreaContainer;
+import at.klickverbot.ui.components.data.IItemView;
 import at.klickverbot.theBlackboard.vo.Entry;
 import at.klickverbot.theBlackboard.vo.EntryChangeEvent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
-import at.klickverbot.ui.components.IUiComponent;
 
-class at.klickverbot.theBlackboard.view.EntryDisplay extends CustomSizeableComponent
-   implements IUiComponent {
+class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponent
+   implements IItemView {
 
-   public function EntryDisplay() {
+   public function EntryView() {
       super();
 
       m_entry = null;
       m_drawingAreaContainer = new DrawingAreaContainer();
    }
+
 
    private function createUi() :Boolean {
       if( !super.createUi() ) {
@@ -43,26 +44,38 @@ class at.klickverbot.theBlackboard.view.EntryDisplay extends CustomSizeableCompo
    }
 
    public function resize( width :Number, height :Number ) :Void {
-      if ( !m_onStage ) {
-         Debug.LIBRARY_LOG.log( LogLevel.WARN,
-            "Attempted to resize an EntryDisplay that is not stage!" );
-         return;
-      }
-
+      if ( !checkOnStage( "resize" ) ) return;
       super.resize( width, height );
+
       m_drawingAreaContainer.resize( width, height );
    }
 
-   public function getEntry() :Entry {
+   public function getData() :Object {
       return m_entry;
    }
 
-   public function setEntry( entry :Entry ) :Void {
+   public function setData( data :Object ) :Void {
+      if ( m_entry == data ) {
+         return;
+      }
+
       if ( m_entry != null ) {
          removeModelListeners( m_entry );
       }
-      m_entry = entry;
-      addModelListeners( entry );
+      m_entry = Entry( data );
+      addModelListeners( m_entry );
+      // TODO: Find a cleaner solution for loading the entry.
+      // Maybe bubble the event up?
+      dispatchEvent( new EntryViewEvent( EntryViewEvent.LOAD_ENTRY, this, m_entry ) );
+      updateAll();
+   }
+
+   public function getDrawingArea() :DrawingArea {
+      return m_drawingAreaContainer.getDrawingArea();
+   }
+
+   public function save() :Void {
+      dispatchEvent( new EntryViewEvent( EntryViewEvent.SAVE_ENTRY, this, m_entry ) );
    }
 
    private function getInstanceInfo() :Array {
@@ -74,12 +87,11 @@ class at.klickverbot.theBlackboard.view.EntryDisplay extends CustomSizeableCompo
    }
 
    private function updateDrawing( drawing :Drawing ) :Void {
-      // If there is no drawing set, we load an empty drawing.
       if ( drawing == null ) {
-         drawing = new Drawing();
+         m_drawingAreaContainer.getDrawingArea().clearHistory();
+      } else {
+         m_drawingAreaContainer.getDrawingArea().loadDrawing( drawing );
       }
-
-      m_drawingAreaContainer.getDrawingArea().loadDrawing( drawing );
    }
 
    private function handleChange( event :EntryChangeEvent ) :Void {

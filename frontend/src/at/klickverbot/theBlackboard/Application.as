@@ -1,10 +1,10 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Logger;
-import at.klickverbot.theBlackboard.control.ApplicationStartupEvent;
-import at.klickverbot.theBlackboard.control.Controller;
-import at.klickverbot.theBlackboard.view.MainView;
-
-// TODO: Refactor out everyting except for #run().
+import at.klickverbot.event.EventDispatcher;
+import at.klickverbot.event.events.Event;
+import at.klickverbot.theBlackboard.controller.ApplicationController;
+import at.klickverbot.theBlackboard.model.ApplicationModel;
+import at.klickverbot.theBlackboard.view.ApplicationView;
 
 /**
  * The main class of the application.
@@ -25,22 +25,18 @@ class at.klickverbot.theBlackboard.Application extends CoreObject {
       m_container = container;
    }
 
-   // TODO: Write a good comment for Application.run() – and put it into the commons too.
    public function run() :Void {
       Logger.getLog( "Application" ).info( "Initializing " + APP_NAME + " " +
          APP_VERSION + "..." );
 
-      // Just initialze the cairngorm framework here.
-      // The controller only needs to be initialzed to work as intended.
-      var controller :Controller = new Controller();
-      controller.init();
-
-      // Set up the main view.
-      m_view = new MainView( m_container );
+      m_model = new ApplicationModel();
+      m_controller = new ApplicationController( m_model );
+      m_view = new ApplicationView( m_model, m_container );
 
       // Start the application by firing the initial event.
-      var startupEvent :ApplicationStartupEvent = new ApplicationStartupEvent();
-      startupEvent.dispatch();
+      var startupDispatcher :EventDispatcher = new EventDispatcher();
+      m_controller.listenTo( startupDispatcher );
+      startupDispatcher.dispatchEvent( new Event( Event.LOAD, null ) );
 
       Logger.getLog( "Application" ).info( "done." );
    }
@@ -50,5 +46,7 @@ class at.klickverbot.theBlackboard.Application extends CoreObject {
 
    private var m_container :MovieClip;
 
-   private var m_view :MainView;
+   private var m_model :ApplicationModel;
+   private var m_view :ApplicationView;
+   private var m_controller :ApplicationController;
 }

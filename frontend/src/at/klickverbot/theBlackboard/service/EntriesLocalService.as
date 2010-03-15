@@ -20,6 +20,23 @@ class at.klickverbot.theBlackboard.service.EntriesLocalService extends CoreObjec
       return new ResultOperation( m_sharedObject.data[ ENTRIES ].length );
    }
 
+   public function getAllIds( sortingType :String ) :IOperation {
+      var entries :Array = m_sharedObject.data[ ENTRIES ];
+
+      if ( sortingType == "newToOld" ) {
+         entries.sortOn( ENTRY_TIMESTAMP, Array.DESCENDING );
+      } else {
+         return new FaultOperation( null, "Unknown sorting type." );
+      }
+
+      var ids :Array = new Array();
+      for ( var i :Number = 0; i < entries.length; ++i ) {
+         ids.push( entries[ i ][ ENTRY_ID ] );
+      }
+
+      return new ResultOperation( ids );
+   }
+
    public function getIdsForRange( sortingType :String,
       startOffset :Number, entryCount :Number ) :IOperation {
 

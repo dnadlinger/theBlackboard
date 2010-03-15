@@ -6,6 +6,8 @@ interface at.klickverbot.theBlackboard.service.IEntriesService
 
    public function getEntryCount() :IOperation;
 
+   public function getAllIds( sortingType :String ) :IOperation;
+
    public function getIdsForRange( sortingType :String,
       startOffset :Number, entryCount :Number ) :IOperation;
 

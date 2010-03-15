@@ -13,16 +13,23 @@ class Entries {
       return $this->entryCount;
    }
 
-   public function getIdsForRange( $sortingType, $startIndex, $entryCount ) {
-      $querySql = 'SELECT id FROM entries ORDER BY ';
+   public function getAllIds( $sortingType ) {
+      $querySql = 'SELECT id FROM entries ORDER BY ' .
+         $this->getSqlForSortingType( $sortingType );
 
-      if ( $sortingType == 'oldToNew' ) {
-         $querySql .= 'timestamp ASC';
-      } elseif ( $sortingType == 'newToOld' ) {
-         $querySql .= 'timestamp DESC';
-      } else {
-         throw new InvalidArgumentException( 'Unknown sorting type: ' . $sortingType );
+      $queryResult = $this->dbConn->getPdo()->query( $querySql );
+
+      $resultIds = array();
+      while( $row = $queryResult->fetch() ) {
+         array_push( $resultIds, (int)$row[ 'id' ] );
       }
+
+      return $resultIds;
+   }
+
+   public function getIdsForRange( $sortingType, $startIndex, $entryCount ) {
+      $querySql = 'SELECT id FROM entries ORDER BY ' .
+         $this->getSqlForSortingType( $sortingType );
 
       // This explicit checks for validity and not for wrong values should,
       // in conjunction with the type checks, make injection attacks impossible.
@@ -91,6 +98,16 @@ class Entries {
          'INSERT INTO entries ( id, caption, author, drawingString, timestamp ) VALUES ( NULL, :caption, :author, :drawingString, CURRENT_TIMESTAMP );' );
       $statement->execute(	array( ':caption' => $caption, ':author' => $author,
          ':drawingString' => $drawingString ) );
+   }
+
+   private function getSqlForSortingType( $type ) {
+      if ( $type == 'oldToNew' ) {
+         return 'timestamp ASC';
+      } elseif ( $type == 'newToOld' ) {
+         return 'timestamp DESC';
+      } else {
+         throw new InvalidArgumentException( 'Unknown sorting type: ' . $type );
+      }
    }
 
    private $dbConn;
