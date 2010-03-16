@@ -38,12 +38,12 @@ class at.klickverbot.ui.animation.Animation extends EventDispatcher
     *    animation. This can only be not equal to 0 if the animation has ended.
     */
    public function tick( deltaTime :Number ) :Number {
-   	Debug.assertFalse( isCompleted(),
-   	  "tick() must not be called on a completed TweenAnimation" );
+      Debug.assertFalse( isCompleted(),
+        "tick() must not be called on a completed Animation" );
       m_timeIndex += deltaTime / m_duration;
 
       if ( m_timeIndex >= 1 ) {
-      	var overrun :Number = ( m_timeIndex - 1 ) * m_duration;
+         var overrun :Number = ( m_timeIndex - 1 ) * m_duration;
          end();
          return overrun;
       } else {
@@ -60,7 +60,7 @@ class at.klickverbot.ui.animation.Animation extends EventDispatcher
     * mapper used does not need to map animation time 1 to tween time 1.
     */
    public function end() :Void {
-   	m_timeIndex = 1;
+      m_timeIndex = 1;
       m_tween.render( m_timeMapper.map( 1 ) );
       dispatchEvent( new Event( Event.COMPLETE, this ) );
    }
@@ -71,6 +71,7 @@ class at.klickverbot.ui.animation.Animation extends EventDispatcher
 
    public function rewind() :Void {
       m_timeIndex = 0;
+      m_tween.render( m_timeMapper.map( 0 ) );
    }
 
    public function setTween( tween :ITween ) :Void {

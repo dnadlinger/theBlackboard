@@ -3,8 +3,8 @@ import at.klickverbot.graphics.Point2D;
 import at.klickverbot.graphics.Tint;
 import at.klickverbot.ui.animation.AlphaTween;
 import at.klickverbot.ui.animation.Animation;
-import at.klickverbot.ui.animation.Animator;
 import at.klickverbot.ui.animation.IAnimation;
+import at.klickverbot.ui.animation.Compound;
 import at.klickverbot.ui.animation.PropertyTween;
 import at.klickverbot.ui.animation.Sequence;
 import at.klickverbot.ui.animation.TintTween;
@@ -37,7 +37,7 @@ class at.klickverbot.theBlackboard.view.Animations {
    }
 
    public static function zoomTo( target :MovieClip,
-      position :Point2D, scaleFactor :Number, animate :Boolean ) :Void {
+      position :Point2D, scaleFactor :Number, animate :Boolean ) :IAnimation {
 
       var duration :Number;
       if ( animate ) {
@@ -53,11 +53,12 @@ class at.klickverbot.theBlackboard.view.Animations {
          new PropertyTween( target, "_yscale", scaleFactor * 100 )
       ];
 
-      // TODO: Return compound animation instead?
+      var animations :Array = new Array();
       for ( var i :Number = 0; i < tweens.length; ++i ) {
-         Animator.getInstance().add(
-            new Animation( tweens[ i ], duration, TimeMappers.CUBIC ) );
+         animations.push( new Animation( tweens[ i ], duration, TimeMappers.CUBIC ) );
       }
+
+      return new Compound( animations );
    }
 
    public static var FADE_DURATION :Number = 0.7;

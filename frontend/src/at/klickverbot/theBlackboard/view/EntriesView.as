@@ -1,3 +1,4 @@
+import at.klickverbot.ui.animation.IAnimation;
 import at.klickverbot.theBlackboard.view.EditEntryDetailsView;
 import at.klickverbot.event.events.Event;
 import at.klickverbot.data.List;
@@ -121,7 +122,11 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_mainContainer.resize( width, height );
       m_frontScenery.resize( width, height );
       m_overlayStack.resize( width, height );
-      goToEditedEntry( false );
+
+      // Update the zoom view position if an overlay is selected.
+      if ( m_currentOverlay != null ) {
+         Animator.getInstance().add( editedEntryZoom( false ) );
+      }
    }
 
    private function setupUi() :Void {
@@ -164,7 +169,12 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
          EntryView( m_entryGrid.getViewForItem( m_activeEntry ) ).getDrawingArea() );
       overlay.addEventListener( Event.COMPLETE, this, editEntryDetails );
       activateOverlay( overlay );
-      goToEditedEntry( true );
+
+      // Delay showing the overlay until the zoom animation is complete.
+      var zoomAnimation :IAnimation = editedEntryZoom( true );
+      zoomAnimation.addEventListener( Event.COMPLETE, this, showOverlayStack );
+      m_overlayStack.fade( 0 );
+      Animator.getInstance().add( zoomAnimation );
    }
 
    private function editEntryDetails() :Void {
@@ -173,36 +183,38 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       var overlay :EditEntryDetailsView = new EditEntryDetailsView( m_activeEntry );
       overlay.addEventListener( Event.COMPLETE, this, saveEntry );
       activateOverlay( overlay );
-      goToEditedEntry( true );
+      Animator.getInstance().add( editedEntryZoom( true ) );
    }
 
    private function saveEntry() :Void {
       m_state = EntriesViewState.VIEW_ALL;
 
-      // TODO: Find a better design approach for this
+      // TODO: Find a better design approach for this.
       EntryView( m_entryGrid.getViewForItem( m_activeEntry ) ).save();
       m_activeEntry = null;
 
       activateOverlay( null );
-      goToGeneralView( true );
+      Animator.getInstance().add( generalViewZoom( true ) );
    }
 
-   private function goToEditedEntry( animate :Boolean ) :Void {
-      if ( m_currentOverlay != null ) {
-         Debug.assertFuzzyEqual(
-            m_currentOverlay.getDrawingAreaSize().x,
-            m_currentOverlay.getDrawingAreaSize().y,
-            "The drawing area must be a square."
-          );
-         var drawingSize :Number = m_currentOverlay.getDrawingAreaSize().x;
-         var drawingPosition :Point2D = m_currentOverlay.getDrawingAreaPosition();
-
-         goToEntry( drawingPosition, drawingSize, animate );
+   private function editedEntryZoom( animate :Boolean ) :IAnimation {
+      if ( m_currentOverlay == null ) {
+         return null;
       }
+
+      Debug.assertFuzzyEqual(
+         m_currentOverlay.getDrawingAreaSize().x,
+         m_currentOverlay.getDrawingAreaSize().y,
+         "The drawing area must be a square."
+       );
+      var drawingSize :Number = m_currentOverlay.getDrawingAreaSize().x;
+      var drawingPosition :Point2D = m_currentOverlay.getDrawingAreaPosition();
+
+      return entryZoom( drawingPosition, drawingSize, animate );
    }
 
-   private function goToEntry( targetPosition :Point2D, targetSize :Number,
-      animate :Boolean ) :Void {
+   private function entryZoom( targetPosition :Point2D, targetSize :Number,
+      animate :Boolean ) :IAnimation {
       // The factor the main container has to be scaled with so that a cell of
       // the entry grid it contains has the same size as the drawing area in the
       // overlay stack.
@@ -215,11 +227,11 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       position.scale( scaleFactor );
       position.substract( targetPosition );
 
-      Animations.zoomTo( m_mainContentClip, position, scaleFactor, animate );
+      return Animations.zoomTo( m_mainContentClip, position, scaleFactor, animate );
    }
 
-   private function goToGeneralView( animate :Boolean ) :Void {
-      Animations.zoomTo( m_mainContentClip, new Point2D( 0, 0 ), 1, animate );
+   private function generalViewZoom( animate :Boolean ) :IAnimation {
+      return Animations.zoomTo( m_mainContentClip, new Point2D( 0, 0 ), 1, animate );
    }
 
    private function activateOverlay( overlay :IDrawingAreaOverlay ) :Void {
@@ -234,6 +246,10 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
             HorizontalAligns.LEFT, VerticalAligns.TOP );
          m_overlayStack.addContent( overlayContainer );
       }
+   }
+
+   private function showOverlayStack() :Void {
+      Animator.getInstance().add( Animations.fadeIn( m_overlayStack ) );
    }
 
    private var m_entries :List;
