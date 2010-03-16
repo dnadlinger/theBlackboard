@@ -4,7 +4,7 @@ import at.klickverbot.event.events.Event;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
-import at.klickverbot.theBlackboard.vo.Entry;
+import at.klickverbot.theBlackboard.model.Entry;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.Spacer;
 import at.klickverbot.ui.components.themed.Button;

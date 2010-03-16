@@ -4,13 +4,13 @@ import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.rpc.IOperation;
-import at.klickverbot.theBlackboard.business.EntryParser;
-import at.klickverbot.theBlackboard.business.ServiceLocation;
-import at.klickverbot.theBlackboard.business.ServiceLocator;
-import at.klickverbot.theBlackboard.vo.EntriesSortingType;
-import at.klickverbot.theBlackboard.vo.Entry;
+import at.klickverbot.theBlackboard.service.adapter.EntryParser;
+import at.klickverbot.theBlackboard.service.ServiceLocation;
+import at.klickverbot.theBlackboard.service.ServiceLocator;
+import at.klickverbot.theBlackboard.model.EntriesSortingType;
+import at.klickverbot.theBlackboard.model.Entry;
 
-class at.klickverbot.theBlackboard.business.EntryDelegate extends EventDispatcher {
+class at.klickverbot.theBlackboard.service.adapter.EntryDelegate extends EventDispatcher {
    public static function setServiceLocation( location :ServiceLocation ) :Boolean {
       return ServiceLocator.getInstance().initEntriesService( location );
    }

@@ -1,15 +1,15 @@
 import at.klickverbot.debug.Logger;
-import at.klickverbot.theBlackboard.vo.EntriesSortingType;
-import at.klickverbot.theBlackboard.business.EntryDelegate;
-import at.klickverbot.theBlackboard.business.ServiceType;
-import at.klickverbot.theBlackboard.vo.Configuration;
+import at.klickverbot.theBlackboard.model.EntriesSortingType;
+import at.klickverbot.theBlackboard.service.adapter.EntryDelegate;
+import at.klickverbot.theBlackboard.service.ServiceType;
+import at.klickverbot.theBlackboard.model.Configuration;
 import at.klickverbot.event.IEventDispatcher;
 import at.klickverbot.event.events.Event;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
-import at.klickverbot.theBlackboard.business.ConfigDelegate;
-import at.klickverbot.theBlackboard.business.ConfigLocationDelegate;
-import at.klickverbot.theBlackboard.business.ServiceLocation;
+import at.klickverbot.theBlackboard.service.adapter.ConfigDelegate;
+import at.klickverbot.theBlackboard.service.adapter.ConfigLocationDelegate;
+import at.klickverbot.theBlackboard.service.ServiceLocation;
 import at.klickverbot.theBlackboard.model.ApplicationModel;
 
 class at.klickverbot.theBlackboard.controller.ApplicationController {

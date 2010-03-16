@@ -1,17 +1,17 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Logger;
-import at.klickverbot.theBlackboard.business.ServiceLocation;
-import at.klickverbot.theBlackboard.business.ServiceType;
-import at.klickverbot.theBlackboard.service.ConfigLocationXmlService;
-import at.klickverbot.theBlackboard.service.ConfigXmlRpcService;
-import at.klickverbot.theBlackboard.service.ConfigXmlService;
-import at.klickverbot.theBlackboard.service.EntriesLocalService;
-import at.klickverbot.theBlackboard.service.EntriesXmlRpcService;
-import at.klickverbot.theBlackboard.service.IConfigLocationService;
-import at.klickverbot.theBlackboard.service.IConfigService;
-import at.klickverbot.theBlackboard.service.IEntriesService;
+import at.klickverbot.theBlackboard.service.ServiceLocation;
+import at.klickverbot.theBlackboard.service.ServiceType;
+import at.klickverbot.theBlackboard.service.backend.ConfigLocationXmlService;
+import at.klickverbot.theBlackboard.service.backend.ConfigXmlRpcService;
+import at.klickverbot.theBlackboard.service.backend.ConfigXmlService;
+import at.klickverbot.theBlackboard.service.backend.EntriesLocalService;
+import at.klickverbot.theBlackboard.service.backend.EntriesXmlRpcService;
+import at.klickverbot.theBlackboard.service.backend.IConfigLocationService;
+import at.klickverbot.theBlackboard.service.backend.IConfigService;
+import at.klickverbot.theBlackboard.service.backend.IEntriesService;
 
-class at.klickverbot.theBlackboard.business.ServiceLocator extends CoreObject {
+class at.klickverbot.theBlackboard.service.ServiceLocator extends CoreObject {
    private function ServiceLocator() {
       m_configLocationService = null;
       m_configService = null;

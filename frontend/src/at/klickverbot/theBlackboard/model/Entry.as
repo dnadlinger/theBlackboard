@@ -1,8 +1,8 @@
 import at.klickverbot.drawing.Drawing;
 import at.klickverbot.event.EventDispatcher;
-import at.klickverbot.theBlackboard.vo.EntryChangeEvent;
+import at.klickverbot.theBlackboard.model.EntryChangeEvent;
 
-class at.klickverbot.theBlackboard.vo.Entry extends EventDispatcher {
+class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
    public function Entry() {
       m_id = null;
       m_caption = null;

@@ -1,6 +1,6 @@
 import at.klickverbot.event.events.PropertyChangeEvent;
 
-class at.klickverbot.theBlackboard.vo.EntryChangeEvent extends PropertyChangeEvent {
+class at.klickverbot.theBlackboard.model.EntryChangeEvent extends PropertyChangeEvent {
    public static var ID :String = "changeId";
    public static var CAPTION :String = "changeCaption";
    public static var AUTHOR :String = "changeAuthor";

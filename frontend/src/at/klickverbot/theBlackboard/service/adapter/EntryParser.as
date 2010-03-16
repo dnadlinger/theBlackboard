@@ -1,9 +1,9 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Logger;
 import at.klickverbot.drawing.DrawingStringifier;
-import at.klickverbot.theBlackboard.vo.Entry;
+import at.klickverbot.theBlackboard.model.Entry;
 
-class at.klickverbot.theBlackboard.business.EntryParser extends CoreObject {
+class at.klickverbot.theBlackboard.service.adapter.EntryParser extends CoreObject {
    public function parseEntry( source :Object ) :Entry {
       var result :Entry = new Entry();
 

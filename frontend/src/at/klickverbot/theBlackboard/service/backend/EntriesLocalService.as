@@ -2,9 +2,9 @@ import at.klickverbot.core.CoreObject;
 import at.klickverbot.rpc.FaultOperation;
 import at.klickverbot.rpc.IOperation;
 import at.klickverbot.rpc.ResultOperation;
-import at.klickverbot.theBlackboard.service.IEntriesService;
+import at.klickverbot.theBlackboard.service.backend.IEntriesService;
 
-class at.klickverbot.theBlackboard.service.EntriesLocalService extends CoreObject
+class at.klickverbot.theBlackboard.service.backend.EntriesLocalService extends CoreObject
    implements IEntriesService {
 
    public function EntriesLocalService( name :String ) {

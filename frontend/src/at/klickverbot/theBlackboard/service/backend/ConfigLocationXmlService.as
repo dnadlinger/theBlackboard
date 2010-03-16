@@ -1,9 +1,9 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.rpc.IOperation;
 import at.klickverbot.rpc.XmlOperation;
-import at.klickverbot.theBlackboard.service.IConfigLocationService;
+import at.klickverbot.theBlackboard.service.backend.IConfigLocationService;
 
-class at.klickverbot.theBlackboard.service.ConfigLocationXmlService extends CoreObject
+class at.klickverbot.theBlackboard.service.backend.ConfigLocationXmlService extends CoreObject
    implements IConfigLocationService {
 
    /**

@@ -1,9 +1,9 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.rpc.IOperation;
 import at.klickverbot.rpc.XmlRpcOperation;
-import at.klickverbot.theBlackboard.service.IEntriesService;
+import at.klickverbot.theBlackboard.service.backend.IEntriesService;
 
-class at.klickverbot.theBlackboard.service.EntriesXmlRpcService extends CoreObject
+class at.klickverbot.theBlackboard.service.backend.EntriesXmlRpcService extends CoreObject
    implements IEntriesService {
 
    /**

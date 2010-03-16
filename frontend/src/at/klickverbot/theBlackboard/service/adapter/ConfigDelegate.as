@@ -3,12 +3,12 @@ import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.rpc.IOperation;
-import at.klickverbot.theBlackboard.business.ServiceLocation;
-import at.klickverbot.theBlackboard.business.ServiceLocator;
-import at.klickverbot.theBlackboard.business.ServiceType;
-import at.klickverbot.theBlackboard.vo.DirectConfiguration;
+import at.klickverbot.theBlackboard.service.ServiceLocation;
+import at.klickverbot.theBlackboard.service.ServiceLocator;
+import at.klickverbot.theBlackboard.service.ServiceType;
+import at.klickverbot.theBlackboard.model.DirectConfiguration;
 
-class at.klickverbot.theBlackboard.business.ConfigDelegate extends EventDispatcher {
+class at.klickverbot.theBlackboard.service.adapter.ConfigDelegate extends EventDispatcher {
    public static function setServiceLocation( location :ServiceLocation ) :Boolean {
       return ServiceLocator.getInstance().initConfigService( location );
    }

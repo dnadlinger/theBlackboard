@@ -1,8 +1,8 @@
 import at.klickverbot.core.CoreObject;
-import at.klickverbot.theBlackboard.vo.EntriesSortingType;
-import at.klickverbot.theBlackboard.vo.Entry;
+import at.klickverbot.theBlackboard.model.EntriesSortingType;
+import at.klickverbot.theBlackboard.model.Entry;
 
-class at.klickverbot.theBlackboard.vo.EntrySet extends CoreObject {
+class at.klickverbot.theBlackboard.model.EntrySet extends CoreObject {
    public function EntrySet( sortingType :EntriesSortingType,
       startOffset :Number, entryCount :Number, availableCount :Number,
       entryLimit :Number ) {

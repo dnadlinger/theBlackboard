@@ -1,6 +1,6 @@
 import at.klickverbot.core.CoreObject;
 
-class at.klickverbot.theBlackboard.business.ServiceType extends CoreObject {
+class at.klickverbot.theBlackboard.service.ServiceType extends CoreObject {
    /**
     * Constructor.
     * Private to prohibit instantiation from outside the class itself.

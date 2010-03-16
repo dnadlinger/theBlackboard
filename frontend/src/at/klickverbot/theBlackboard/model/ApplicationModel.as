@@ -1,4 +1,4 @@
-import at.klickverbot.theBlackboard.vo.Configuration;
+import at.klickverbot.theBlackboard.model.Configuration;
 import at.klickverbot.theBlackboard.model.ApplicationModelChangeEvent;
 import at.klickverbot.data.List;
 import at.klickverbot.event.EventDispatcher;

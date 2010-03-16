@@ -3,9 +3,9 @@ import at.klickverbot.debug.Logger;
 import at.klickverbot.event.IEventDispatcher;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
-import at.klickverbot.theBlackboard.business.EntryDelegate;
+import at.klickverbot.theBlackboard.service.adapter.EntryDelegate;
 import at.klickverbot.theBlackboard.view.EntryViewEvent;
-import at.klickverbot.theBlackboard.vo.Entry;
+import at.klickverbot.theBlackboard.model.Entry;
 
 class at.klickverbot.theBlackboard.controller.EntryController extends CoreObject {
    public function listenTo( target :IEventDispatcher ) :Void {

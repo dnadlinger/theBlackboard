@@ -2,11 +2,11 @@ import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.rpc.IOperation;
-import at.klickverbot.theBlackboard.business.ServiceLocation;
-import at.klickverbot.theBlackboard.business.ServiceLocator;
-import at.klickverbot.theBlackboard.business.ServiceType;
+import at.klickverbot.theBlackboard.service.ServiceLocation;
+import at.klickverbot.theBlackboard.service.ServiceLocator;
+import at.klickverbot.theBlackboard.service.ServiceType;
 
-class at.klickverbot.theBlackboard.business.ConfigLocationDelegate
+class at.klickverbot.theBlackboard.service.adapter.ConfigLocationDelegate
    extends EventDispatcher {
 
    public static function setServiceLocation( location :ServiceLocation )

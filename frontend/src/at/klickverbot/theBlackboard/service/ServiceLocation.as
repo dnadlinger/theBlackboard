@@ -1,7 +1,7 @@
 import at.klickverbot.core.CoreObject;
-import at.klickverbot.theBlackboard.business.ServiceType;
+import at.klickverbot.theBlackboard.service.ServiceType;
 
-class at.klickverbot.theBlackboard.business.ServiceLocation extends CoreObject {
+class at.klickverbot.theBlackboard.service.ServiceLocation extends CoreObject {
    /**
     * Constructor.
     */

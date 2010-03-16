@@ -1,9 +1,9 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.rpc.IOperation;
 import at.klickverbot.rpc.XmlOperation;
-import at.klickverbot.theBlackboard.service.IConfigService;
+import at.klickverbot.theBlackboard.service.backend.IConfigService;
 
-class at.klickverbot.theBlackboard.service.ConfigXmlService extends CoreObject
+class at.klickverbot.theBlackboard.service.backend.ConfigXmlService extends CoreObject
    implements IConfigService {
 
    /**

@@ -1,7 +1,7 @@
 import at.klickverbot.core.CoreObject;
-import at.klickverbot.theBlackboard.business.ServiceLocation;
+import at.klickverbot.theBlackboard.service.ServiceLocation;
 
-class at.klickverbot.theBlackboard.vo.Configuration extends CoreObject {
+class at.klickverbot.theBlackboard.model.Configuration extends CoreObject {
    /**
     * Constructor.
     * Private to prohibit instantiation of this abstract class.

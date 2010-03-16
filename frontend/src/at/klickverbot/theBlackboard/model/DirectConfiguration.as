@@ -1,7 +1,7 @@
-import at.klickverbot.theBlackboard.business.ServiceLocation;
-import at.klickverbot.theBlackboard.vo.Configuration;
+import at.klickverbot.theBlackboard.service.ServiceLocation;
+import at.klickverbot.theBlackboard.model.Configuration;
 
-class at.klickverbot.theBlackboard.vo.DirectConfiguration extends Configuration {
+class at.klickverbot.theBlackboard.model.DirectConfiguration extends Configuration {
    public function setAvailableThemes( to :Array ) :Void {
       m_availableThemes = to;
    }

@@ -4,7 +4,7 @@ import at.klickverbot.theBlackboard.view.DrawingToolbox;
 import at.klickverbot.theBlackboard.view.IDrawingAreaOverlay;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
-import at.klickverbot.theBlackboard.vo.Entry;
+import at.klickverbot.theBlackboard.model.Entry;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.Spacer;
 import at.klickverbot.ui.components.drawingArea.DrawingArea;

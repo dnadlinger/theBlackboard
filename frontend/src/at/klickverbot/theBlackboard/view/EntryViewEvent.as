@@ -1,4 +1,4 @@
-import at.klickverbot.theBlackboard.vo.Entry;
+import at.klickverbot.theBlackboard.model.Entry;
 import at.klickverbot.event.events.Event;
 
 class at.klickverbot.theBlackboard.view.EntryViewEvent extends Event {

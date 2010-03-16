@@ -3,8 +3,8 @@ import at.klickverbot.ui.components.drawingArea.DrawingArea;
 import at.klickverbot.drawing.Drawing;
 import at.klickverbot.theBlackboard.view.DrawingAreaContainer;
 import at.klickverbot.ui.components.data.IItemView;
-import at.klickverbot.theBlackboard.vo.Entry;
-import at.klickverbot.theBlackboard.vo.EntryChangeEvent;
+import at.klickverbot.theBlackboard.model.Entry;
+import at.klickverbot.theBlackboard.model.EntryChangeEvent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 
 class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponent
