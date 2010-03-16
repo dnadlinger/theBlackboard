@@ -52,7 +52,7 @@ class at.klickverbot.theBlackboard.Application extends CoreObject {
    public static var APP_VERSION :String = "0.1";
 
    private static var CONFIG_LOCATION_LOCATION :ServiceLocation =
-      new ServiceLocation( ServiceType.PLAIN_XML, "configLocation.xml" );
+      new ServiceLocation( ServiceType.XML, "configLocation.xml" );
 
    private var m_container :MovieClip;
 

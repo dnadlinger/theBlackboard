@@ -9,7 +9,7 @@ class at.klickverbot.theBlackboard.service.adapter.ServiceLocationParser
       var result :ServiceType = null;
 
       if ( type == "xml" ) {
-         result = ServiceType.PLAIN_XML;
+         result = ServiceType.XML;
       } else if ( type == "xml-rpc" ) {
          result = ServiceType.XML_RPC;
       } else if ( type == "local" ) {

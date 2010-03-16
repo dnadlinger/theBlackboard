@@ -31,7 +31,7 @@ class at.klickverbot.theBlackboard.service.ServiceFactory
    public function createConfigLocationService() :IConfigLocationService {
       var backend :IConfigLocationBackend = null;
 
-      if ( m_configLocationLocation.type == ServiceType.PLAIN_XML ) {
+      if ( m_configLocationLocation.type == ServiceType.XML ) {
          backend = new ConfigLocationXmlBackend( String( m_configLocationLocation.info ) );
       }
 
@@ -49,7 +49,7 @@ class at.klickverbot.theBlackboard.service.ServiceFactory
 
       if ( location.type == ServiceType.XML_RPC ) {
          backend = new ConfigXmlRpcBackend( String( location.info ) );
-      } else if ( location.type == ServiceType.PLAIN_XML ) {
+      } else if ( location.type == ServiceType.XML ) {
          backend = new ConfigXmlBackend( String( location.info ) );
       }
 

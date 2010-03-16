@@ -101,7 +101,7 @@ class at.klickverbot.theBlackboard.controller.ApplicationController {
    }
 
    private static var CONFIG_LOCATION_SERVICE :ServiceLocation =
-      new ServiceLocation( ServiceType.PLAIN_XML, "configLocation.xml" );
+      new ServiceLocation( ServiceType.XML, "configLocation.xml" );
 
    private static var ENTRIES_SORTING_TYPE :EntriesSortingType =
       EntriesSortingType.OLD_TO_NEW;
