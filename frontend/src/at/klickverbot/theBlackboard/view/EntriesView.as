@@ -37,7 +37,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
 
       m_entries = entries;
       m_configuration = configuration;
-      m_entryViewFactory = new EntryViewFactory();
+      m_entryViewFactory = new EntryViewFactory( this );
       m_state = EntriesViewState.VIEW_ALL;
       m_currentOverlay = null;
 
@@ -48,6 +48,15 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
          m_entryGrid, m_entryGrid.goToNextPage );
       m_navigation.addEventListener( NavigationViewEvent.NEW_ENTRY,
          this, addNewEntry );
+   }
+
+   /**
+    * Sets up event handling for a child EntryView.
+    *
+    * This method is called from EntryViewFactory.
+    */
+   public function registerEntryView( view :EntryView ) :Void {
+      view.addUnhandledEventsListener( this, dispatchEvent );
    }
 
    private function createUi() :Boolean {

@@ -1,7 +1,7 @@
 import at.klickverbot.core.ICoreInterface;
 import at.klickverbot.rpc.IOperation;
 
-interface at.klickverbot.theBlackboard.service.backend.IEntriesService
+interface at.klickverbot.theBlackboard.service.backend.IEntriesBackend
    extends ICoreInterface {
 
    public function getEntryCount() :IOperation;

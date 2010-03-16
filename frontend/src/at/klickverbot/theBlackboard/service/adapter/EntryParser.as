@@ -4,7 +4,7 @@ import at.klickverbot.drawing.DrawingStringifier;
 import at.klickverbot.theBlackboard.model.Entry;
 
 class at.klickverbot.theBlackboard.service.adapter.EntryParser extends CoreObject {
-   public function parseEntry( source :Object ) :Entry {
+   public function parseAA( source :Object ) :Entry {
       var result :Entry = new Entry();
 
       // TODO: Validity checks here!

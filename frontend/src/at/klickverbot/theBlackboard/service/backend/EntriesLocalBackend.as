@@ -2,12 +2,12 @@ import at.klickverbot.core.CoreObject;
 import at.klickverbot.rpc.FaultOperation;
 import at.klickverbot.rpc.IOperation;
 import at.klickverbot.rpc.ResultOperation;
-import at.klickverbot.theBlackboard.service.backend.IEntriesService;
+import at.klickverbot.theBlackboard.service.backend.IEntriesBackend;
 
-class at.klickverbot.theBlackboard.service.backend.EntriesLocalService extends CoreObject
-   implements IEntriesService {
+class at.klickverbot.theBlackboard.service.backend.EntriesLocalBackend extends CoreObject
+   implements IEntriesBackend {
 
-   public function EntriesLocalService( name :String ) {
+   public function EntriesLocalBackend( name :String ) {
       m_sharedObject = SharedObject.getLocal( name );
       if ( m_sharedObject.data[ INITIALIZED ] == null ) {
          m_sharedObject.data[ ENTRIES ] = new Array();
@@ -95,6 +95,10 @@ class at.klickverbot.theBlackboard.service.backend.EntriesLocalService extends C
       m_sharedObject.flush();
 
       return new ResultOperation();
+   }
+
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( "size: " + m_sharedObject.getSize() );
    }
 
    private static var ENTRIES :String = "entries";

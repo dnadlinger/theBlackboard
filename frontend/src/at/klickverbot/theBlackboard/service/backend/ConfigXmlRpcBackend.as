@@ -1,15 +1,15 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.rpc.IOperation;
 import at.klickverbot.rpc.XmlRpcOperation;
-import at.klickverbot.theBlackboard.service.backend.IConfigService;
+import at.klickverbot.theBlackboard.service.backend.IConfigBackend;
 
-class at.klickverbot.theBlackboard.service.backend.ConfigXmlRpcService extends CoreObject
-   implements IConfigService {
+class at.klickverbot.theBlackboard.service.backend.ConfigXmlRpcBackend extends CoreObject
+   implements IConfigBackend {
 
    /**
     * Constructor.
     */
-   public function ConfigXmlRpcService( url :String ) {
+   public function ConfigXmlRpcBackend( url :String ) {
       m_url = url;
    }
 
@@ -21,6 +21,10 @@ class at.klickverbot.theBlackboard.service.backend.ConfigXmlRpcService extends C
 //	public function getByName( keyName :String ) :IOperation {
 //		return new XmlRpcOperation( m_url, "configuration.getByName", [ keyName ] );
 //	}
+
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( "url: " + m_url );
+   }
 
    private var m_url :String;
 }

@@ -1,15 +1,15 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.rpc.IOperation;
 import at.klickverbot.rpc.XmlRpcOperation;
-import at.klickverbot.theBlackboard.service.backend.IEntriesService;
+import at.klickverbot.theBlackboard.service.backend.IEntriesBackend;
 
-class at.klickverbot.theBlackboard.service.backend.EntriesXmlRpcService extends CoreObject
-   implements IEntriesService {
+class at.klickverbot.theBlackboard.service.backend.EntriesXmlRpcBackend extends CoreObject
+   implements IEntriesBackend {
 
    /**
     * Constructor.
     */
-   public function EntriesXmlRpcService( url :String ) {
+   public function EntriesXmlRpcBackend( url :String ) {
       m_url = url;
    }
 
@@ -37,7 +37,10 @@ class at.klickverbot.theBlackboard.service.backend.EntriesXmlRpcService extends 
          [ caption, author, drawingString ] );
    }
 
-   private static var OBJECT_NAME :String = "entries";
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( "url: " + m_url );
+   }
 
+   private static var OBJECT_NAME :String = "entries";
    private var m_url :String;
 }

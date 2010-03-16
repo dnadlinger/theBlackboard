@@ -29,13 +29,12 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
          Debug.LIBRARY_LOG.warn( "Attempted to add illegal listener to " + this +
             ": eventType: " + eventType + ", listenerOwner: " + listenerOwner +
             ", listener: " + listener );
+         return;
       }
 
       if ( m_listeners == null ) {
          m_listeners = new Object();
-      }
-
-      if ( removeEventListener( eventType, listenerOwner, listener ) ) {
+      } else if ( removeEventListener( eventType, listenerOwner, listener ) ) {
          Debug.LIBRARY_LOG.debug( "Listener already exists, removing the old one " +
             "from " + this + ": eventType: " + eventType + ", listenerOwner: " +
             listenerOwner + ", listener: " + listener );
@@ -71,8 +70,8 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
          return false;
       }
 
-      // We need to traverse the m_listeners subarray to dispatch the event to
-      // all listeners. While we are at it, we can also check if any registered
+      // We need to traverse the m_listeners subarray to search for the listener
+      // to remove. While we are at it, we can also check if any registered
       // listeners have ceased to exist. Because this should not happen anyway,
       // we go with a faster approach when not debugging. Inspired by Saban Ünlü.
 
@@ -113,13 +112,107 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
                }
 
                Debug.LIBRARY_LOG.warn( "No longer existing event listener for " +
-                  "event type " + eventType + " removed!" );
+                  "event type " + eventType + " removed from " + this + "." );
             }
 
             ++listenerIndex;
          }
       }
       return eventRemoved;
+   }
+
+   /**
+    * Registers an event listener that recieves all events not handled by
+    * another listener. This is useful for implementing event bubbling.
+    *
+    * @param listenerOwner The owner of the listener function. Only needed
+    *        because ActionScript 2 allows no real function pointers.
+    * @param listener The listener function that recieves the event.
+    */
+   public function addUnhandledEventsListener( listenerOwner :Object,
+      listener :Function ) :Void {
+
+      if ( listener == null ) {
+         Debug.LIBRARY_LOG.warn( "Attempted to add null listener to " + this +
+            ": listenerOwner: " + listenerOwner + ", listener: " + listener );
+         return;
+      }
+
+      if ( m_unhandledListeners == null ) {
+         m_unhandledListeners = new Array();
+      } else if ( removeUnhandledEventsListener( listenerOwner, listener ) ) {
+         Debug.LIBRARY_LOG.debug( "Unhandled events listener already exists, " +
+            "removing the old one from " + this + ", listenerOwner: " +
+            listenerOwner + ", listener: " + listener );
+      }
+
+      m_unhandledListeners.push( new EventListener( listenerOwner, listener ) );
+   }
+
+   /**
+    * Removes an event listener from the list of unhandled events listeners.
+    *
+    * @return If the listener could be removed (if it was in the list).
+    * @see{ #addUnhandledEventsListener }
+    */
+   public function removeUnhandledEventsListener( listenerOwner :Object,
+      listener :Function ) :Boolean {
+
+      if ( m_unhandledListeners == null ) {
+         // Nothing to do, no unhandled events listeners registered.
+         return false;
+      }
+
+      // We need to traverse m_unhandledListeners to search for the listener to
+      // remove. While we are at it, we can also check if any registered
+      // listeners have ceased to exist. Because this should not happen anyway,
+      // we go with a faster approach when not debugging. Inspired by Saban Ünlü.
+
+      var currentListener :EventListener;
+      if ( Debug.LEVEL == DebugLevel.NONE ) {
+         var i :Number = m_unhandledListeners.length;
+         while ( currentListener = m_unhandledListeners[ --i ] ) {
+            if ( ( currentListener.listenerFunc === listener ) &&
+               ( currentListener.listenerOwner === listenerOwner ) ) {
+
+               m_unhandledListeners.splice( i, 1 );
+               return true;
+            }
+         }
+         return false;
+      } else {
+         var eventRemoved :Boolean = false;
+         var listenerIndex :Number = 0;
+         while ( listenerIndex < m_unhandledListeners.length ) {
+            currentListener = m_unhandledListeners[ listenerIndex ];
+
+            if ( ( currentListener.listenerFunc === listener ) &&
+               ( currentListener.listenerOwner === listenerOwner ) ) {
+               m_unhandledListeners.splice( listenerIndex, 1 );
+               eventRemoved = true;
+
+               // We have to decrement the index value if we remove an element
+               // from the array because we would skip the following element if
+               // we did not.
+               if ( listenerIndex > 0 ) {
+                  --listenerIndex;
+               }
+            } else if ( ( currentListener.listenerFunc == null ) ||
+               ( currentListener.listenerOwner == null ) ) {
+               m_unhandledListeners.splice( listenerIndex, 1 );
+
+               if ( listenerIndex > 0 ) {
+                  --listenerIndex;
+               }
+
+               Debug.LIBRARY_LOG.warn( "No longer existing unhandled event" +
+                  "listener removed from " + this + "." );
+            }
+
+            ++listenerIndex;
+         }
+         return eventRemoved;
+      }
    }
 
    /**
@@ -141,20 +234,35 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
    public function dispatchEvent( event :Event ) :Void {
       Debug.assertNotNull( event, "Attempted to dispatch null event." );
 
+      if ( !dispatchEventToSpecificListeners( event ) ) {
+         dispatchEventToUnhandledListeners( event );
+      }
+   }
+
+   /**
+    * Dispatches an event to all the event listeners registered specifically
+    * for this event type (not counting unhandled events listeners).
+    *
+    * @return true if at least one listener was found, false otherwise.
+    */
+   private function dispatchEventToSpecificListeners( event :Event ) :Boolean {
       if ( m_listeners == null ) {
-         // Nothing to do, no registered listeners.
-         return;
+         // Nothing to do, no registered listeners at all.
+         return false;
       }
 
+      var eventListeners :Array = getListenersForEvent( event.type );
+      if ( ( eventListeners == null ) || eventListeners.length == 0 ) {
+         // No listeners registed for this event.
+         return false;
+      }
 
       // We need to traverse the m_listeners subarray to dispatch the event to
       // all listeners. While we are at it, we can also check if any registered
       // listeners have ceased to exist. Because this should not happen anyway,
       // we go with a faster approach when not debugging. Inspired by Saban Ünlü.
 
-      var eventListeners :Array = getListenersForEvent( event.type );
       var currentListener :EventListener;
-
       if ( Debug.LEVEL == DebugLevel.NONE ) {
          var listenerCount :Number = eventListeners.length;
 
@@ -177,7 +285,54 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
                }
 
                Debug.LIBRARY_LOG.warn( "No longer existing event listener " +
-                  "for event " + event + " removed!" );
+                  "for event " + event + " removed from " + this + "." );
+            }
+
+            ++listenerIndex;
+         }
+      }
+
+      return true;
+   }
+
+   /**
+    * Dispatches an event to all the listeners for unhandled events.
+    */
+   private function dispatchEventToUnhandledListeners( event :Event ) :Void {
+      if ( m_unhandledListeners == null ) {
+         // No unhandled events listeners registered.
+         return;
+      }
+
+      // We need to traverse m_unhandledListeners to dispatch the event to
+      // all listeners. While we are at it, we can also check if any registered
+      // listeners have ceased to exist. Because this should not happen anyway,
+      // we go with a faster approach when not debugging. Inspired by Saban Ünlü.
+
+      var currentListener :EventListener;
+      if ( Debug.LEVEL == DebugLevel.NONE ) {
+         var listenerCount :Number = m_unhandledListeners.length;
+
+         while ( currentListener = m_unhandledListeners[ --listenerCount ] ) {
+            currentListener.listenerFunc.call( currentListener.listenerOwner, event );
+         }
+      } else {
+         var listenerIndex :Number = 0;
+
+         while ( listenerIndex < m_unhandledListeners.length ) {
+            currentListener = m_unhandledListeners[ listenerIndex ];
+            if ( ( currentListener.listenerFunc != null ) ) {
+               currentListener.listenerFunc.call( currentListener.listenerOwner,
+                  event );
+            } else {
+               m_unhandledListeners.splice( listenerIndex, 1 );
+
+               if ( listenerIndex > 0 ) {
+                  --listenerIndex;
+               }
+
+               Debug.LIBRARY_LOG.warn( "No longer existing unhandled event " +
+                  "listener removed from " + this + "." );
             }
 
             ++listenerIndex;
@@ -198,4 +353,7 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
    // Associative array of all event listeners. 1st dimension: events by event
    // string; 2nd dimension: normal array containing all the listeners.
    private var m_listeners :Object;
+
+   // Array of all the listeners for unhandled events.
+   private var m_unhandledListeners :Array;
 }

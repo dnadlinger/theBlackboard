@@ -1,6 +1,6 @@
-import at.klickverbot.core.CoreObject;
 import at.klickverbot.data.List;
 import at.klickverbot.debug.Logger;
+import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.CollectionEvent;
 import at.klickverbot.event.events.ThemeEvent;
 import at.klickverbot.event.events.ThemeManagerEvent;
@@ -18,9 +18,8 @@ import at.klickverbot.ui.mouse.PointerManager;
 import at.klickverbot.ui.mouse.ThemeMcCreator;
 import at.klickverbot.util.Delegate;
 import at.klickverbot.util.IStageListener;
-import at.klickverbot.util.Timer;
 
-class at.klickverbot.theBlackboard.view.ApplicationView extends CoreObject {
+class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher {
    /**
     * Constructor.
     */
@@ -48,6 +47,7 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends CoreObject {
    private function setupUi() :Void {
       m_background = new Static( AppClipId.BACKGROUND );
       m_entriesView = new EntriesView( m_model.entries, m_model.configuration );
+      m_entriesView.addUnhandledEventsListener( this, dispatchEvent );
 
       // Add and use the default pointer which is defined in the theme.
       PointerManager.getInstance().addPointer( Pointer.DEFAULT,
@@ -138,15 +138,11 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends CoreObject {
    }
 
    private static var RESIZE_REFRESH_INTERVAL :Number = 500;
-   private static var MIN_WIDTH :Number = 400;
-   private static var MIN_HEIGHT :Number = 400;
 
    private var m_model :ApplicationModel;
 
    private var m_containerClip :MovieClip;
    private var m_stageListener :IStageListener;
-   private var m_resizeTimer :Timer;
-   private var m_entryUpdatingActiveBeforeResize :Boolean;
 
    private var m_background :Static;
    private var m_entriesView :EntriesView;

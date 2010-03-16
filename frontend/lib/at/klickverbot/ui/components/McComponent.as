@@ -14,6 +14,14 @@ import at.klickverbot.util.TypeUtils;
 /**
  * Base class for all kinds of UiComponents that require a new MovieClip to be
  * created in the target (basically every component).
+ *
+ * It dispatches two events:
+ *  - UiEvent.MOUSE_OVER when the mouse enters the area above the component.
+ *  - UiEvent.MOUSE_OUT when the mouse leaves the area above the component.
+ *
+ * Note that these are only dispatched to explicitely added listeners, not to
+ * listeners added via addUnhandledEventsListener, because the internal handling
+ * of the mouse status is fairly expensive due to Flash restrictions.
  */
 class at.klickverbot.ui.components.McComponent extends EventDispatcher
    implements IUiComponent {
@@ -276,11 +284,11 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
    }
 
    private function handleMouseOn() :Void {
-      dispatchEvent( new UiEvent( UiEvent.MOUSE_OVER, this ) );
+      dispatchEventToSpecificListeners( new UiEvent( UiEvent.MOUSE_OVER, this ) );
    }
 
    private function handleMouseOff() :Void {
-      dispatchEvent( new UiEvent( UiEvent.MOUSE_OUT, this ) );
+      dispatchEventToSpecificListeners( new UiEvent( UiEvent.MOUSE_OUT, this ) );
    }
 
    private function getInstanceInfo() :Array {

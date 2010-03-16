@@ -1,28 +1,21 @@
-import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
-import at.klickverbot.rpc.IOperation;
 import at.klickverbot.theBlackboard.service.ServiceLocation;
-import at.klickverbot.theBlackboard.service.ServiceLocator;
 import at.klickverbot.theBlackboard.service.ServiceType;
+import at.klickverbot.theBlackboard.service.adapter.AdapterOperation;
+import at.klickverbot.theBlackboard.service.backend.IConfigLocationBackend;
 
-class at.klickverbot.theBlackboard.service.adapter.ConfigLocationDelegate
-   extends EventDispatcher {
+class at.klickverbot.theBlackboard.service.adapter.ConfigLocationLoadOperation
+   extends AdapterOperation {
 
-   public static function setServiceLocation( location :ServiceLocation )
-      :Boolean {
-      return ServiceLocator.getInstance().initConfigLocationService( location );
+   /**
+    * Constructor.
+    */
+   public function ConfigLocationLoadOperation( backend :IConfigLocationBackend ) {
+      super( backend.getConfigLocation() );
    }
 
-   public function loadConfigLocation() :Void {
-      var operation :IOperation =
-         ServiceLocator.getInstance().configLocationService.getConfigLocation();
-      operation.addEventListener( ResultEvent.RESULT, this, handleLoadResult );
-      operation.addEventListener( FaultEvent.FAULT, this, dispatchEvent );
-      operation.execute();
-   }
-
-   private function handleLoadResult( event :ResultEvent ) :Void {
+   private function handleResult( event :ResultEvent ) :Void {
       var type :ServiceType = SERVICE_TYPES[ event.result[ "type" ] ];
       if ( type == null ) {
          var validTypes :Array = new Array();

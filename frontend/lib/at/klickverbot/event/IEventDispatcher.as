@@ -27,6 +27,26 @@ interface at.klickverbot.event.IEventDispatcher extends ICoreInterface {
       listener :Function ) :Boolean;
 
    /**
+    * Registers an event listener that recieves all events not handled by
+    * another listener. This is useful for implementing event bubbling.
+    *
+    * @param listenerOwner The owner of the listener function. Only needed
+    *        because ActionScript 2 allows no real function pointers.
+    * @param listener The listener function that recieves the event.
+    */
+   public function addUnhandledEventsListener( listenerOwner :Object,
+      listener :Function ) :Void;
+
+   /**
+    * Removes an event listener from the list of unhandled events listeners.
+    *
+    * @return If the listener could be removed (if it was in the list).
+    * @see{ #addUnhandledEventsListener }
+    */
+   public function removeUnhandledEventsListener( listenerOwner :Object,
+      listener :Function ) :Boolean;
+
+   /**
     * Returns the number of handler functions that are registered for the
     * given event.
     *

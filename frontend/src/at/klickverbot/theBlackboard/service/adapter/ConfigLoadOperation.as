@@ -1,28 +1,23 @@
 import at.klickverbot.debug.Logger;
-import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
-import at.klickverbot.rpc.IOperation;
-import at.klickverbot.theBlackboard.service.ServiceLocation;
-import at.klickverbot.theBlackboard.service.ServiceLocator;
-import at.klickverbot.theBlackboard.service.ServiceType;
 import at.klickverbot.theBlackboard.model.DirectConfiguration;
+import at.klickverbot.theBlackboard.service.ServiceLocation;
+import at.klickverbot.theBlackboard.service.ServiceType;
+import at.klickverbot.theBlackboard.service.adapter.AdapterOperation;
+import at.klickverbot.theBlackboard.service.backend.IConfigBackend;
 
-class at.klickverbot.theBlackboard.service.adapter.ConfigDelegate extends EventDispatcher {
-   public static function setServiceLocation( location :ServiceLocation ) :Boolean {
-      return ServiceLocator.getInstance().initConfigService( location );
+class at.klickverbot.theBlackboard.service.adapter.ConfigLoadOperation
+   extends AdapterOperation {
+
+   /**
+    * Constructor.
+    */
+   public function ConfigLoadOperation( backend :IConfigBackend ) {
+      super( backend.getAll() );
    }
 
-   public function loadConfig() :Void {
-      var operation :IOperation =
-         ServiceLocator.getInstance().configService.getAll();
-
-      operation.addEventListener( ResultEvent.RESULT, this, handleLoadResult );
-      operation.addEventListener( FaultEvent.FAULT, this, dispatchEvent );
-      operation.execute();
-   }
-
-   private function handleLoadResult( event :ResultEvent ) :Void {
+   private function handleResult( event :ResultEvent ) :Void {
       var source :Object = event.result;
       var config :DirectConfiguration = new DirectConfiguration();
 
