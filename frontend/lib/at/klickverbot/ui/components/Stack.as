@@ -98,7 +98,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
                      m_runningFadeOut.setTween( new AlphaTween( component, 0 ) );
                      m_runningFadeOut.addEventListener( Event.COMPLETE,
                         this, handleFadeOutComplete );
-                     Animator.getInstance().add( m_runningFadeOut );
+                     Animator.getInstance().run( m_runningFadeOut );
                   }
                   m_selectedContent = null;
                }
@@ -153,7 +153,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
             m_runningFadeOut = m_fadeTemplate.clone();
             m_runningFadeOut.setTween( new AlphaTween( m_oldSelectedContent, 0 ) );
             m_runningFadeOut.addEventListener( Event.COMPLETE, this, handleFadeOutComplete );
-            Animator.getInstance().add( m_runningFadeOut );
+            Animator.getInstance().run( m_runningFadeOut );
          }
 
          // Create the new component, hide it, and fade it in.
@@ -165,7 +165,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
             m_runningFadeIn = m_fadeTemplate.clone();
             m_runningFadeIn.setTween( new AlphaTween( component, 1 ) );
             m_runningFadeIn.addEventListener( Event.COMPLETE, this, handleFadeInComplete );
-            Animator.getInstance().add( m_runningFadeIn );
+            Animator.getInstance().run( m_runningFadeIn );
          }
       }
    }

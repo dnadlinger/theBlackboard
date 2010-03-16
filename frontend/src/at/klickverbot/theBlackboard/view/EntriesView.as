@@ -90,18 +90,19 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       }
 
       // Fade in the scenery and the main container.
-      Animator.getInstance().add( Animations.fadeIn( m_backScenery ) );
+      Animator.getInstance().run( Animations.fadeIn( m_backScenery ) );
 
       // The flash effect is disabled at the moment since I cannot seem to get
       // it to look good.
-      Animator.getInstance().add( new Sequence( [
+      Animator.getInstance().run( new Sequence( [
          new Delay( Animations.FADE_DURATION * 0.8 ),
          Animations.fadeIn( m_mainContainer ) /*,
          new Delay( FADE_DURATION * 0.2 ),
          flash( m_mainContainer )*/
       ] ) );
-      Animator.getInstance().add(
-         Delay.preDelay( Animations.FADE_DURATION * 1.1, Animations.fadeIn( m_frontScenery ) ) );
+      Animator.getInstance().run(
+         Delay.preDelay( Animations.FADE_DURATION * 1.1,
+         Animations.fadeIn( m_frontScenery ) ) );
 
       updateSizeDummy();
       return true;
@@ -125,7 +126,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
 
       // Update the zoom view position if an overlay is selected.
       if ( m_currentOverlay != null ) {
-         Animator.getInstance().add( editedEntryZoom( false ) );
+         Animator.getInstance().run( editedEntryZoom( false ) );
       }
    }
 
@@ -174,7 +175,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       var zoomAnimation :IAnimation = editedEntryZoom( true );
       zoomAnimation.addEventListener( Event.COMPLETE, this, showOverlayStack );
       m_overlayStack.fade( 0 );
-      Animator.getInstance().add( zoomAnimation );
+      Animator.getInstance().run( zoomAnimation );
    }
 
    private function editEntryDetails() :Void {
@@ -183,7 +184,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       var overlay :EditEntryDetailsView = new EditEntryDetailsView( m_activeEntry );
       overlay.addEventListener( Event.COMPLETE, this, saveEntry );
       activateOverlay( overlay );
-      Animator.getInstance().add( editedEntryZoom( true ) );
+      Animator.getInstance().run( editedEntryZoom( true ) );
    }
 
    private function saveEntry() :Void {
@@ -194,7 +195,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_activeEntry = null;
 
       activateOverlay( null );
-      Animator.getInstance().add( generalViewZoom( true ) );
+      Animator.getInstance().run( generalViewZoom( true ) );
    }
 
    private function editedEntryZoom( animate :Boolean ) :IAnimation {
@@ -249,7 +250,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    }
 
    private function showOverlayStack() :Void {
-      Animator.getInstance().add( Animations.fadeIn( m_overlayStack ) );
+      Animator.getInstance().run( Animations.fadeIn( m_overlayStack ) );
    }
 
    private var m_entries :List;

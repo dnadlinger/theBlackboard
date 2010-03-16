@@ -26,7 +26,7 @@ class at.klickverbot.ui.animation.Animator extends CoreObject {
       return m_instance;
    }
 
-   public function add( animation :IAnimation ) :Void {
+   public function run( animation :IAnimation ) :Void {
       // TODO: Check if animation is already added.
       // TODO: Reset animation first?
 
