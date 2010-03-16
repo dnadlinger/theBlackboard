@@ -1,4 +1,4 @@
-import at.klickverbot.theBlackboard.view.EntryViewEvent;
+import at.klickverbot.theBlackboard.view.event.EntryViewEvent;
 import at.klickverbot.ui.components.drawingArea.DrawingArea;
 import at.klickverbot.drawing.Drawing;
 import at.klickverbot.theBlackboard.view.DrawingAreaContainer;

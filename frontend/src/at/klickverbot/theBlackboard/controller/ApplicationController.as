@@ -13,7 +13,7 @@ import at.klickverbot.theBlackboard.service.IEntriesService;
 import at.klickverbot.theBlackboard.service.IServiceFactory;
 import at.klickverbot.theBlackboard.service.ServiceLocation;
 import at.klickverbot.theBlackboard.service.ServiceType;
-import at.klickverbot.theBlackboard.view.EntryViewEvent;
+import at.klickverbot.theBlackboard.view.event.EntryViewEvent;
 
 class at.klickverbot.theBlackboard.controller.ApplicationController {
    /**

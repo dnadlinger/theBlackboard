@@ -1,7 +1,7 @@
 import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.ui.components.data.IPaginated;
 import at.klickverbot.ui.components.data.PaginatedChangeEvent;
-import at.klickverbot.theBlackboard.view.NavigationViewEvent;
+import at.klickverbot.theBlackboard.view.event.NavigationViewEvent;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.ui.components.HStrip;
 import at.klickverbot.ui.components.McComponent;

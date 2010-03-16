@@ -11,7 +11,7 @@ import at.klickverbot.theBlackboard.view.EntryView;
 import at.klickverbot.theBlackboard.view.EntryViewFactory;
 import at.klickverbot.theBlackboard.view.IDrawingAreaOverlay;
 import at.klickverbot.theBlackboard.view.NavigationView;
-import at.klickverbot.theBlackboard.view.NavigationViewEvent;
+import at.klickverbot.theBlackboard.view.event.NavigationViewEvent;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
 import at.klickverbot.theBlackboard.model.Configuration;
