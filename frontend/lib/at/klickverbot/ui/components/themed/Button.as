@@ -20,6 +20,7 @@ class at.klickverbot.ui.components.themed.Button extends Static
 
       m_active = true;
       m_hovering = false;
+      m_oneShotMode = false;
    }
 
    private function createUi() :Boolean {
@@ -89,6 +90,14 @@ class at.klickverbot.ui.components.themed.Button extends Static
       m_active = active;
    }
 
+   public function get oneShotMode() :Boolean {
+      return m_oneShotMode;
+   }
+
+   public function set oneShotMode( active :Boolean ) :Void {
+      m_oneShotMode = active;
+   }
+
    private function getMouseoverArea() :MovieClip {
       // Only consider the active area for the hovering events.
       var active :MovieClip = m_state.getActiveArea();
@@ -101,7 +110,7 @@ class at.klickverbot.ui.components.themed.Button extends Static
    private function bindFunctionOrGotoAndPlay( actionName :String,
       frameName :String ) :Void {
       if ( frameName == null ) {
-      	frameName = actionName;
+         frameName = actionName;
       }
 
       var func :Function = Function( m_staticContent[ actionName ] );
@@ -150,6 +159,11 @@ class at.klickverbot.ui.components.themed.Button extends Static
       if ( m_active ) {
          m_state.release();
          dispatchEvent( new ButtonEvent( ButtonEvent.RELEASE, this ) );
+
+         if ( m_oneShotMode ) {
+            m_active = false;
+            m_state.inactive();
+         }
       }
    }
 
@@ -164,5 +178,6 @@ class at.klickverbot.ui.components.themed.Button extends Static
 
    private var m_active :Boolean;
    private var m_hovering :Boolean;
+   private var m_oneShotMode :Boolean;
    private var m_state :IButtonStateChanger;
 }

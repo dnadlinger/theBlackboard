@@ -103,8 +103,9 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
 
       // Add the next step button.
       m_nextStepButton = new Button( AppClipId.NEXT_STEP_BUTTON );
+      m_nextStepButton.oneShotMode = true;
       m_nextStepButton.addEventListener( ButtonEvent.PRESS, this, handleNextStepButtonPress );
-      m_toolboxContainer.addContent( ContainerElement .TOOLS_NEXT_STEP, m_nextStepButton );
+      m_toolboxContainer.addContent( ContainerElement.TOOLS_NEXT_STEP, m_nextStepButton );
    }
 
    private function addColorButtonHandler( target :Button ) :Void {
