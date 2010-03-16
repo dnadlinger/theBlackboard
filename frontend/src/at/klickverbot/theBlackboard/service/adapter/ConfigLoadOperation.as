@@ -1,3 +1,4 @@
+import at.klickverbot.theBlackboard.service.adapter.ServiceLocationParser;
 import at.klickverbot.debug.Logger;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
@@ -56,19 +57,12 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigLoadOperation
       if ( !checkSettingExists( source, "entryServiceType" ) ) {
          return;
       }
-      var serviceType :ServiceType = SERVICE_TYPES[ source[ "entryServiceType" ] ];
-      if ( serviceType == null ) {
-         var validTypes :Array = new Array();
-         for ( var currentType :String in SERVICE_TYPES ) {
-            validTypes.push( currentType );
-         }
-         failWithMessage( "Invalid entry service: Unknown service type. " +
-            "Valid types are: " + validTypes.join( ", " ) );
-      }
-
       if ( !checkSettingExists( source, "entryServiceInfo" ) ) {
          return;
       }
+      var locationParser :ServiceLocationParser = new ServiceLocationParser();
+      var serviceType :ServiceType =
+         locationParser.parseTypeString( source[ "entryServiceType" ] );
       var serviceInfo :Object = source[ "entryServiceInfo" ];
       config.setEntryServiceLocation( new ServiceLocation( serviceType, serviceInfo ) );
 
@@ -86,9 +80,4 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigLoadOperation
    private function failWithMessage( message :String ) :Void {
       dispatchEvent( new FaultEvent( FaultEvent.FAULT, this, null, message ) );
    }
-
-   private static var SERVICE_TYPES :Object = {
-      xmlrpc: ServiceType.XML_RPC,
-      local: ServiceType.LOCAL
-   };
 }

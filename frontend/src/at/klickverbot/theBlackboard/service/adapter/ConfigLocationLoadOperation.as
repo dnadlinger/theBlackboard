@@ -1,3 +1,4 @@
+import at.klickverbot.theBlackboard.service.adapter.ServiceLocationParser;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.theBlackboard.service.ServiceLocation;
@@ -16,16 +17,9 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigLocationLoadOperation
    }
 
    private function handleResult( event :ResultEvent ) :Void {
-      var type :ServiceType = SERVICE_TYPES[ event.result[ "type" ] ];
-      if ( type == null ) {
-         var validTypes :Array = new Array();
-         for ( var currentType :String in SERVICE_TYPES ) {
-            validTypes.push( currentType );
-         }
-         dispatchEvent( new FaultEvent( FaultEvent.FAULT, this, null,
-            "Unknown service type. Valid types are: " + validTypes.join( ", " ) ) );
-         return;
-      }
+      var locationParser :ServiceLocationParser = new ServiceLocationParser();
+      var type :ServiceType =
+         locationParser.parseTypeString( event.result[ "type" ] );
 
       var info :String = event.result[ "url" ];
       if ( ( info == null ) || ( info == "" ) ) {
@@ -37,9 +31,4 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigLocationLoadOperation
       var configLocation :ServiceLocation = new ServiceLocation( type, info );
       dispatchEvent( new ResultEvent( ResultEvent.RESULT, this, configLocation ) );
    }
-
-   private static var SERVICE_TYPES :Object = {
-      xmlrpc: ServiceType.XML_RPC,
-      xml: ServiceType.PLAIN_XML
-   };
 }

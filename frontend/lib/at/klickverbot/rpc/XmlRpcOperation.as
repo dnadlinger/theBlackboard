@@ -31,7 +31,7 @@ class at.klickverbot.rpc.XmlRpcOperation
       var response :Response = new Response();
       if ( !response.parseResponse( XMLNode( event.result ) ) ) {
          dispatchEvent( new FaultEvent( FaultEvent.FAULT, this, null,
-            "Error parsing xmlrpc response: [" + event.result + "]" ) );
+            "Error parsing XML-RPC response: [" + event.result + "]" ) );
          return;
       }
 

@@ -71,7 +71,7 @@ class at.klickverbot.external.xmlrpc.Request extends CoreObject {
    private function createParamNode( param :Object ) :XMLNode {
       if ( param == null ) {
          Debug.LIBRARY_LOG.warn( "Attempted to add null, which is not allowed " +
-            "in xmlrpc, as a parameter to " + this );
+            "in XML-RPC, as a parameter to " + this );
          return null;
       }
 

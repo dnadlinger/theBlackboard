@@ -58,7 +58,7 @@ class at.klickverbot.external.xmlrpc.Response extends CoreObject {
       }
       if ( !m_isFault ) {
          Debug.LIBRARY_LOG.warn( "Attempted to use getFault() " +
-            "on a non-fault xmlrpc response" );
+            "on a non-fault XML-RPC response" );
          return null;
       }
       return m_methodFault;
@@ -70,7 +70,7 @@ class at.klickverbot.external.xmlrpc.Response extends CoreObject {
       }
       if ( m_isFault ) {
          Debug.LIBRARY_LOG.warn( "Attempted to use " +
-            "getReturnValue() on a faulty xmlrpc response" );
+            "getReturnValue() on a faulty XML-RPC response" );
          return null;
       }
       return m_returnValue;
@@ -142,7 +142,7 @@ class at.klickverbot.external.xmlrpc.Response extends CoreObject {
    }
 
    private function parseValue( valueNode :XMLNode ) :Object {
-      // The xmlrpc spec states: If no type is indicated, the type is string.
+      // The XML-RPC spec states: If no type is indicated, the type is string.
       // Hence check for the type of the firstChild of value node. If it is an
       // element node, the type is specified, if not, default to string.
       var typeNode :XMLNode = valueNode.firstChild;
@@ -275,7 +275,7 @@ class at.klickverbot.external.xmlrpc.Response extends CoreObject {
    }
 
    private function logInvalidResponse( reason :String ) :Void {
-      Debug.LIBRARY_LOG.warn( "Invalid xmlrpc response: " + reason );
+      Debug.LIBRARY_LOG.warn( "Invalid XML-RPC response: " + reason );
    }
 
    private var m_returnValue :Object;
