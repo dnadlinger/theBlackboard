@@ -15,7 +15,7 @@ class at.klickverbot.theBlackboard.DebugEntryPoint {
     */
    public static function main( container :MovieClip ) :Void {
       // This is a constant and won't be touched from here on.
-      Debug.LEVEL = DebugLevel.HIGH;
+      Debug.LEVEL = DebugLevel.NORMAL;
 
       // Send all log output (including traces) to Sos.
       var allHandler :ILogHandler = new SosHandler();
