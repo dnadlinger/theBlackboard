@@ -1,4 +1,3 @@
-
 class at.klickverbot.theBlackboard.view.theme.ContainerElement {
    public static var MAIN_ENTRIES_DISPLAY :String = "entriesDisplay";
    public static var MAIN_NAVIGATION :String = "navigation";

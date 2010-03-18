@@ -10,8 +10,8 @@ class at.klickverbot.util.Timer extends EventDispatcher {
     * Constructor.
     *
     * @param interval The timer interval.
-    * @param numTriggerings The number of triggerings after which the timer is stopped
-    * @param numTriggerings (null for no limit).
+    * @param numTriggerings The number of triggerings after which the timer is
+    *    stopped (null for no limit).
     */
    public function Timer( interval :Number, numTriggerings :Number ) {
       m_running = false;
