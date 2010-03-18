@@ -60,6 +60,10 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
       // Also focus the textfield when the background is pressed.
       if ( m_background != null ) {
          m_background.onRelease = Delegate.create( this, backgroundClicked );
+
+         // Adding an onRelease handler causes Flash to add the MovieClip to
+         // the tab sequence, which is obviously unwanted for the background.
+         m_background.tabEnabled = false;
       }
 
       // Hide any custom pointer when the mouse is over the textfield because
@@ -91,7 +95,7 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
       resize( size.x * xScaleFactor, size.y * yScaleFactor );
    }
 
-   // TODO: Quick'n'dirty, swap out for m_text and m_htmlText properties that can be set before the component is put on stage.
+   // TODO: Quick'n'dirty, swap out for a m_text property that can be set before the component is put on stage.
    public function get text() :String {
       return m_textField.text;
    }
