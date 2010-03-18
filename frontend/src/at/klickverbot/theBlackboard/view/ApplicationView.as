@@ -16,6 +16,7 @@ import at.klickverbot.theme.XmlTheme;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.mouse.PointerManager;
 import at.klickverbot.ui.mouse.ThemeMcCreator;
+import at.klickverbot.ui.tooltip.TooltipManager;
 import at.klickverbot.util.Delegate;
 import at.klickverbot.util.IStageListener;
 
@@ -99,6 +100,10 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
       // Set the default custom pointer.
       PointerManager.getInstance().setPointerContainer( event.themeTarget );
       PointerManager.getInstance().useCustomPointer( true );
+
+      // Set the tooltip target so that the clips from the theme library can
+      // be attached.
+      TooltipManager.getInstance().targetClip = event.themeTarget;
 
       // Set up the resize handlers for fitting the view into the stage size.
       m_stageListener = new IStageListener();

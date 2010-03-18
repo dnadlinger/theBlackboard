@@ -5,7 +5,6 @@ import at.klickverbot.theme.ClipId;
  * The purpose in using this class instead of just the plain strings is to
  * collect all needed MovieClips in one place to make creating a new theme from
  * scratch easier.
- *
  */
 class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
    /**
@@ -24,6 +23,8 @@ class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
    public static var ENTRY_DETAILS_FORM_CONTAINER :AppClipId = new AppClipId( "entryDetailsFormContainer" );
 
    public static var DEFAULT_TEXT_BOX :AppClipId = new AppClipId( "defaultTextBox" );
+
+   public static var TOOLTIP_LABEL :AppClipId = new AppClipId( "tooltipLabel" );
 
    public static var PREVIOUS_PAGE_BUTTON :AppClipId = new AppClipId( "previousPageButton" );
    public static var NEXT_PAGE_BUTTON :AppClipId = new AppClipId( "nextPageButton" );
