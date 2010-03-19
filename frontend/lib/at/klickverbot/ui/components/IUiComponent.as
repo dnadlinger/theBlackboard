@@ -41,8 +41,8 @@ interface at.klickverbot.ui.components.IUiComponent extends IEventDispatcher {
     * Moves the component to the specified position in its parent's coordinate
     * system.
     *
-    * @see moveToPoint
-    * @see getPosition
+    * @see #moveToPoint
+    * @see #getPosition
     * @param x The x-coordinate of the new position.
     * @param y The y-coordinate of the new position.
     */
@@ -52,8 +52,8 @@ interface at.klickverbot.ui.components.IUiComponent extends IEventDispatcher {
     * Moves the component to the specified position in its parent's coordinate
     * system.
     *
-    * @see move
-    * @see getPosition
+    * @see #move
+    * @see #getPosition
     * @param newPosition A Point2D containing the new position in the parent's
     *        coordinate system.
     */

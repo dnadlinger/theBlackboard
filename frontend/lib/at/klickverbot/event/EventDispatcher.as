@@ -51,7 +51,7 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
     * Removes an event listener from the list.
     *
     * @return If the listener could be removed (if it was in the list).
-    * @see{ #addEventListener }
+    * @see #addEventListener
     */
    public function removeEventListener( eventType :String, listenerOwner :Object,
       listener :Function ) :Boolean {
@@ -153,7 +153,7 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
     * Removes an event listener from the list of unhandled events listeners.
     *
     * @return If the listener could be removed (if it was in the list).
-    * @see{ #addUnhandledEventsListener }
+    * @see #addUnhandledEventsListener
     */
    public function removeUnhandledEventsListener( listenerOwner :Object,
       listener :Function ) :Boolean {

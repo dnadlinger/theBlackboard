@@ -195,7 +195,8 @@ class at.klickverbot.util.TypeUtils {
    }
 
    /**
-    * @see http://labs.blitzagency.com/?p=41
+    * For an in-depth description of ASSetPropFlag, see
+    * http://labs.blitzagency.com/?p=41.
     */
    private static function setPropFlags( targetObject :Object,
       propertyList :String, bitFlag :Number, clearBitFlag :Number ) :Void {
