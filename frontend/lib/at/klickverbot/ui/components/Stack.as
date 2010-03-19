@@ -4,6 +4,7 @@ import at.klickverbot.ui.animation.AlphaTween;
 import at.klickverbot.ui.animation.Animation;
 import at.klickverbot.ui.animation.Animator;
 import at.klickverbot.ui.animation.timeMapping.TimeMappers;
+import at.klickverbot.ui.components.AnimationComponent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.IUiComponent;
 
@@ -15,9 +16,10 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
     */
    public function Stack() {
       m_contents = new Array();
+      m_fadingOutContents = new Array();
       m_fadeTemplate = DEFAULT_FADE_ANIMATION;
+      m_selectedContent = null;
       m_runningFadeIn = null;
-      m_runningFadeOut = null;
    }
 
    private function createUi() :Boolean {
@@ -51,8 +53,10 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
          m_selectedContent.setSize( getSize() );
       }
 
-      if ( m_runningFadeOut != null ) {
-         m_oldSelectedContent.setSize( getSize() );
+      var currentAnimation :AnimationComponent;
+      var i :Number = m_fadingOutContents.length;
+      while ( currentAnimation = m_fadingOutContents[ --i ] ) {
+         currentAnimation.component.setSize( getSize() );
       }
    }
 
@@ -93,12 +97,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
                } else {
                   // We can't select any other component, so fade it out manually.
                   if ( m_onStage ) {
-                     m_oldSelectedContent = currentContent;
-                     m_runningFadeOut = m_fadeTemplate.clone();
-                     m_runningFadeOut.setTween( new AlphaTween( component, 0 ) );
-                     m_runningFadeOut.addEventListener( Event.COMPLETE,
-                        this, handleFadeOutComplete );
-                     Animator.getInstance().run( m_runningFadeOut );
+                     fadeOutContent( component );
                   }
                   m_selectedContent = null;
                }
@@ -131,9 +130,6 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
          return;
       }
 
-      m_oldSelectedContent = m_selectedContent;
-      m_selectedContent = component;
-
       if ( m_onStage ) {
          // Check if the fade in animation of the old entry is still running;
          // if so, jump to its end.
@@ -142,20 +138,14 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
          }
 
          // Fade the old component out.
-         if ( m_oldSelectedContent != null ) {
-            // We do not support concurrently running more than one fade out
-            // animation. This might as well never be the case in practice, but
-            // to be sure, if there still is one running, end it.
-            if ( m_runningFadeOut != null ) {
-               m_runningFadeOut.end();
-            }
-
-            m_runningFadeOut = m_fadeTemplate.clone();
-            m_runningFadeOut.setTween( new AlphaTween( m_oldSelectedContent, 0 ) );
-            m_runningFadeOut.addEventListener( Event.COMPLETE, this, handleFadeOutComplete );
-            Animator.getInstance().run( m_runningFadeOut );
+         if ( m_selectedContent != null ) {
+            fadeOutContent( m_selectedContent );
          }
+      }
 
+      m_selectedContent = component;
+
+      if ( m_onStage ) {
          // Create the new component, hide it, and fade it in.
          if ( component != null ) {
             component.create( m_container );
@@ -183,13 +173,38 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
       }
    }
 
+   private function fadeOutContent( component :IUiComponent ) :Void {
+      var animation :Animation = m_fadeTemplate.clone();
+      m_fadingOutContents.push( new AnimationComponent( animation, component ) );
+
+      animation.setTween( new AlphaTween( component, 0 ) );
+      animation.addEventListener( Event.COMPLETE,
+         this, handleFadeOutComplete );
+      Animator.getInstance().run( animation );
+   }
+
    private function handleFadeInComplete( event :Event ) :Void {
       m_runningFadeIn = null;
    }
 
    private function handleFadeOutComplete( event :Event ) :Void {
-      m_oldSelectedContent.destroy();
-      m_runningFadeOut = null;
+      // The m_fadingOutContents array is only needed because there is no way to
+      // extract the target component of the completed animation's tween from
+      // the event here.
+      var component :IUiComponent = null;
+      var currentMapping :AnimationComponent;
+      var i :Number = m_fadingOutContents.length;
+      while ( currentMapping = m_fadingOutContents[ --i ] ) {
+         if ( currentMapping.animation == event.target ) {
+            component = currentMapping.component;
+            m_fadingOutContents.splice( i, 1 );
+            break;
+         }
+      }
+
+      Debug.assertNotNull( component, "Stack content for fade out animation " +
+         event.target + "not found!" );
+      component.destroy();
    }
 
    private function getInstanceInfo() :Array {
@@ -202,11 +217,10 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
 
    private var m_contents :Array;
    private var m_selectedContent :IUiComponent;
-   private var m_oldSelectedContent :IUiComponent;
 
    // TODO: Use a factory instead of copying a template object.
    private var m_fadeTemplate :Animation;
 
    private var m_runningFadeIn :Animation;
-   private var m_runningFadeOut :Animation;
+   private var m_fadingOutContents :Array;
 }
