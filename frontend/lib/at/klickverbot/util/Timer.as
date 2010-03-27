@@ -9,7 +9,7 @@ class at.klickverbot.util.Timer extends EventDispatcher {
    /**
     * Constructor.
     *
-    * @param interval The timer interval.
+    * @param interval The timer interval in seconds.
     * @param numTriggerings The number of triggerings after which the timer is
     *    stopped (null for no limit).
     */
@@ -35,7 +35,7 @@ class at.klickverbot.util.Timer extends EventDispatcher {
          return false;
       }
 
-      m_timerId = setInterval( this, "intervalCallback", m_interval );
+      m_timerId = setInterval( this, "intervalCallback", m_interval * 1000 );
       m_running = true;
    }
 
@@ -92,17 +92,12 @@ class at.klickverbot.util.Timer extends EventDispatcher {
    }
 
    /**
-    * The interval between timer triggerings in milliseconds.
+    * The interval between timer triggerings in seconds.
     */
    public function get interval() :Number {
       return m_interval;
    }
    public function set interval( to :Number ) :Void {
-      // No interval shorter than one millisecond is possible
-      if ( to < 1 ) {
-         return;
-      }
-
       m_interval = to;
       if ( m_running ) {
          this.stop();

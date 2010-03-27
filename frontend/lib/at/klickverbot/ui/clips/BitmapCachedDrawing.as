@@ -323,8 +323,8 @@ class at.klickverbot.ui.clips.BitmapCachedDrawing extends CoreMovieClip {
    }
 
    /**
-    * Every flushInterval milliseconds the buffer's contents (the temp clip)
-    * are copied into the caching bitmap.
+    * Every flushInterval seconds the buffer's contents (the temp clip) are
+    * copied into the caching bitmap.
     */
    public function get flushInterval() :Number {
       return m_flushTimer.interval;

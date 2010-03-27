@@ -84,7 +84,7 @@ class at.klickverbot.ui.tooltip.TooltipManager extends CoreObject {   /**     
 
    private static var DEFAULT_TARGET :MovieClip = _root;
    private static var DEFAULT_DEPTH :Number = 100;
-   private static var DEFAULT_ACTIVATION_DELAY :Number = 1;
+   private static var DEFAULT_ACTIVATION_DELAY :Number = 0.7;
    private static var DEFAULT_FADE_DURATION :Number = 0.3;
    private static var DEFAULT_X_MOUSE_OFFSET :Number = 0;
    private static var DEFAULT_Y_MOUSE_OFFSET :Number = 20;
