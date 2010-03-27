@@ -29,9 +29,11 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
       m_containerClip = containerClip;
 
       // Postpone initialization until the configuration has been loaded.
-      model.addEventListener( ApplicationModelChangeEvent.CONFIGURATION, this, init );
+      model.addEventListener( ApplicationModelChangeEvent.CONFIGURATION,
+         this, init );
 
-      model.serviceErrors.addEventListener( CollectionEvent.CHANGE, this, handleNewServiceError );
+      model.serviceErrors.addEventListener( CollectionEvent.CHANGE,
+         this, handleNewServiceError );
    }
 
    private function init( event :ApplicationModelChangeEvent ) :Void {
@@ -73,13 +75,16 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
 
       if ( event.oldTheme != null ) {
          event.oldTheme.destroyTheme();
-         event.oldTheme.removeEventListener( ThemeEvent.COMPLETE, this, createUi );
+         event.oldTheme.removeEventListener( ThemeEvent.COMPLETE,this, createUi );
          event.oldTheme.removeEventListener( ThemeEvent.DESTROY, this, destroyUi );
+         event.oldTheme.removeEventListener( ThemeEvent.THEME_MISMATCH,
+            this, handleThemeMismatch );
       }
 
       event.newTheme.addEventListener( ThemeEvent.COMPLETE, this, createUi );
       event.newTheme.addEventListener( ThemeEvent.DESTROY, this, destroyUi );
-      event.newTheme.addEventListener( ThemeEvent.THEME_MISMATCH, this, handleThemeMismatch );
+      event.newTheme.addEventListener( ThemeEvent.THEME_MISMATCH,
+         this, handleThemeMismatch );
       event.newTheme.initTheme( m_containerClip );
    }
 
@@ -107,7 +112,7 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
 
       // Set up the resize handlers for fitting the view into the stage size.
       m_stageListener = new IStageListener();
-      m_stageListener.onResize = Delegate.create( this, handleStageResize );
+      m_stageListener.onResize = Delegate.create( this, fitToStage );
       Stage.addListener( m_stageListener );
 
       fitToStage();
@@ -126,10 +131,6 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
       m_entriesView.resize( width, height );
    }
 
-   private function handleStageResize() :Void {
-      fitToStage();
-   }
-
    private function handleNewServiceError( event :CollectionEvent ) :Void {
       // TODO: Replace this stub.
       Logger.getLog( "MainView" ).error(
@@ -141,8 +142,6 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
       Logger.getLog( "MainView" ).error(
          "The theme is not suited for this application: " + event.target );
    }
-
-   private static var RESIZE_REFRESH_INTERVAL :Number = 500;
 
    private var m_model :ApplicationModel;
 
