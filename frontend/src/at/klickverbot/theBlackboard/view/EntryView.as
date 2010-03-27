@@ -65,15 +65,11 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
       if ( m_entry != null ) {
          removeModelListeners( m_entry );
       }
-      TooltipManager.getInstance().clearTooltip( this );
 
       m_entry = Entry( data );
       updateAll();
 
       if ( m_entry != null ) {
-         TooltipManager.getInstance().setTooltip( this,
-            new EntryTooltip( m_entry ) );
-
          addModelListeners( m_entry );
          dispatchEvent(
             new EntryViewEvent( EntryViewEvent.LOAD_ENTRY, this, m_entry ) );
@@ -95,6 +91,7 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
 
    private function updateAll() :Void {
       updateDrawing( m_entry.drawing );
+      updateTooltip();
    }
 
    private function updateDrawing( drawing :Drawing ) :Void {
@@ -105,9 +102,19 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
       }
    }
 
+   private function updateTooltip() :Void {
+      TooltipManager.getInstance().clearTooltip( this );
+      if ( m_entry && m_entry.loaded ) {
+         TooltipManager.getInstance().setTooltip( this,
+            new EntryTooltip( m_entry ) );
+      }
+   }
+
    private function handleChange( event :EntryChangeEvent ) :Void {
       if ( event.type == EntryChangeEvent.DRAWING ) {
          updateDrawing( Drawing( event.newValue ) );
+      } else if ( event.type == EntryChangeEvent.LOADED ) {
+         updateTooltip();
       }
    }
 
