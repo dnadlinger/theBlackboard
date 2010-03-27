@@ -1,3 +1,4 @@
+import at.klickverbot.ui.animation.IAnimation;
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.event.events.TimerEvent;
@@ -46,6 +47,9 @@ class at.klickverbot.ui.tooltip.TooltipHandler extends CoreObject {
       if ( m_timer.isRunning ) {
          m_timer.stop();
       } else if ( m_tooltip.isOnStage() ) {
+         if ( !m_lastFadeIn.isCompleted() ) {
+            m_lastFadeIn.end();
+         }
          m_tooltip.destroy();
          m_timer.reset();
       }
@@ -69,13 +73,12 @@ class at.klickverbot.ui.tooltip.TooltipHandler extends CoreObject {
       );
 
       m_tooltip.fade( 0 );
-      Animator.getInstance().run(
-         new Animation(
-            new AlphaTween( m_tooltip, 1 ),
-            TooltipManager.getInstance().fadeDuration,
-            TimeMappers.CUBIC
-         )
+      m_lastFadeIn = new Animation(
+         new AlphaTween( m_tooltip, 1 ),
+         TooltipManager.getInstance().fadeDuration,
+         TimeMappers.CUBIC
       );
+      Animator.getInstance().run( m_lastFadeIn );
    }
 
    private function getInstanceInfo() :Array {
@@ -88,4 +91,5 @@ class at.klickverbot.ui.tooltip.TooltipHandler extends CoreObject {
    private var m_target :IUiComponent;
    private var m_tooltip :IUiComponent;
    private var m_timer :Timer;
+   private var m_lastFadeIn :IAnimation;
 }
