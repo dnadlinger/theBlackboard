@@ -1,3 +1,5 @@
+import at.klickverbot.ui.tooltip.TooltipManager;
+import at.klickverbot.theBlackboard.view.EntryTooltip;
 import at.klickverbot.theBlackboard.view.event.EntryViewEvent;
 import at.klickverbot.ui.components.drawingArea.DrawingArea;
 import at.klickverbot.drawing.Drawing;
@@ -56,18 +58,26 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
 
    public function setData( data :Object ) :Void {
       if ( m_entry == data ) {
+         // Nothing to do, return early to circumvent expensive drawing loading.
          return;
       }
 
       if ( m_entry != null ) {
          removeModelListeners( m_entry );
       }
+      TooltipManager.getInstance().clearTooltip( this );
+
       m_entry = Entry( data );
-      addModelListeners( m_entry );
-      // TODO: Find a cleaner solution for loading the entry.
-      // Maybe bubble the event up?
-      dispatchEvent( new EntryViewEvent( EntryViewEvent.LOAD_ENTRY, this, m_entry ) );
       updateAll();
+
+      if ( m_entry != null ) {
+         TooltipManager.getInstance().setTooltip( this,
+            new EntryTooltip( m_entry ) );
+
+         addModelListeners( m_entry );
+         dispatchEvent(
+            new EntryViewEvent( EntryViewEvent.LOAD_ENTRY, this, m_entry ) );
+      }
    }
 
    public function getDrawingArea() :DrawingArea {
@@ -75,7 +85,8 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
    }
 
    public function save() :Void {
-      dispatchEvent( new EntryViewEvent( EntryViewEvent.SAVE_ENTRY, this, m_entry ) );
+      dispatchEvent(
+         new EntryViewEvent( EntryViewEvent.SAVE_ENTRY, this, m_entry ) );
    }
 
    private function getInstanceInfo() :Array {

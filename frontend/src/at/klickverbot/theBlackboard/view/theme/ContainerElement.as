@@ -12,6 +12,9 @@ class at.klickverbot.theBlackboard.view.theme.ContainerElement {
    public static var DETAILS_FORM_AUTHOR :String = "author";
    public static var DETAILS_FORM_SUBMIT :String = "submit";
 
+   public static var ENTRY_TOOLTIP_AUTHOR :String = "author";
+   public static var ENTRY_TOOLTIP_CAPTION :String = "caption";
+
    public static var TOOLS_COLORS :String = "colors";
    public static var TOOLS_SIZES :String = "sizes";
    public static var TOOLS_UNDO :String = "undo";

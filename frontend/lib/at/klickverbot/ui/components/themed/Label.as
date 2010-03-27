@@ -23,24 +23,21 @@ class at.klickverbot.ui.components.themed.Label extends Static {
          return false;
       }
 
-      m_textFieldClip = m_staticContent[ TEXT_FIELD_CLIP_NAME ];
+      m_textFieldClip = getChildClip( TEXT_FIELD_CLIP_NAME, true );
       if ( m_textFieldClip == null ) {
-         Debug.LIBRARY_LOG.error( "Attempted to create a Label using a " +
-            "clip that does not have a child text field clip: " + this );
          super.destroy();
          return false;
       }
 
       m_textField = m_textFieldClip[ TEXT_FIELD_NAME ];
-      if ( m_textField == null ) {
+       if ( m_textField == null ) {
          Debug.LIBRARY_LOG.error( "Attempted to create a Label using a " +
             "clip that does not have a TextField in its text field clip: " + this );
          super.destroy();
          return false;
       }
 
-      m_background = m_staticContent[ BACKGROUND_NAME ];
-
+      m_background = getChildClip( BACKGROUND_NAME );
       if ( m_background ) {
          m_leftDistance = m_textField._x;
          m_topDistance = m_textField._y;
