@@ -1,6 +1,6 @@
 <?php
 class Entries {
-   public function __construct ( DbConnector $dbConnector ) {
+   public function __construct( DbConnector $dbConnector ) {
       $this->dbConn = $dbConnector;
       $this->entryCount = null;
    }
@@ -69,6 +69,7 @@ class Entries {
 
       $rawEntry = $resultRows[ 0 ];
 
+      // TODO: Use nicer AA syntax.
       $entry = array();
       $entry[ 'id' ] = $rawEntry[ 'id' ];
       $entry[ 'caption' ] = $rawEntry[ 'caption' ];

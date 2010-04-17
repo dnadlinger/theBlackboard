@@ -5,7 +5,7 @@ class ConfigurationServer {
    }
 
    public function getByName( array $params ) {
-      MethodUtils::checkSignature( array( 'string' ), $params );
+      MethodUtils::checkSignature( array( Types::STRING ), $params );
       return new ReturnValue( $this->configuration->getByName( $params[ 0 ] ) );
    }
 

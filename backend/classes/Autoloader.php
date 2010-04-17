@@ -5,7 +5,7 @@ class Autoloader {
          return;
       }
 
-      if ( function_exists( '__autoload') ) {
+      if ( function_exists( '__autoload' ) ) {
          spl_autoload_register( '__autoload' );
       }
 

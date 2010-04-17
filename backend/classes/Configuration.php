@@ -1,6 +1,6 @@
 <?php
 class Configuration {
-   public function __construct ( DbConnector $dbConnector ) {
+   public function __construct( DbConnector $dbConnector ) {
       $this->dbConn = $dbConnector;
       $this->configValues = array();
    }
