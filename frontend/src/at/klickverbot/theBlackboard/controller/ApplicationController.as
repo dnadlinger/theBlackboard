@@ -1,12 +1,17 @@
+import at.klickverbot.theBlackboard.view.event.CaptchaAuthViewEvent;
 import at.klickverbot.debug.Logger;
 import at.klickverbot.event.IEventDispatcher;
 import at.klickverbot.event.events.Event;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.rpc.IOperation;
+import at.klickverbot.theBlackboard.controller.auth.AuthHandler;
+import at.klickverbot.theBlackboard.controller.auth.CaptchaAuthenticator;
 import at.klickverbot.theBlackboard.model.ApplicationModel;
 import at.klickverbot.theBlackboard.model.Configuration;
 import at.klickverbot.theBlackboard.model.EntriesSortingType;
+import at.klickverbot.theBlackboard.service.IAuthService;
+import at.klickverbot.theBlackboard.service.ICaptchaAuthService;
 import at.klickverbot.theBlackboard.service.IConfigLocationService;
 import at.klickverbot.theBlackboard.service.IConfigService;
 import at.klickverbot.theBlackboard.service.IEntriesService;
@@ -24,15 +29,20 @@ class at.klickverbot.theBlackboard.controller.ApplicationController {
       m_model = model;
       m_serviceFactory = serviceFactory;
 
+      m_authHandler = null;
+
       m_configLocationService = m_serviceFactory.createConfigLocationService();
       m_configService = null;
       m_entriesService = null;
+      m_authService = null;
+      m_captchaAuthService = null;
    }
 
    public function listenTo( target :IEventDispatcher ) :Void {
       target.addEventListener( Event.LOAD, this, startApplication );
       target.addEventListener( EntryViewEvent.LOAD_ENTRY, this, loadEntry );
       target.addEventListener( EntryViewEvent.SAVE_ENTRY, this, saveEntry );
+      target.addEventListener( CaptchaAuthViewEvent.SOLVE, this, solveCaptcha );
    }
 
    private function startApplication( event :Event ) :Void {
@@ -57,8 +67,18 @@ class at.klickverbot.theBlackboard.controller.ApplicationController {
 
    private function handleConfigResult( event :ResultEvent ) :Void {
       m_model.configuration = Configuration( event.result );
+
+      m_authService = m_serviceFactory.createAuthService(
+         m_model.configuration.authServiceLocation );
+      m_authHandler = new AuthHandler( m_authService );
+
       m_entriesService = m_serviceFactory.createEntriesService(
-         m_model.configuration.entryServiceLocation );
+         m_model.configuration.entryServiceLocation, [ m_authHandler ] );
+      m_captchaAuthService = m_serviceFactory.createCaptchaAuthService(
+         m_model.configuration.captchaAuthServiceLocation, [ m_authHandler ] );
+
+      m_authHandler.setAuthenticator( "captcha",
+         new CaptchaAuthenticator( m_captchaAuthService, m_model ) );
 
       var operation :IOperation = m_entriesService.getAllEntries( ENTRIES_SORTING_TYPE );
       operation.addEventListener( ResultEvent.RESULT, this, handleEntriesResult );
@@ -92,8 +112,12 @@ class at.klickverbot.theBlackboard.controller.ApplicationController {
          operation.execute();
       } else {
          Logger.getLog( "EntryController" ).error(
-          "Saving edited entries not supported yet: " + event.entry );
+            "Saving edited entries is not supported yet: " + event.entry );
       }
+   }
+
+   private function solveCaptcha( event :CaptchaAuthViewEvent ) :Void {
+      m_captchaAuthenticator.solveCaptcha( event.request, event.solution );
    }
 
    private function handleFault( event :FaultEvent ) :Void {
@@ -108,8 +132,13 @@ class at.klickverbot.theBlackboard.controller.ApplicationController {
 
    private var m_model :ApplicationModel;
 
+   private var m_authHandler :AuthHandler;
+   private var m_captchaAuthenticator :CaptchaAuthenticator;
+
    private var m_serviceFactory :IServiceFactory;
    private var m_configLocationService :IConfigLocationService;
    private var m_configService :IConfigService;
    private var m_entriesService :IEntriesService;
+   private var m_authService :IAuthService;
+   private var m_captchaAuthService :ICaptchaAuthService;
 }

@@ -1,9 +1,9 @@
-import at.klickverbot.theBlackboard.service.adapter.ServiceLocationParser;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.theBlackboard.service.ServiceLocation;
 import at.klickverbot.theBlackboard.service.ServiceType;
 import at.klickverbot.theBlackboard.service.adapter.AdapterOperation;
+import at.klickverbot.theBlackboard.service.adapter.ServiceLocationParser;
 import at.klickverbot.theBlackboard.service.backend.IConfigLocationBackend;
 
 class at.klickverbot.theBlackboard.service.adapter.ConfigLocationLoadOperation
@@ -12,8 +12,10 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigLocationLoadOperation
    /**
     * Constructor.
     */
-   public function ConfigLocationLoadOperation( backend :IConfigLocationBackend ) {
-      super( backend.getConfigLocation() );
+   public function ConfigLocationLoadOperation(
+      backend :IConfigLocationBackend, filters :Array ) {
+
+      super( backend.getConfigLocation(), filters );
    }
 
    private function handleResult( event :ResultEvent ) :Void {

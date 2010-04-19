@@ -29,9 +29,19 @@ class at.klickverbot.theBlackboard.model.Configuration extends CoreObject {
       return m_entryServiceLocation;
    }
 
+   public function get authServiceLocation() :ServiceLocation {
+      return m_authServiceLocation;
+   }
+
+   public function get captchaAuthServiceLocation() :ServiceLocation {
+      return m_captchaAuthServiceLocation;
+   }
+
    private var m_availableThemes :Array;
    private var m_defaultTheme :String;
    private var m_drawingSize :Number;
    private var m_entryPreloadLimit :Number;
    private var m_entryServiceLocation :ServiceLocation;
+   private var m_authServiceLocation :ServiceLocation;
+   private var m_captchaAuthServiceLocation :ServiceLocation;
 }

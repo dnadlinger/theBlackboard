@@ -54,6 +54,10 @@ class at.klickverbot.external.xmlrpc.Request extends CoreObject {
       return clonedData;
    }
 
+   public function getMethodName() :String {
+      return m_methodName;
+   }
+
    private function initXml() :Void {
       m_xmlData = new XML();
 

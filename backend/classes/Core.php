@@ -44,14 +44,22 @@ class Core {
       // them with the FrontController.
       $configuration = new Configuration( $this->dbConnector );
       $entries = new Entries( $this->dbConnector );
+      $authenticator = new Authenticator( $this->dbConnector );
+      $captchaAuth = new CaptchaAuth( $this->dbConnector );
+
+      $authenticator->setMethodHandler( AuthMethods::CAPTCHA,
+         new CaptchaAuthHandler( $captchaAuth ) );
 
       $services = array(
          'configuration' => new ConfigurationServer( $configuration ),
-         'entries' => new EntriesServer( $entries )
+         'entries' => new EntriesServer( $entries ),
+         'auth' => new AuthServer( $authenticator ),
+         'captchaAuth' => new CaptchaAuthServer( $captchaAuth )
       );
 
       foreach( $services as $name => $server ) {
-         $this->frontController->addResolver( new ClassResolver( $name, $server ) );
+         $this->frontController->addResolver( new AuthResolverProxy(
+            new ClassResolver( $name, $server ), $authenticator ) );
       }
    }
 

@@ -21,4 +21,12 @@ class at.klickverbot.theBlackboard.model.DirectConfiguration extends Configurati
    public function setEntryServiceLocation( to :ServiceLocation ) :Void {
       m_entryServiceLocation = to;
    }
+
+   public function setAuthServiceLocation( to :ServiceLocation ) :Void {
+      m_authServiceLocation = to;
+   }
+
+   public function setCaptchaAuthServiceLocation( to :ServiceLocation ) :Void {
+      m_captchaAuthServiceLocation = to;
+   }
 }

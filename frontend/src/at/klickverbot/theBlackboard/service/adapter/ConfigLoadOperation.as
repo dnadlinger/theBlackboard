@@ -1,11 +1,10 @@
-import at.klickverbot.theBlackboard.service.adapter.ServiceLocationParser;
 import at.klickverbot.debug.Logger;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.theBlackboard.model.DirectConfiguration;
 import at.klickverbot.theBlackboard.service.ServiceLocation;
-import at.klickverbot.theBlackboard.service.ServiceType;
 import at.klickverbot.theBlackboard.service.adapter.AdapterOperation;
+import at.klickverbot.theBlackboard.service.adapter.ServiceLocationParser;
 import at.klickverbot.theBlackboard.service.backend.IConfigBackend;
 
 class at.klickverbot.theBlackboard.service.adapter.ConfigLoadOperation
@@ -14,8 +13,8 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigLoadOperation
    /**
     * Constructor.
     */
-   public function ConfigLoadOperation( backend :IConfigBackend ) {
-      super( backend.getAll() );
+   public function ConfigLoadOperation( backend :IConfigBackend, filters :Array ) {
+      super( backend.getAll(), filters );
    }
 
    private function handleResult( event :ResultEvent ) :Void {
@@ -54,19 +53,42 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigLoadOperation
       }
       config.setEntryPreloadLimit( entryPreloadLimit );
 
-      if ( !checkSettingExists( source, "entryServiceType" ) ) {
+      var authLocation :ServiceLocation = getServiceLocation( source, "auth" );
+      if ( authLocation == null ) {
          return;
       }
-      if ( !checkSettingExists( source, "entryServiceInfo" ) ) {
+      config.setAuthServiceLocation( authLocation );
+
+      var entryLocation :ServiceLocation = getServiceLocation( source, "entry" );
+      if ( entryLocation == null ) {
          return;
       }
-      var locationParser :ServiceLocationParser = new ServiceLocationParser();
-      var serviceType :ServiceType =
-         locationParser.parseTypeString( source[ "entryServiceType" ] );
-      var serviceInfo :Object = source[ "entryServiceInfo" ];
-      config.setEntryServiceLocation( new ServiceLocation( serviceType, serviceInfo ) );
+      config.setEntryServiceLocation( entryLocation );
+
+      var captchaAuthLocation :ServiceLocation =
+         getServiceLocation( source, "captchaAuth" );
+      if ( captchaAuthLocation == null ) {
+         return;
+      }
+      config.setCaptchaAuthServiceLocation( captchaAuthLocation );
 
       dispatchEvent( new ResultEvent( ResultEvent.RESULT, this, config ) );
+   }
+
+   private function getServiceLocation( source :Object, name :String) :ServiceLocation {
+      var locationParser :ServiceLocationParser = new ServiceLocationParser();
+
+      if ( !checkSettingExists( source, name + "ServiceType" ) ) {
+         return null;
+      }
+      if ( !checkSettingExists( source, name + "ServiceInfo" ) ) {
+         return null;
+      }
+
+      return new ServiceLocation(
+         locationParser.parseTypeString( source[ name + "ServiceType" ] ),
+         source[ name + "ServiceInfo" ]
+      );
    }
 
    private function checkSettingExists( source :Object, name :String ) :Boolean {

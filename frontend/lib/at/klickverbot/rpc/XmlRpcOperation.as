@@ -6,10 +6,10 @@ import at.klickverbot.external.xml.XmlLoader;
 import at.klickverbot.external.xmlrpc.MethodFault;
 import at.klickverbot.external.xmlrpc.Request;
 import at.klickverbot.external.xmlrpc.Response;
-import at.klickverbot.rpc.IOperation;
+import at.klickverbot.rpc.IBackendOperation;
 
-class at.klickverbot.rpc.XmlRpcOperation
-   extends EventDispatcher implements IOperation {
+class at.klickverbot.rpc.XmlRpcOperation extends EventDispatcher
+   implements IBackendOperation {
 
    public function XmlRpcOperation( url :String, methodName :String,
       methodParams :Array ) {
@@ -25,6 +25,10 @@ class at.klickverbot.rpc.XmlRpcOperation
 
    public function execute() :Void {
       m_xmlLoader.sendAndLoadXml( m_request.getXmlData() );
+   }
+
+   public function getBackendMethodId() :String {
+      return m_request.getMethodName();
    }
 
    private function handleResult( event :ResultEvent ) :Void {
@@ -52,6 +56,10 @@ class at.klickverbot.rpc.XmlRpcOperation
    private function handleError( event :ErrorEvent ) :Void {
       dispatchEvent( new FaultEvent( FaultEvent.FAULT, event.target, null,
          event.message ) );
+   }
+
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( "request: " + m_request );
    }
 
    private var m_xmlLoader :XmlLoader;

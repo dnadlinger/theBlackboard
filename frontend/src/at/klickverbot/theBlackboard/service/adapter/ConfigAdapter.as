@@ -9,12 +9,13 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigAdapter
    /**
     * Constructor.
     */
-   public function ConfigAdapter( backend :IConfigBackend ) {
+   public function ConfigAdapter( backend :IConfigBackend, backendFilters :Array ) {
       m_backend = backend;
+      m_backendFilters = backendFilters;
    }
 
    public function loadConfig() :IOperation {
-      return new ConfigLoadOperation( m_backend );
+      return new ConfigLoadOperation( m_backend, m_backendFilters );
    }
 
    private function getInstanceInfo() :Array {
@@ -22,4 +23,5 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigAdapter
    }
 
    private var m_backend :IConfigBackend;
+   private var m_backendFilters :Array;
 }

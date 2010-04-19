@@ -1,3 +1,4 @@
+import at.klickverbot.debug.Debug;
 import at.klickverbot.data.ICollection;
 import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.CollectionEvent;
@@ -12,6 +13,25 @@ class at.klickverbot.data.List extends EventDispatcher
    public function push( newItem :Object ) :Void {
       m_data.push( newItem );
       dispatchChangeEvent();
+   }
+
+   public function remove( item :Object ) :Boolean {
+      if ( item == null ) {
+         Debug.LIBRARY_LOG.debug( "Attempted to remove null item from: " + this );
+         return false;
+      }
+
+      var currentItem :Object;
+      var i :Number = m_data.length;
+      while ( currentItem = m_data[ --i ] ) {
+         if ( currentItem === item ) {
+            m_data.splice( i, 1 );
+            dispatchChangeEvent();
+            return true;
+         }
+      }
+
+      return false;
    }
 
    public function removeFirst() :Object {
@@ -63,6 +83,10 @@ class at.klickverbot.data.List extends EventDispatcher
 
    private function dispatchChangeEvent() :Void {
       dispatchEvent( new CollectionEvent( CollectionEvent.CHANGE, this ) );
+   }
+
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( "data: " + m_data );
    }
 
    private var m_data :Array;

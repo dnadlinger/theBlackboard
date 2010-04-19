@@ -1,0 +1,1 @@
+import at.klickverbot.core.CoreObject;class at.klickverbot.theBlackboard.model.AuthMethod extends CoreObject {   /**    * Constructor for enumeration.    * Private to make other instances than the public static members impossible.    */   private function AuthMethod() {   }   public static var CAPTCHA :AuthMethod = new AuthMethod();}

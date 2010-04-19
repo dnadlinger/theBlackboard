@@ -7,8 +7,8 @@ import at.klickverbot.theBlackboard.service.backend.IEntriesBackend;
 
 class at.klickverbot.theBlackboard.service.adapter.EntriesGetAllOperation extends AdapterOperation {
    public function EntriesGetAllOperation( backend :IEntriesBackend,
-      sortingType :EntriesSortingType ) {
-      super( backend.getAllIds( getSortingString( sortingType ) ) );
+      sortingType :EntriesSortingType, filters :Array ) {
+      super( backend.getAllIds( getSortingString( sortingType ) ), filters );
    }
 
    private function handleResult( event :ResultEvent ) :Void {

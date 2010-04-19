@@ -17,7 +17,8 @@ class at.klickverbot.theBlackboard.service.backend.EntriesLocalBackend extends C
    }
 
    public function getEntryCount() :IOperation {
-      return new ResultOperation( m_sharedObject.data[ ENTRIES ].length );
+      return new ResultOperation(
+         ( Array( m_sharedObject.data[ ENTRIES ] ) ).length );
    }
 
    public function getAllIds( sortingType :String ) :IOperation {

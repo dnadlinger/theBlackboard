@@ -7,6 +7,7 @@ import at.klickverbot.event.events.ThemeManagerEvent;
 import at.klickverbot.theBlackboard.Application;
 import at.klickverbot.theBlackboard.model.ApplicationModel;
 import at.klickverbot.theBlackboard.model.ApplicationModelChangeEvent;
+import at.klickverbot.theBlackboard.view.CaptchaAuthView;
 import at.klickverbot.theBlackboard.view.EntriesView;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.Pointer;
@@ -49,8 +50,13 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
 
    private function setupUi() :Void {
       m_background = new Static( AppClipId.BACKGROUND );
+
       m_entriesView = new EntriesView( m_model.entries, m_model.configuration );
       m_entriesView.addUnhandledEventsListener( this, dispatchEvent );
+
+      m_captchaAuthView = new CaptchaAuthView( m_model.captchaRequests,
+         m_model.configuration );
+      m_captchaAuthView.addUnhandledEventsListener( this, dispatchEvent );
 
       // Add and use the default pointer which is defined in the theme.
       PointerManager.getInstance().addPointer( Pointer.DEFAULT,
@@ -150,4 +156,5 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
 
    private var m_background :Static;
    private var m_entriesView :EntriesView;
+   private var m_captchaAuthView :CaptchaAuthView;
 }

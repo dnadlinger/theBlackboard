@@ -10,12 +10,15 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigLocationAdapter
    /**
     * Constructor.
     */
-   public function ConfigLocationAdapter( backend :IConfigLocationBackend ) {
+   public function ConfigLocationAdapter( backend :IConfigLocationBackend,
+      backendFilters :Array ) {
+
       m_backend = backend;
+      m_backendFilters = backendFilters;
    }
 
    public function loadConfigLocation() :IOperation {
-      return new ConfigLocationLoadOperation( m_backend );
+      return new ConfigLocationLoadOperation( m_backend, m_backendFilters );
    }
 
    private function getInstanceInfo() :Array {
@@ -23,4 +26,5 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigLocationAdapter
    }
 
    private var m_backend :IConfigLocationBackend;
+   private var m_backendFilters :Array;
 }

@@ -9,6 +9,7 @@ class at.klickverbot.theBlackboard.model.ApplicationModel extends EventDispatche
 
       m_configuration = null;
       m_entries = new List();
+      m_captchaRequests = new List();
       m_serviceErrors = new List();
    }
 
@@ -38,6 +39,19 @@ class at.klickverbot.theBlackboard.model.ApplicationModel extends EventDispatche
       }
    }
 
+   public function get captchaRequests() :List {
+      return m_captchaRequests;
+   }
+
+   public function set captchaRequests( to :List ) :Void {
+      var oldValue :List = m_captchaRequests;
+      if ( oldValue != to ) {
+         m_captchaRequests = to;
+         dispatchEvent( new ApplicationModelChangeEvent(
+            ApplicationModelChangeEvent.CAPTCHA_REQUESTS, this, oldValue, to ) );
+      }
+   }
+
    public function get serviceErrors() :List {
       return m_serviceErrors;
    }
@@ -54,4 +68,5 @@ class at.klickverbot.theBlackboard.model.ApplicationModel extends EventDispatche
    private var m_configuration :Configuration;
    private var m_entries :List;
    private var m_serviceErrors :List;
+   private var m_captchaRequests :List;
 }

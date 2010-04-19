@@ -4,10 +4,12 @@ import at.klickverbot.theBlackboard.service.adapter.AdapterOperation;
 import at.klickverbot.theBlackboard.service.backend.IEntriesBackend;
 
 class at.klickverbot.theBlackboard.service.adapter.EntriesAddOperation extends AdapterOperation {
-   public function EntriesAddOperation( backend :IEntriesBackend, entry :Entry ) {
+   public function EntriesAddOperation( backend :IEntriesBackend, entry :Entry,
+      filters :Array ) {
+
       var stringifier :DrawingStringifier = new DrawingStringifier();
       var drawingString :String = stringifier.makeString( entry.drawing );
 
-      super( backend.addEntry( entry.caption, entry.author, drawingString ) );
+      super( backend.addEntry( entry.caption, entry.author, drawingString ), filters );
    }
 }

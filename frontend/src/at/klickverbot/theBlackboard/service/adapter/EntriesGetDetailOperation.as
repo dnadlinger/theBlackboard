@@ -6,9 +6,9 @@ import at.klickverbot.theBlackboard.service.backend.IEntriesBackend;
 
 class at.klickverbot.theBlackboard.service.adapter.EntriesGetDetailOperation extends AdapterOperation {
    public function EntriesGetDetailOperation( backend :IEntriesBackend,
-      target :Entry ) {
+      target :Entry, filters :Array ) {
       m_target = target;
-      super( backend.getEntryById( target.id ) );
+      super( backend.getEntryById( target.id ), filters );
    }
 
    private function handleResult( event :ResultEvent ) :Void {
