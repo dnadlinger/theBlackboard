@@ -18,6 +18,7 @@ class at.klickverbot.theBlackboard.service.adapter.EntriesGetAllOperation extend
       for ( var i :Number = 0; i < ids.length; ++i ) {
          var entry :Entry = new Entry();
          entry.id = ids[ i ];
+         entry.dirty = false;
          result.push( entry );
       }
 

@@ -10,6 +10,7 @@ class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
       m_drawing = null;
       m_timestamp = null;
       m_loaded = false;
+      m_dirty = false;
    }
 
    public function copyFrom( other :Entry ) :Void {
@@ -19,6 +20,7 @@ class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
       this.drawing = other.drawing;
       this.timestamp = other.timestamp;
       this.loaded = other.loaded;
+      this.dirty = other.dirty;
    }
 
    public function get id() :Number {
@@ -29,6 +31,7 @@ class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
       var oldValue :Number = m_id;
       if ( oldValue != to ) {
          m_id = to;
+         this.dirty = true;
          dispatchEvent( new EntryChangeEvent(
             EntryChangeEvent.ID, this, oldValue, to ) );
       }
@@ -42,6 +45,7 @@ class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
       var oldValue :String = m_caption;
       if ( oldValue != to ) {
          m_caption = to;
+         this.dirty = true;
          dispatchEvent( new EntryChangeEvent(
             EntryChangeEvent.CAPTION, this, oldValue, to ) );
       }
@@ -55,6 +59,7 @@ class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
       var oldValue :String = m_author;
       if ( oldValue != to ) {
          m_author = to;
+         this.dirty = true;
          dispatchEvent( new EntryChangeEvent(
             EntryChangeEvent.AUTHOR, this, oldValue, to ) );
       }
@@ -68,6 +73,7 @@ class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
       var oldValue :Drawing = m_drawing;
       if ( oldValue != to ) {
          m_drawing = to;
+         this.dirty = true;
          dispatchEvent( new EntryChangeEvent(
             EntryChangeEvent.DRAWING, this, oldValue, to ) );
       }
@@ -81,11 +87,11 @@ class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
       var oldValue :Date = m_timestamp;
       if ( oldValue != to ) {
          m_timestamp = to;
+         this.dirty = true;
          dispatchEvent( new EntryChangeEvent(
             EntryChangeEvent.TIMESTAMP, this, oldValue, to ) );
       }
    }
-
 
    public function get loaded() :Boolean {
       return m_loaded;
@@ -95,15 +101,30 @@ class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
       var oldValue :Boolean = m_loaded;
       if ( oldValue != to ) {
          m_loaded = to;
+         this.dirty = true;
          dispatchEvent( new EntryChangeEvent(
             EntryChangeEvent.LOADED, this, oldValue, to ) );
+      }
+   }
+
+   public function get dirty() :Boolean {
+      return m_dirty;
+   }
+
+   public function set dirty( to :Boolean ) :Void {
+      var oldValue :Boolean = m_dirty;
+      if ( oldValue != to ) {
+         m_dirty = to;
+         dispatchEvent( new EntryChangeEvent(
+            EntryChangeEvent.DIRTY, this, oldValue, to ) );
       }
    }
 
    private function getInstanceInfo() :Array {
       return super.getInstanceInfo().concat( [
          "id: " + m_id,
-         "loaded: " + m_loaded
+         "loaded: " + m_loaded,
+         "dirty: " + m_dirty
       ] );
    }
 
@@ -113,4 +134,6 @@ class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
    private var m_drawing :Drawing;
    private var m_loaded :Boolean;
    private var m_timestamp :Date;
+
+   private var m_dirty :Boolean;
 }

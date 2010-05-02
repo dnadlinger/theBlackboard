@@ -7,6 +7,7 @@ class at.klickverbot.theBlackboard.model.EntryChangeEvent extends PropertyChange
    public static var DRAWING :String = "changeDrawing";
    public static var TIMESTAMP :String = "changeTimestamp";
    public static var LOADED :String = "changeLoaded";
+   public static var DIRTY :String = "changeDirty";
 
    public function EntryChangeEvent( type :String, target :Object,
       oldValue :Object, newValue :Object ) {

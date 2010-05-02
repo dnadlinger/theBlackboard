@@ -14,7 +14,8 @@ class at.klickverbot.theBlackboard.service.adapter.EntriesGetDetailOperation ext
    private function handleResult( event :ResultEvent ) :Void {
       var result :Entry = ( new EntryParser() ).parseAA( event.result );
       m_target.copyFrom( result );
-      dispatchEvent( new ResultEvent( ResultEvent.RESULT, this, result ) );
+      m_target.dirty = false;
+      dispatchEvent( new ResultEvent( ResultEvent.RESULT, this, m_target ) );
    }
 
    private var m_target :Entry;

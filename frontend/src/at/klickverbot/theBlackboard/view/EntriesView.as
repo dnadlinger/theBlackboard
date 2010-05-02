@@ -4,6 +4,7 @@ import at.klickverbot.event.events.Event;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theBlackboard.model.Configuration;
 import at.klickverbot.theBlackboard.model.Entry;
+import at.klickverbot.theBlackboard.model.EntryChangeEvent;
 import at.klickverbot.theBlackboard.view.Animations;
 import at.klickverbot.theBlackboard.view.DrawEntryView;
 import at.klickverbot.theBlackboard.view.EditEntryDetailsView;
@@ -188,14 +189,23 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    }
 
    private function saveEntry() :Void {
-      m_state = EntriesViewState.VIEW_ALL;
+      // When the entry has been saved to the backend successfully, return to
+      // the general view.
+      m_activeEntry.addEventListener( EntryChangeEvent.DIRTY,
+         this, finishEditMode );
 
       // TODO: Find a better design approach for this.
       EntryView( m_entryGrid.getViewForItem( m_activeEntry ) ).save();
-      m_activeEntry = null;
+   }
 
+   private function finishEditMode() :Void {
+      m_activeEntry.removeEventListener( EntryChangeEvent.DIRTY,
+         this, finishEditMode );
+
+      m_activeEntry = null;
       activateOverlay( null );
       Animator.getInstance().run( generalViewZoom( true ) );
+      m_state = EntriesViewState.VIEW_ALL;
    }
 
    private function editedEntryZoom( animate :Boolean ) :IAnimation {
