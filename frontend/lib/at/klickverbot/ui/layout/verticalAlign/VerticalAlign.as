@@ -11,7 +11,7 @@ class at.klickverbot.ui.layout.verticalAlign.VerticalAlign
       var componentHeight :Number = component.getSize().y;
       if ( targetHeight < componentHeight ) {
          Debug.LIBRARY_LOG.warn( "Component " + component +
-            "too big to align: " + "component height: " + componentHeight +
+            " too big to align: " + "component height: " + componentHeight +
             ", targetHeight: " + targetHeight + " (" + this + ")" );
       }
 

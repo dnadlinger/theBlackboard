@@ -11,7 +11,7 @@ import at.klickverbot.theBlackboard.view.EditEntryDetailsView;
 import at.klickverbot.theBlackboard.view.EntriesViewState;
 import at.klickverbot.theBlackboard.view.EntryView;
 import at.klickverbot.theBlackboard.view.EntryViewFactory;
-import at.klickverbot.theBlackboard.view.IDrawingAreaOverlay;
+import at.klickverbot.theBlackboard.view.ModalOverlayDisplay;
 import at.klickverbot.theBlackboard.view.NavigationView;
 import at.klickverbot.theBlackboard.view.event.NavigationViewEvent;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
@@ -34,14 +34,18 @@ import at.klickverbot.ui.layout.verticalAlign.VerticalAligns;
 import at.klickverbot.util.McUtils;
 
 class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableComponent {
-   public function EntriesView( entries :List, configuration :Configuration ) {
+   public function EntriesView( entries :List, configuration :Configuration,
+      overlayDisplay :ModalOverlayDisplay ) {
       super();
 
       m_entries = entries;
       m_configuration = configuration;
+      m_modalOverlayDisplay = overlayDisplay;
+
       m_entryViewFactory = new EntryViewFactory( this );
       m_state = EntriesViewState.VIEW_ALL;
-      m_currentOverlay = null;
+      m_activeDrawView = null;
+      m_activeDetailsView = null;
 
       setupUi();
       m_navigation.addEventListener( NavigationViewEvent.PREVIOUS_PAGE,
@@ -86,7 +90,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       }
 
       // Create the overlay container.
-      if ( !m_overlayStack.create( m_container ) ) {
+      if ( !m_entryOverlayStack.create( m_container ) ) {
          return false;
       }
 
@@ -123,11 +127,10 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_backScenery.resize( width, height );
       m_mainContainer.resize( width, height );
       m_frontScenery.resize( width, height );
-      m_overlayStack.resize( width, height );
+      m_entryOverlayStack.resize( width, height );
 
-      // Update the zoom view position if an overlay is selected.
-      if ( m_currentOverlay != null ) {
-         Animator.getInstance().run( editedEntryZoom( false ) );
+      if ( m_activeDrawView != null ) {
+         Animator.getInstance().run( drawEntryZoom( false ) );
       }
    }
 
@@ -154,7 +157,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
          navContainer );
 
       // Setup the overlay container.
-      m_overlayStack = new Stack();
+      m_entryOverlayStack = new Stack();
 
       // Setup the foreground scenery.
       m_frontScenery = new Static( AppClipId.FRONT_SCENERY );
@@ -167,25 +170,37 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_entries.push( m_activeEntry );
       m_entryGrid.goToLastPage();
 
-      var overlay :DrawEntryView = new DrawEntryView( m_activeEntry,
+      Debug.assertNull( m_activeDetailsView, "There was still another " +
+         "DrawEntryDetailsView active while switching to draw mode!" );
+
+      m_activeDrawView = new DrawEntryView( m_activeEntry,
          EntryView( m_entryGrid.getViewForItem( m_activeEntry ) ).getDrawingArea() );
-      overlay.addEventListener( Event.COMPLETE, this, editEntryDetails );
-      activateOverlay( overlay );
+      m_activeDrawView.addEventListener( Event.COMPLETE, this, editEntryDetails );
+
+      var overlayContainer :Container = new Container();
+      overlayContainer.addContent( m_activeDrawView, StretchModes.UNIFORM,
+         HorizontalAligns.LEFT, VerticalAligns.TOP );
+      m_entryOverlayStack.addContent( overlayContainer );
 
       // Delay showing the overlay until the zoom animation is complete.
-      var zoomAnimation :IAnimation = editedEntryZoom( true );
+      var zoomAnimation :IAnimation = drawEntryZoom( true );
       zoomAnimation.addEventListener( Event.COMPLETE, this, showOverlayStack );
-      m_overlayStack.fade( 0 );
+      m_entryOverlayStack.fade( 0 );
       Animator.getInstance().run( zoomAnimation );
    }
 
    private function editEntryDetails() :Void {
       m_state = EntriesViewState.EDIT_DETAILS;
 
-      var overlay :EditEntryDetailsView = new EditEntryDetailsView( m_activeEntry );
-      overlay.addEventListener( Event.COMPLETE, this, saveEntry );
-      activateOverlay( overlay );
-      Animator.getInstance().run( editedEntryZoom( true ) );
+      Debug.assertNull( m_activeDetailsView, "There was still another " +
+         "EditEntryDetailsView active while switching to details mode!" );
+      m_activeDetailsView = new EditEntryDetailsView( m_activeEntry );
+      m_activeDetailsView.addEventListener( Event.COMPLETE, this, saveEntry );
+
+      m_entryOverlayStack.removeContent( m_entryOverlayStack.getSelectedComponent() );
+      m_activeDrawView = null;
+
+      m_modalOverlayDisplay.showOverlay( m_activeDetailsView );
    }
 
    private function saveEntry() :Void {
@@ -193,6 +208,8 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       // the general view.
       m_activeEntry.addEventListener( EntryChangeEvent.DIRTY,
          this, finishEditMode );
+
+      m_modalOverlayDisplay.hideOverlay( m_activeDetailsView );
 
       // TODO: Find a better design approach for this.
       EntryView( m_entryGrid.getViewForItem( m_activeEntry ) ).save();
@@ -203,23 +220,22 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
          this, finishEditMode );
 
       m_activeEntry = null;
-      activateOverlay( null );
       Animator.getInstance().run( generalViewZoom( true ) );
       m_state = EntriesViewState.VIEW_ALL;
    }
 
-   private function editedEntryZoom( animate :Boolean ) :IAnimation {
-      if ( m_currentOverlay == null ) {
+   private function drawEntryZoom( animate :Boolean ) :IAnimation {
+      if ( m_activeDrawView == null ) {
          return null;
       }
 
       Debug.assertFuzzyEqual(
-         m_currentOverlay.getDrawingAreaSize().x,
-         m_currentOverlay.getDrawingAreaSize().y,
+         m_activeDrawView.getDrawingAreaSize().x,
+         m_activeDrawView.getDrawingAreaSize().y,
          "The drawing area must be a square."
        );
-      var drawingSize :Number = m_currentOverlay.getDrawingAreaSize().x;
-      var drawingPosition :Point2D = m_currentOverlay.getDrawingAreaPosition();
+      var drawingSize :Number = m_activeDrawView.getDrawingAreaSize().x;
+      var drawingPosition :Point2D = m_activeDrawView.getDrawingAreaPosition();
 
       return entryZoom( drawingPosition, drawingSize, animate );
    }
@@ -245,32 +261,21 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       return Animations.zoomTo( m_mainContentClip, new Point2D( 0, 0 ), 1, animate );
    }
 
-   private function activateOverlay( overlay :IDrawingAreaOverlay ) :Void {
-      if ( m_overlayStack.getSelectedComponent() != null ) {
-         m_overlayStack.removeContent( m_overlayStack.getSelectedComponent() );
-      }
-
-      m_currentOverlay = overlay;
-      if ( overlay != null ) {
-         var overlayContainer :Container = new Container();
-         overlayContainer.addContent( overlay, StretchModes.UNIFORM,
-            HorizontalAligns.LEFT, VerticalAligns.TOP );
-         m_overlayStack.addContent( overlayContainer );
-      }
-   }
-
    private function showOverlayStack() :Void {
-      Animator.getInstance().run( Animations.fadeIn( m_overlayStack ) );
+      Animator.getInstance().run( Animations.fadeIn( m_entryOverlayStack ) );
    }
 
    private var m_entries :List;
    private var m_configuration :Configuration;
 
+   private var m_modalOverlayDisplay :ModalOverlayDisplay;
+
    private var m_state :EntriesViewState;
    // The entry which is currently edited.
    private var m_activeEntry :Entry;
-   private var m_overlayStack :Stack;
-   private var m_currentOverlay :IDrawingAreaOverlay;
+   private var m_entryOverlayStack :Stack;
+   private var m_activeDrawView :DrawEntryView;
+   private var m_activeDetailsView :EditEntryDetailsView;
 
    private var m_mainContainer :MultiContainer;
    private var m_entriesContainer :StaticContainer;

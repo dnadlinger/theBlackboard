@@ -1,17 +1,16 @@
 import at.klickverbot.event.events.Event;
 import at.klickverbot.graphics.Point2D;
+import at.klickverbot.theBlackboard.model.Entry;
 import at.klickverbot.theBlackboard.view.DrawingToolbox;
-import at.klickverbot.theBlackboard.view.IDrawingAreaOverlay;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
-import at.klickverbot.theBlackboard.model.Entry;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.Spacer;
 import at.klickverbot.ui.components.drawingArea.DrawingArea;
 import at.klickverbot.ui.components.themed.MultiContainer;
 
 class at.klickverbot.theBlackboard.view.DrawEntryView
-   extends CustomSizeableComponent implements IDrawingAreaOverlay {
+   extends CustomSizeableComponent {
 
    public function DrawEntryView( model :Entry, target :DrawingArea ) {
       super();

@@ -19,8 +19,7 @@ class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
    public static var ENTRIES_DISPLAY_CONTAINER :AppClipId = new AppClipId( "entriesDisplayContainer" );
    public static var DRAW_ENTRY_CONTAINER :AppClipId = new AppClipId( "drawEntryContainer" );
    public static var DRAWING_TOOLS_CONTAINER :AppClipId = new AppClipId( "drawingToolsContainer" );
-   public static var EDIT_ENTRY_DETAILS_CONTAINER :AppClipId = new AppClipId( "editEntryDetailsContainer" );
-   public static var ENTRY_DETAILS_FORM_CONTAINER :AppClipId = new AppClipId( "entryDetailsFormContainer" );
+   public static var ENTRY_DETAILS_CONTAINER :AppClipId = new AppClipId( "entryDetailsContainer" );
 
    public static var DEFAULT_TEXT_BOX :AppClipId = new AppClipId( "defaultTextBox" );
 
@@ -48,6 +47,7 @@ class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
    public static var BACKGROUND :AppClipId = new AppClipId( "background" );
    public static var BACK_SCENERY :AppClipId = new AppClipId( "backScenery" );
    public static var FRONT_SCENERY :AppClipId = new AppClipId( "frontScenery" );
+   public static var MODAL_OVERLAY_BACKGROUND :AppClipId = new AppClipId( "modalOverlayBackground" );
 
    public static var DEFAULT_POINTER :AppClipId = new AppClipId( "defaultPointer" );
 }

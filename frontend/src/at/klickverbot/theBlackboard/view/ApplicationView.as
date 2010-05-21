@@ -9,6 +9,7 @@ import at.klickverbot.theBlackboard.model.ApplicationModel;
 import at.klickverbot.theBlackboard.model.ApplicationModelChangeEvent;
 import at.klickverbot.theBlackboard.view.CaptchaAuthView;
 import at.klickverbot.theBlackboard.view.EntriesView;
+import at.klickverbot.theBlackboard.view.ModalOverlayDisplay;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.Pointer;
 import at.klickverbot.theme.SizeConstraints;
@@ -49,9 +50,12 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
    }
 
    private function setupUi() :Void {
+      m_overlayDisplay = new ModalOverlayDisplay();
+
       m_background = new Static( AppClipId.BACKGROUND );
 
-      m_entriesView = new EntriesView( m_model.entries, m_model.configuration );
+      m_entriesView = new EntriesView( m_model.entries, m_model.configuration,
+         m_overlayDisplay );
       m_entriesView.addUnhandledEventsListener( this, dispatchEvent );
 
       m_captchaAuthView = new CaptchaAuthView( m_model.captchaRequests,
@@ -105,7 +109,11 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
 
       // Create the main container.
       if ( !m_entriesView.create( event.themeTarget ) ) {
-         Logger.getLog( "MainView" ).error( "Could not create the entries view" );
+         Logger.getLog( "MainView" ).error( "Could not create the entries view!" );
+      }
+
+      if ( !m_overlayDisplay.create( event.themeTarget ) ) {
+         Logger.getLog( "MainView" ).error( "Could not create the overlay display!" );
       }
 
       // Set the default custom pointer.
@@ -135,6 +143,7 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
       var height :Number = constraints.limitHeight( Stage.height );
       m_background.resize( width, height );
       m_entriesView.resize( width, height );
+      m_overlayDisplay.resize( width, height );
    }
 
    private function handleNewServiceError( event :CollectionEvent ) :Void {
@@ -157,4 +166,5 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
    private var m_background :Static;
    private var m_entriesView :EntriesView;
    private var m_captchaAuthView :CaptchaAuthView;
+   private var m_overlayDisplay :ModalOverlayDisplay;
 }

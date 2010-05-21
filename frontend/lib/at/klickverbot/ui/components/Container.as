@@ -1,14 +1,14 @@
-import at.klickverbot.ui.layout.stretching.StretchModes;
-import at.klickverbot.ui.layout.verticalAlign.VerticalAligns;
-import at.klickverbot.ui.layout.horizontalAlign.HorizontalAligns;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.ui.components.ContainerContent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.IUiComponent;
+import at.klickverbot.ui.layout.horizontalAlign.HorizontalAligns;
 import at.klickverbot.ui.layout.horizontalAlign.IHorizontalAlign;
 import at.klickverbot.ui.layout.stretching.IStretchMode;
+import at.klickverbot.ui.layout.stretching.StretchModes;
 import at.klickverbot.ui.layout.verticalAlign.IVerticalAlign;
+import at.klickverbot.ui.layout.verticalAlign.VerticalAligns;
 
 class at.klickverbot.ui.components.Container extends CustomSizeableComponent
    implements IUiComponent {
@@ -130,8 +130,13 @@ class at.klickverbot.ui.components.Container extends CustomSizeableComponent
       m_contents = new Array();
    }
 
+   public function getContentCount() :Number {
+      return m_contents.length;
+   }
+
    private function updateContent( target :ContainerContent ) :Void {
       var size :Point2D = getSize();
+
       with ( target ) {
          stretchMode.fitToSize( component, size );
          horizontalAlign.move( component, size.x );
