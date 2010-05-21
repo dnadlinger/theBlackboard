@@ -6,9 +6,6 @@ class at.klickverbot.event.events.Event extends CoreObject {
 
    public static var ENTER_FRAME :String = "enterFrame";
 
-   public static var LOAD :String = "load";
-   public static var UNLOAD :String = "unload";
-
    public function Event( type: String, target :Object ) {
       m_type = type;
       m_target = target;

@@ -63,6 +63,7 @@ class at.klickverbot.ui.components.RemoteImage extends CustomSizeableComponent {
       httpStatus :Number ) :Void {
       Debug.LIBRARY_LOG.error( "Could not load image (errorCode: " + errorCode +
          ", httpStatus: " + httpStatus + "): " + this );
+      dispatchEvent( new Event( Event.EXTERN_FAILED, this ) );
    }
 
    private function getInstanceInfo() :Array {

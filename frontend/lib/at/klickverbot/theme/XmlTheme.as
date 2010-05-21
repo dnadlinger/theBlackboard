@@ -58,7 +58,7 @@ class at.klickverbot.theme.XmlTheme
          return;
       }
 
-      dispatchEvent( new ThemeEvent( ThemeEvent.UNLOAD, this, m_themeTarget ) );
+      dispatchEvent( new ThemeEvent( ThemeEvent.DESTROY, this, m_themeTarget ) );
       m_ready = false;
 
       m_themeSwfLoader.unloadClip( m_themeTarget );

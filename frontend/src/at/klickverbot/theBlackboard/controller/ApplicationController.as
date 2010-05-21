@@ -1,7 +1,5 @@
-import at.klickverbot.theBlackboard.view.event.CaptchaAuthViewEvent;
 import at.klickverbot.debug.Logger;
 import at.klickverbot.event.IEventDispatcher;
-import at.klickverbot.event.events.Event;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
 import at.klickverbot.rpc.IOperation;
@@ -18,6 +16,7 @@ import at.klickverbot.theBlackboard.service.IEntriesService;
 import at.klickverbot.theBlackboard.service.IServiceFactory;
 import at.klickverbot.theBlackboard.service.ServiceLocation;
 import at.klickverbot.theBlackboard.service.ServiceType;
+import at.klickverbot.theBlackboard.view.event.CaptchaAuthViewEvent;
 import at.klickverbot.theBlackboard.view.event.EntryViewEvent;
 
 class at.klickverbot.theBlackboard.controller.ApplicationController {
@@ -39,13 +38,12 @@ class at.klickverbot.theBlackboard.controller.ApplicationController {
    }
 
    public function listenTo( target :IEventDispatcher ) :Void {
-      target.addEventListener( Event.LOAD, this, startApplication );
       target.addEventListener( EntryViewEvent.LOAD_ENTRY, this, loadEntry );
       target.addEventListener( EntryViewEvent.SAVE_ENTRY, this, saveEntry );
       target.addEventListener( CaptchaAuthViewEvent.SOLVE, this, solveCaptcha );
    }
 
-   private function startApplication( event :Event ) :Void {
+   public function startApplication() :Void {
       var operation :IOperation = m_configLocationService.loadConfigLocation();
       operation.addEventListener( ResultEvent.RESULT, this, handleConfigLocationResult );
       operation.addEventListener( FaultEvent.FAULT, this, handleFault );

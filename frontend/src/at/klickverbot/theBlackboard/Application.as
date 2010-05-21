@@ -1,7 +1,5 @@
 import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Logger;
-import at.klickverbot.event.EventDispatcher;
-import at.klickverbot.event.events.Event;
 import at.klickverbot.theBlackboard.controller.ApplicationController;
 import at.klickverbot.theBlackboard.model.ApplicationModel;
 import at.klickverbot.theBlackboard.service.ServiceFactory;
@@ -40,10 +38,7 @@ class at.klickverbot.theBlackboard.Application extends CoreObject {
       m_controller = new ApplicationController( m_model, m_serviceFactory );
       m_controller.listenTo( m_view );
 
-      // Start the application by firing the initial event.
-      var startupDispatcher :EventDispatcher = new EventDispatcher();
-      m_controller.listenTo( startupDispatcher );
-      startupDispatcher.dispatchEvent( new Event( Event.LOAD, null ) );
+      m_controller.startApplication();
 
       Logger.getLog( "Application" ).info( "done." );
    }
