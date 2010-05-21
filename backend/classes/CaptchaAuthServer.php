@@ -21,8 +21,7 @@ class CaptchaAuthServer {
 
    public function solveCaptcha( array $params ) {
       MethodUtils::checkSignature( array( Types::INT, Types::STRING ), $params );
-      return new ReturnValue( call_user_func_array(
-         array( $this->captchaAuth, 'solveCaptcha' ), $params ) );
+      call_user_func_array( array( $this->captchaAuth, 'solveCaptcha' ), $params );
    }
 
    private $captchaAuth;

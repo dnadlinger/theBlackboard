@@ -77,8 +77,9 @@ class at.klickverbot.theBlackboard.controller.ApplicationController {
       m_captchaAuthService = m_serviceFactory.createCaptchaAuthService(
          m_model.configuration.captchaAuthServiceLocation, [ m_authHandler ] );
 
-      m_authHandler.setAuthenticator( "captcha",
-         new CaptchaAuthenticator( m_captchaAuthService, m_model ) );
+      m_captchaAuthenticator =
+         new CaptchaAuthenticator( m_captchaAuthService, m_model );
+      m_authHandler.setAuthenticator( "captcha", m_captchaAuthenticator );
 
       var operation :IOperation = m_entriesService.getAllEntries( ENTRIES_SORTING_TYPE );
       operation.addEventListener( ResultEvent.RESULT, this, handleEntriesResult );
