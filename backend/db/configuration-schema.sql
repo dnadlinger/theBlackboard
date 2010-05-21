@@ -5,4 +5,4 @@ CREATE TABLE IF NOT EXISTS `configuration` (
   `value` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`key`)
-)
+);

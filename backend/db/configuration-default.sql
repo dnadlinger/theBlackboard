@@ -4,8 +4,9 @@ INSERT INTO `configuration` (`id`, `key`, `value`) VALUES
 (3, 'drawingSize', '200'),
 (4, 'entryPreloadLimit', '30'),
 (5, 'entryServiceType', 'xml-rpc'),
-(6, 'entryServiceInfo', 'backend/xmlrpc.php'),
+(6, 'entryServiceInfo', 'backend/xml-rpc.php'),
 (7, 'authServiceType', 'xml-rpc'),
-(8, 'authServiceInfo', 'backend/xmlrpc.php'),
+(8, 'authServiceInfo', 'backend/xml-rpc.php'),
 (9, 'captchaAuthServiceType', 'xml-rpc'),
-(10, 'captchaAuthServiceInfo', 'backend/xmlrpc.php');
+(10, 'captchaAuthServiceInfo', 'backend/xml-rpc.php'),
+(11, 'captchaAuthImageUrl', 'backend/captchaImage.php');
