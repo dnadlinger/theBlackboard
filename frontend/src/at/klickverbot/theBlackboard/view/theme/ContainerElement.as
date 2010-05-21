@@ -5,12 +5,13 @@ class at.klickverbot.theBlackboard.view.theme.ContainerElement {
    public static var NEW_DRARING_AREA :String = "drawingArea";
    public static var NEW_TOOLBOX :String = "toolbox";
 
-   public static var EDIT_DETAILS_DRARING_AREA :String = "drawingArea";
-   public static var EDIT_DETAILS_FORM :String = "form";
-
    public static var DETAILS_FORM_CAPTION :String = "caption";
    public static var DETAILS_FORM_AUTHOR :String = "author";
    public static var DETAILS_FORM_SUBMIT :String = "submit";
+
+   public static var CAPTCHA_IMAGE :String = "image";
+   public static var CAPTCHA_INPUT :String = "input";
+   public static var CAPTCHA_SUBMIT :String = "submit";
 
    public static var ENTRY_TOOLTIP_AUTHOR :String = "author";
    public static var ENTRY_TOOLTIP_CAPTION :String = "caption";

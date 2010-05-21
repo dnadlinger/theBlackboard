@@ -59,7 +59,7 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
       m_entriesView.addUnhandledEventsListener( this, dispatchEvent );
 
       m_captchaAuthView = new CaptchaAuthView( m_model.captchaRequests,
-         m_model.configuration );
+         m_model.configuration, m_overlayDisplay );
       m_captchaAuthView.addUnhandledEventsListener( this, dispatchEvent );
 
       // Add and use the default pointer which is defined in the theme.

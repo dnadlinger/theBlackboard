@@ -1,6 +1,6 @@
 import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.event.events.Event;
-import at.klickverbot.theBlackboard.model.Entry;
+import at.klickverbot.theBlackboard.model.CaptchaRequest;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
 import at.klickverbot.ui.components.CustomSizeableComponent;
@@ -9,29 +9,25 @@ import at.klickverbot.ui.components.themed.Button;
 import at.klickverbot.ui.components.themed.MultiContainer;
 import at.klickverbot.ui.components.themed.TextBox;
 
-class at.klickverbot.theBlackboard.view.EditEntryDetailsView
+class at.klickverbot.theBlackboard.view.CaptchaForm
    extends CustomSizeableComponent {
 
-   public function EditEntryDetailsView( model :Entry ) {
+   public function CaptchaForm( request :CaptchaRequest ) {
       super();
 
-      m_model = model;
+      m_model = request;
 
-      m_formContainer = new MultiContainer( AppClipId.ENTRY_DETAILS_CONTAINER );
+      m_formContainer = new MultiContainer( AppClipId.CAPTCHA_AUTH_CONTAINER );
 
-      m_authorText = new TextBox( AppClipId.DEFAULT_TEXT_BOX );
+      m_inputText = new TextBox( AppClipId.DEFAULT_TEXT_BOX );
       m_formContainer.addContent(
-         ContainerElement.DETAILS_FORM_AUTHOR, m_authorText );
-
-      m_captionText = new TextBox( AppClipId.DEFAULT_TEXT_BOX );
-      m_formContainer.addContent(
-         ContainerElement.DETAILS_FORM_CAPTION, m_captionText );
+         ContainerElement.CAPTCHA_INPUT, m_inputText );
 
       m_submitButton = new Button( AppClipId.NEXT_STEP_BUTTON );
       m_submitButton.oneShotMode = true;
       m_submitButton.addEventListener( ButtonEvent.PRESS, this, handleSubmitPress );
       m_formContainer.addContent(
-         ContainerElement.DETAILS_FORM_SUBMIT, m_submitButton );
+         ContainerElement.CAPTCHA_SUBMIT, m_submitButton );
    }
 
    private function createUi() :Boolean {
@@ -44,8 +40,7 @@ class at.klickverbot.theBlackboard.view.EditEntryDetailsView
          return false;
       }
 
-      m_authorText.text = ( m_model.author == null ) ? "" : m_model.author;
-      m_captionText.text = ( m_model.author == null ) ? "" : m_model.author;
+      m_inputText.text = "";
 
       updateSizeDummy();
       return true;
@@ -65,20 +60,23 @@ class at.klickverbot.theBlackboard.view.EditEntryDetailsView
       m_formContainer.resize( width, height );
    }
 
-   private function handleSubmitPress( event :ButtonEvent ) :Void {
-      // TODO: Validity checks here.
-      m_model.author = m_authorText.text;
-      m_model.caption = m_captionText.text;
+   public function getRequest() :CaptchaRequest {
+      return m_model;
+   }
 
+   public function getSolution() :String {
+      return m_inputText.text;
+   }
+
+   private function handleSubmitPress( event :ButtonEvent ) :Void {
       dispatchEvent( new Event( Event.COMPLETE, this ) );
    }
 
-   private var m_model :Entry;
+   private var m_model :CaptchaRequest;
 
    private var m_drawingAreaDummy :Spacer;
 
    private var m_formContainer :MultiContainer;
-   private var m_authorText :TextBox;
-   private var m_captionText :TextBox;
+   private var m_inputText :TextBox;
    private var m_submitButton :Button;
 }
