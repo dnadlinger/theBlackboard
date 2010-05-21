@@ -20,6 +20,13 @@ class at.klickverbot.theBlackboard.view.event.CaptchaAuthViewEvent extends Event
       return m_solution;
    }
 
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( [
+         "request: " + m_request,
+         "solution: " + m_solution
+      ] );
+   }
+
    private var m_request :CaptchaRequest;
    private var m_solution :String;
 }
