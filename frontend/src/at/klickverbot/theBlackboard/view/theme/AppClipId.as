@@ -41,6 +41,7 @@ class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
    public static var SIZE_3_BUTTON :AppClipId = new AppClipId( "size3Button" );
    public static var SIZE_4_BUTTON :AppClipId = new AppClipId( "size4Button" );
    public static var SIZE_5_BUTTON :AppClipId = new AppClipId( "size5Button" );
+   public static var ERASER_BUTTON :AppClipId = new AppClipId( "eraserButton" );
    public static var UNDO_BUTTON :AppClipId = new AppClipId( "undoButton" );
    public static var REDO_BUTTON :AppClipId = new AppClipId( "redoButton" );
    public static var NEXT_STEP_BUTTON :AppClipId = new AppClipId( "nextStepButton" );

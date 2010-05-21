@@ -18,6 +18,7 @@ class at.klickverbot.theBlackboard.view.theme.ContainerElement {
 
    public static var TOOLS_COLORS :String = "colors";
    public static var TOOLS_SIZES :String = "sizes";
+   public static var TOOLS_ERASER :String = "eraser";
    public static var TOOLS_UNDO :String = "undo";
    public static var TOOLS_REDO :String = "redo";
    public static var TOOLS_NEXT_STEP :String = "nextStep";

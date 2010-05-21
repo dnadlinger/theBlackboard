@@ -1,13 +1,14 @@
-import at.klickverbot.event.events.Event;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.event.events.DrawingAreaEvent;
+import at.klickverbot.event.events.Event;
 import at.klickverbot.theBlackboard.view.ButtonForNumber;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
 import at.klickverbot.ui.components.HStrip;
 import at.klickverbot.ui.components.McComponent;
 import at.klickverbot.ui.components.drawingArea.DrawingArea;
+import at.klickverbot.ui.components.drawingArea.DrawingTool;
 import at.klickverbot.ui.components.themed.Button;
 import at.klickverbot.ui.components.themed.MultiContainer;
 
@@ -92,6 +93,11 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
 
       m_toolboxContainer.addContent( ContainerElement.TOOLS_SIZES, m_sizeStrip );
 
+      // Add the eraser button.
+      m_eraserButton = new Button( AppClipId.ERASER_BUTTON );
+      m_eraserButton.addEventListener( ButtonEvent.PRESS, this, handleEraserButtonPress );
+      m_toolboxContainer.addContent( ContainerElement.TOOLS_ERASER, m_eraserButton );
+
       // Add the history buttons.
       m_undoButton = new Button( AppClipId.UNDO_BUTTON );
       m_undoButton.addEventListener( ButtonEvent.PRESS, this, handleUndoButtonPress );
@@ -114,6 +120,17 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
 
    private function handleColorButtonPress( event :ButtonEvent ) :Void {
       var pressedButton :Button = Button( event.target );
+
+      if ( m_drawingArea.getActiveTool() == DrawingTool.ERASER ) {
+         for ( var i :Number = 0; i < m_buttonsForSize.length; ++i ) {
+            ButtonForNumber( m_buttonsForSize[ i ] ).button.setActive( true );
+         }
+         m_oldDeactivatedSizeButton.setActive( false );
+         m_oldDeactivatedSizeButton = null;
+
+         m_eraserButton.setActive( true );
+         m_drawingArea.setActiveTool( DrawingTool.PEN );
+      }
 
       for ( var i :Number = 0; i < m_buttonsForColor.length; ++i ) {
          ButtonForNumber( m_buttonsForColor[ i ] ).button.setActive( true );
@@ -153,6 +170,28 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
       return null;
    }
 
+   private function handleEraserButtonPress( event :ButtonEvent ) :Void {
+      // Activate all the color buttons.
+      for ( var i :Number = 0; i < m_buttonsForColor.length; ++i ) {
+         ButtonForNumber( m_buttonsForColor[ i ] ).button.setActive( true );
+      }
+
+      // Deactivate the size buttons.
+      for ( var i :Number = 0; i < m_buttonsForSize.length; ++i ) {
+         var button :Button = ButtonForNumber( m_buttonsForSize[ i ] ).button;
+
+         if ( !button.isActive() ) {
+            Debug.assertNull( m_oldDeactivatedSizeButton, "Multiple size " +
+               "buttons were deactivated when clicking the eraser button" );
+            m_oldDeactivatedSizeButton = button;
+         }
+
+         button.setActive( false );
+      }
+
+      m_eraserButton.setActive( false );
+      m_drawingArea.setActiveTool( DrawingTool.ERASER );
+   }
 
    private function handleUndoButtonPress( event :ButtonEvent ) :Void {
       m_drawingArea.undo( 1 );
@@ -194,15 +233,14 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
    private var m_drawingArea :DrawingArea;
 
    private var m_toolboxContainer :MultiContainer;
-
    private var m_colorStrip :HStrip;
    private var m_buttonsForColor :Array;
-
    private var m_sizeStrip :HStrip;
    private var m_buttonsForSize :Array;
-
+   private var m_eraserButton :Button;
    private var m_undoButton :Button;
    private var m_redoButton :Button;
-
    private var m_nextStepButton :Button;
+
+   private var m_oldDeactivatedSizeButton :Button;
 }
