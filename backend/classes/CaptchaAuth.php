@@ -79,7 +79,9 @@ class CaptchaAuth {
    private function createCaptchaContent() {
       // TODO: Make captcha length configurable?
       // Just a crappy attempt to create a suitable random string.
-      return substr( base64_encode( md5( mt_rand() ) ), 0, 6 );
+      $result = strtolower( substr( base64_encode( md5( mt_rand() ) ), 0, 6 ) );
+      $result = strtr( $result, 'o', '0' );
+      return $result;
    }
 
    private $dbConn;
