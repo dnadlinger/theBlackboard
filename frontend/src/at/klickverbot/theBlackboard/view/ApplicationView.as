@@ -112,6 +112,10 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
          Logger.getLog( "MainView" ).error( "Could not create the entries view!" );
       }
 
+      if ( !m_captchaAuthView.create( event.themeTarget ) ) {
+         Logger.getLog( "MainView" ).error( "Could not create the captcha auth view!" );
+      }
+
       if ( !m_overlayDisplay.create( event.themeTarget ) ) {
          Logger.getLog( "MainView" ).error( "Could not create the overlay display!" );
       }
