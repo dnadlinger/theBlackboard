@@ -44,7 +44,27 @@ class at.klickverbot.ui.animation.Animator extends CoreObject {
       }
    }
 
-   // TODO: Add some means to stop an animation.
+   /**
+    * Stops a currently running animation without jumping to its end.
+    *
+    * Be aware that any listeners for animation completion might never get
+    * called if you don't manually jump to the animation end afterwards.
+    *
+    * @param animation The animation to stop.
+    * @return Whether the animation could be stopped (i.e. if it was running).
+    */
+   public function stop( animation :IAnimation ) :Boolean {
+      var currentAnimation :IAnimation;
+      var i :Number = m_animations.length;
+      while ( currentAnimation = m_animations[ --i ] ) {
+         if ( currentAnimation == animation ) {
+            m_animations.splice( i, 1 );
+            return true;
+         }
+      }
+
+      return false;
+   }
 
    private function render( event :Event ) :Void {
       var deltaTime :Number = ( getTimer() - m_lastTicks ) * 0.001;
