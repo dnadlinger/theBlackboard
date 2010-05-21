@@ -11,6 +11,7 @@ import at.klickverbot.ui.components.CustomSizeableComponent;
 class at.klickverbot.theBlackboard.view.CaptchaAuthView extends CustomSizeableComponent {
    public function CaptchaAuthView( requests :List, configuration :Configuration,
       overlayDisplay :ModalOverlayDisplay ) {
+
       m_requests = requests;
       m_configuration = configuration;
       m_overlayDisplay = overlayDisplay;
@@ -21,7 +22,8 @@ class at.klickverbot.theBlackboard.view.CaptchaAuthView extends CustomSizeableCo
    private function showForm() :Void {
       var request :CaptchaRequest = CaptchaRequest( m_requests.getLast() );
 
-      var form :CaptchaForm = new CaptchaForm( request );
+      // TODO: Just hand off the URL?
+      var form :CaptchaForm = new CaptchaForm( m_configuration, request );
       form.addEventListener( Event.COMPLETE, this, submitCaptcha );
 
       m_overlayDisplay.showOverlay( form );

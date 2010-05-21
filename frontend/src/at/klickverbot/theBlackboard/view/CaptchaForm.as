@@ -1,9 +1,11 @@
 import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.event.events.Event;
 import at.klickverbot.theBlackboard.model.CaptchaRequest;
+import at.klickverbot.theBlackboard.model.Configuration;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
 import at.klickverbot.ui.components.CustomSizeableComponent;
+import at.klickverbot.ui.components.RemoteImage;
 import at.klickverbot.ui.components.Spacer;
 import at.klickverbot.ui.components.themed.Button;
 import at.klickverbot.ui.components.themed.MultiContainer;
@@ -12,12 +14,17 @@ import at.klickverbot.ui.components.themed.TextBox;
 class at.klickverbot.theBlackboard.view.CaptchaForm
    extends CustomSizeableComponent {
 
-   public function CaptchaForm( request :CaptchaRequest ) {
+   public function CaptchaForm( configuration :Configuration,
+      request :CaptchaRequest ) {
       super();
 
       m_model = request;
 
       m_formContainer = new MultiContainer( AppClipId.CAPTCHA_AUTH_CONTAINER );
+
+      m_image = new RemoteImage( configuration.captchaAuthImageUrl + "?id=" +
+         request.id );
+      m_formContainer.addContent( ContainerElement.CAPTCHA_IMAGE, m_image );
 
       m_inputText = new TextBox( AppClipId.DEFAULT_TEXT_BOX );
       m_formContainer.addContent(
@@ -31,7 +38,7 @@ class at.klickverbot.theBlackboard.view.CaptchaForm
    }
 
    private function createUi() :Boolean {
-      if( !super.createUi() ) {
+      if ( !super.createUi() ) {
          return false;
       }
 
@@ -77,6 +84,7 @@ class at.klickverbot.theBlackboard.view.CaptchaForm
    private var m_drawingAreaDummy :Spacer;
 
    private var m_formContainer :MultiContainer;
+   private var m_image :RemoteImage;
    private var m_inputText :TextBox;
    private var m_submitButton :Button;
 }

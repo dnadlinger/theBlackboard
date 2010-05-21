@@ -61,6 +61,9 @@ class Core {
          $this->frontController->addResolver( new AuthResolverProxy(
             new ClassResolver( $name, $server ), $authenticator ) );
       }
+
+      $this->frontController->addResolver(
+         new CaptchaImageResolver( $captchaAuth ) );
    }
 
    private $dbConnector;

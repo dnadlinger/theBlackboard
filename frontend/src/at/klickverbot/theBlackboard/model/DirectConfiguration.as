@@ -29,4 +29,8 @@ class at.klickverbot.theBlackboard.model.DirectConfiguration extends Configurati
    public function setCaptchaAuthServiceLocation( to :ServiceLocation ) :Void {
       m_captchaAuthServiceLocation = to;
    }
+
+   public function setCaptchaAuthImageUrl( to :String ) :Void {
+      m_captchaAuthImageUrl = to;
+   }
 }

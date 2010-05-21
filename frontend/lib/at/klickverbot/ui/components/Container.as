@@ -35,6 +35,7 @@ class at.klickverbot.ui.components.Container extends CustomSizeableComponent
          }
       }
 
+
       // Now that all already added contents have been put on stage, the initial
       // size of the container is known and the content components can be scaled
       // and positioned according to the policies.

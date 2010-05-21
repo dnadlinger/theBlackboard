@@ -21,7 +21,7 @@ class Entries {
 
       $resultIds = array();
       while( $row = $queryResult->fetch() ) {
-         array_push( $resultIds, (int)$row[ 'id' ] );
+         $resultIds[] = (int)$row[ 'id' ];
       }
 
       return $resultIds;
@@ -50,7 +50,7 @@ class Entries {
 
       $resultIds = array();
       while( $row = $queryResult->fetch() ) {
-         array_push( $resultIds, (int)$row[ 'id' ] );
+         $resultIds[] = (int)$row[ 'id' ];
       }
 
       return $resultIds;

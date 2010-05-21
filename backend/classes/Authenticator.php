@@ -47,10 +47,10 @@ class Authenticator {
          $currentSet = array();
 
          if ( $row[ 'need_captcha' ]  ) {
-            array_push( $currentSet, AuthMethods::CAPTCHA );
+            $currentSet[] = AuthMethods::CAPTCHA;
          }
 
-         array_push( $result, $currentSet );
+         $result[] = $currentSet;
       }
 
       return $result;

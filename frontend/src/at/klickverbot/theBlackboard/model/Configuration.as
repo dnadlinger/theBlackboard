@@ -37,6 +37,10 @@ class at.klickverbot.theBlackboard.model.Configuration extends CoreObject {
       return m_captchaAuthServiceLocation;
    }
 
+   public function get captchaAuthImageUrl() :String {
+      return m_captchaAuthImageUrl;
+   }
+
    private var m_availableThemes :Array;
    private var m_defaultTheme :String;
    private var m_drawingSize :Number;
@@ -44,4 +48,5 @@ class at.klickverbot.theBlackboard.model.Configuration extends CoreObject {
    private var m_entryServiceLocation :ServiceLocation;
    private var m_authServiceLocation :ServiceLocation;
    private var m_captchaAuthServiceLocation :ServiceLocation;
+   private var m_captchaAuthImageUrl :String;
 }

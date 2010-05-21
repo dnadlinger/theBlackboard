@@ -8,6 +8,9 @@ class Constants {
    const LIBS_DIR = 'libs';
    const LIBS_FILE_XMLRPC = 'kd_xmlRpc.php';
 
+   const ASSET_DIR = 'assets';
+   const CAPTCHA_FONT = 'trebuc.ttf';
+
    const TIMEZONE = 'UTC';
 }
 ?>

@@ -72,6 +72,11 @@ class at.klickverbot.theBlackboard.service.adapter.ConfigLoadOperation
       }
       config.setCaptchaAuthServiceLocation( captchaAuthLocation );
 
+      if ( !checkSettingExists( source, "captchaAuthImageUrl" ) ) {
+         return;
+      }
+      config.setCaptchaAuthImageUrl( String( source[ "captchaAuthImageUrl" ] ) );
+
       dispatchEvent( new ResultEvent( ResultEvent.RESULT, this, config ) );
    }
 

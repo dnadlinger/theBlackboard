@@ -2,10 +2,9 @@ import at.klickverbot.core.CoreObject;
 import at.klickverbot.util.McUtils;
 
 class at.klickverbot.util.DummyClipManager extends CoreObject {
-
    private function DummyClipManager() {
       m_container = _root.createEmptyMovieClip( "dummyClipManager",
-         _root.getNextHighestDepth() );
+         100 );
    }
 
    /**

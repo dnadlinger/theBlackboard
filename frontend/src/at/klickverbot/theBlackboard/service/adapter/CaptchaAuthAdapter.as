@@ -15,7 +15,6 @@ class at.klickverbot.theBlackboard.service.adapter.CaptchaAuthAdapter
    }
 
    public function getCaptcha( methodId :String ) :IOperation {
-      // TODO: Implement real operation.
       return new AdapterOperation( m_backend.getCaptcha( methodId ),
          m_backendFilters );
    }

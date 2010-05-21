@@ -62,6 +62,19 @@ class CaptchaAuth {
       return true;
    }
 
+   public function getSolution( $id ) {
+      $statement = $this->dbConn->getPdo()->prepare(
+         'SELECT solution FROM captchaAuth WHERE id = ? LIMIT 1' );
+      $statement->execute( array( $id ) );
+
+      $resultRows = $statement->fetchAll();
+      if ( count( $resultRows ) < 1 ) {
+         throw new Exception( 'A captcha with the specified id does not exist.' );
+      }
+
+      return $resultRows[ 0 ][ 'solution' ];
+   }
+
    private function createCaptchaContent() {
       // TODO: Make captcha length configurable?
       // Just a crappy attempt to create a suitable random string.
