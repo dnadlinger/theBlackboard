@@ -8,5 +8,6 @@ class FaultCodes {
    const INTERNAL_ERROR = -1;
 
    const AUTHENTICATION_NEEDED = 1;
+   const INVALID_CAPTCHA_SOLUTION = 2;
 }
 ?>

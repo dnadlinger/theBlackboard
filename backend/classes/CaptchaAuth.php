@@ -37,7 +37,8 @@ class CaptchaAuth {
          $statement->execute( array( $id ) );
       } else {
          $this->deleteStatement->execute( array( $id ) );
-         throw new Exception( 'The captcha solution was not correct.' );
+         throw new Exception( 'The captcha solution was not correct.',
+            FaultCodes::INVALID_CAPTCHA_SOLUTION );
       }
    }
 

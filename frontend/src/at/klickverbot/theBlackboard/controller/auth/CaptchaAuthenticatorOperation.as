@@ -1,3 +1,4 @@
+import at.klickverbot.theBlackboard.service.BackendFaultCodes;
 import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.FaultEvent;
 import at.klickverbot.event.events.ResultEvent;
@@ -29,7 +30,7 @@ class at.klickverbot.theBlackboard.controller.auth.CaptchaAuthenticatorOperation
    public function solve( solution :String ) :Void {
       var operation :IOperation = m_service.solveCaptcha( m_request.id, solution );
       operation.addEventListener( ResultEvent.RESULT, this, dispatchEvent );
-      operation.addEventListener( FaultEvent.FAULT, this, dispatchEvent );
+      operation.addEventListener( FaultEvent.FAULT, this, handleSolveFault );
       operation.execute();
    }
 
@@ -38,6 +39,15 @@ class at.klickverbot.theBlackboard.controller.auth.CaptchaAuthenticatorOperation
       m_request.id = Number( event.result );
       dispatchEvent( new CaptchaAuthenticatorOperationEvent(
          CaptchaAuthenticatorOperationEvent.REQUEST, this, m_request ) );
+   }
+
+   private function handleSolveFault( event :FaultEvent ) :Void {
+      if ( event.faultCode == BackendFaultCodes.INVALID_CAPTCHA_SOLUTION ) {
+         // If the user entered an invalid captcha solution, just start over.
+         execute();
+      } else {
+         dispatchEvent( event );
+      }
    }
 
    private var m_service :ICaptchaAuthService;

@@ -5,4 +5,5 @@
  */
 class at.klickverbot.theBlackboard.service.BackendFaultCodes {
    public static var AUTHENTICATION_NEEDED :Number = 1;
+   public static var INVALID_CAPTCHA_SOLUTION :Number = 2;
 }
