@@ -5,7 +5,7 @@ import at.klickverbot.theBlackboard.model.Configuration;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
 import at.klickverbot.ui.components.CustomSizeableComponent;
-import at.klickverbot.ui.components.RemoteImage;
+import at.klickverbot.ui.components.ExternalImage;
 import at.klickverbot.ui.components.Spacer;
 import at.klickverbot.ui.components.themed.Button;
 import at.klickverbot.ui.components.themed.MultiContainer;
@@ -22,7 +22,7 @@ class at.klickverbot.theBlackboard.view.CaptchaForm
 
       m_formContainer = new MultiContainer( AppClipId.CAPTCHA_AUTH_CONTAINER );
 
-      m_image = new RemoteImage( configuration.captchaAuthImageUrl + "?id=" +
+      m_image = new ExternalImage( configuration.captchaAuthImageUrl + "?id=" +
          request.id );
       m_formContainer.addContent( ContainerElement.CAPTCHA_IMAGE, m_image );
 
@@ -84,7 +84,7 @@ class at.klickverbot.theBlackboard.view.CaptchaForm
    private var m_drawingAreaDummy :Spacer;
 
    private var m_formContainer :MultiContainer;
-   private var m_image :RemoteImage;
+   private var m_image :ExternalImage;
    private var m_inputText :TextBox;
    private var m_submitButton :Button;
 }

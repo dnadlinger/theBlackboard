@@ -5,8 +5,8 @@ import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.util.Delegate;
 import at.klickverbot.util.IMovieClipLoaderListener;
 
-class at.klickverbot.ui.components.RemoteImage extends CustomSizeableComponent {
-   public function RemoteImage( url :String ) {
+class at.klickverbot.ui.components.ExternalImage extends CustomSizeableComponent {
+   public function ExternalImage( url :String ) {
       m_url = url;
    }
 
@@ -15,6 +15,9 @@ class at.klickverbot.ui.components.RemoteImage extends CustomSizeableComponent {
          return false;
       }
 
+      // The additional container clip is needed because of a bug/limitation in
+      // the Flash player which causes loaded content to disappear if you try to
+      // resize it.
       m_imageContainerClip = m_container.createEmptyMovieClip( "imageContainer",
          m_container.getNextHighestDepth() );
 
