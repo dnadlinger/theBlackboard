@@ -14,11 +14,10 @@ import at.klickverbot.util.Delegate;
  * </ol>
  */
 class at.klickverbot.ui.mouse.PointerManager extends CoreObject {
-
    /**
     * Constructor.
-    * Initializes all the members with values that don't change the current
-    * cursor.
+    *
+    * The default values do not change the current (system) cursor.
     */
    private function PointerManager() {
       m_useCustomPointer = false;
@@ -153,9 +152,9 @@ class at.klickverbot.ui.mouse.PointerManager extends CoreObject {
 
    public function suspendCustomPointer() :Void {
       if ( m_pointerSuspensionCount == 0 ) {
-      	if ( m_useCustomPointer ) {
+         if ( m_useCustomPointer ) {
             m_pointerClip._visible = false;
-      	}
+         }
       }
 
       ++m_pointerSuspensionCount;
@@ -165,7 +164,7 @@ class at.klickverbot.ui.mouse.PointerManager extends CoreObject {
       --m_pointerSuspensionCount;
 
       if ( m_pointerSuspensionCount == 0 ) {
-      	if ( m_showPointer && m_useCustomPointer ) {
+         if ( m_showPointer && m_useCustomPointer ) {
             m_pointerClip._visible = true;
          }
       }

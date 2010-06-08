@@ -41,13 +41,14 @@ class at.klickverbot.ui.mouse.MouseoverManager extends CoreObject {
    public function addArea( activeArea :MovieClip, overHandler :Function,
       outHandler :Function, onlyBoundingBox :Boolean ) :Void {
       if ( onlyBoundingBox == null ) {
-      	onlyBoundingBox = false;
+         onlyBoundingBox = false;
       }
 
       Debug.assertNotNull( activeArea,
          "Active mouseover area must not be null." );
 
-      m_areas.push( new MouseoverArea( activeArea, overHandler, outHandler, onlyBoundingBox ) );
+      m_areas.push( new MouseoverArea(
+         activeArea, overHandler, outHandler, onlyBoundingBox ) );
    }
 
    public function removeArea( activeArea :MovieClip ) :Boolean {
@@ -78,10 +79,10 @@ class at.klickverbot.ui.mouse.MouseoverManager extends CoreObject {
          var active :MovieClip = currentArea.activeArea;
 
          if ( !active._visible ) {
-         	// This is intended to keep compabtibility with onRollOver/onRollOut,
-         	// because MovieClips with _visible = false do not recieve any mouse
-         	// events there.
-         	continue;
+            // This is intended to keep compabtibility with onRollOver/onRollOut,
+            // because MovieClips with _visible = false do not recieve any mouse
+            // events there.
+            continue;
          }
 
          var over :Boolean =
