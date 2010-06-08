@@ -1,12 +1,12 @@
 import at.klickverbot.debug.Debug;
+import at.klickverbot.event.events.UiEvent;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theme.ClipId;
 import at.klickverbot.ui.components.IUiComponent;
-import at.klickverbot.ui.components.McWrapperComponent;
 import at.klickverbot.ui.components.ScaleGrid;
+import at.klickverbot.ui.components.TextFieldWrapperComponent;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.layout.ScaleGridCell;
-import at.klickverbot.ui.mouse.MouseoverManager;
 import at.klickverbot.ui.mouse.PointerManager;
 import at.klickverbot.util.Delegate;
 
@@ -24,18 +24,10 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
          return false;
       }
 
-      m_textFieldClip = m_staticContent[ TEXT_FIELD_CLIP_NAME ];
-      if ( m_textFieldClip == null ) {
-         Debug.LIBRARY_LOG.error( "Attempted to create a TextBox using a " +
-            "clip that does not have a child text field clip: " + this );
-         super.destroy();
-         return false;
-      }
-
-      m_textField = m_textFieldClip[ TEXT_FIELD_NAME ];
+      m_textField = m_staticContent[ TEXT_FIELD_NAME ];
       if ( m_textField == null ) {
          Debug.LIBRARY_LOG.error( "Attempted to create a TextBox using a " +
-            "clip that does not have a TextField in its text field clip: " + this );
+            "clip that does not have a TextField: " + this );
          super.destroy();
          return false;
       }
@@ -43,13 +35,15 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
       m_background = m_staticContent[ BACKGROUND_NAME ];
 
       m_textFieldContainer.setCellSizes(
-         m_textFieldClip._x,
-         m_staticContent._width - m_textFieldClip._x - m_textFieldClip._width,
-         m_textFieldClip._y,
-         m_staticContent._height - m_textFieldClip._y - m_textFieldClip._height
+         m_textField._x,
+         m_staticContent._width - m_textField._x - m_textField._width,
+         m_textField._y,
+         m_staticContent._height - m_textField._y - m_textField._height
       );
-      m_textFieldContainer.addContent( ScaleGridCell.CENTER,
-         new McWrapperComponent( m_textFieldClip ) );
+
+      var wrapper :TextFieldWrapperComponent =
+         new TextFieldWrapperComponent( m_textField );
+      m_textFieldContainer.addContent( ScaleGridCell.CENTER, wrapper );
       m_textFieldContainer.create( m_container );
 
       // Install handlers to update the background when the textfield
@@ -69,8 +63,8 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
       // Hide any custom pointer when the mouse is over the textfield because
       // the caret cursor is displayed by the system then (there is no known
       // workaround for this).
-      MouseoverManager.getInstance().addArea(
-         m_textFieldClip, handleMouseOver, handleMouseOut, true );
+      wrapper.addEventListener( UiEvent.MOUSE_OVER, this, handleMouseOver );
+      wrapper.addEventListener( UiEvent.MOUSE_OUT, this, handleMouseOut );
 
       m_textField.text = "";
 
@@ -128,11 +122,9 @@ class at.klickverbot.ui.components.themed.TextBox extends Static
       Selection.setFocus( m_textField );
    }
 
-   private static var TEXT_FIELD_CLIP_NAME :String = "textFieldClip";
    private static var TEXT_FIELD_NAME :String = "textField";
    private static var BACKGROUND_NAME :String = "background";
 
-   private var m_textFieldClip :MovieClip;
    private var m_textField :TextField;
    private var m_background :MovieClip;
    private var m_textFieldContainer :ScaleGrid;

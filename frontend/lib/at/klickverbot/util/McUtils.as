@@ -1,3 +1,6 @@
+import at.klickverbot.debug.Debug;
+import at.klickverbot.debug.DebugLevel;
+import at.klickverbot.graphics.Color;
 import at.klickverbot.graphics.Point2D;
 
 /**
@@ -53,5 +56,24 @@ class at.klickverbot.util.McUtils {
       var flashPoint :Object = { x: point.x, y: point.y };
       parent.globalToLocal( flashPoint );
       return new Point2D( flashPoint[ "x" ], flashPoint[ "y" ] );
+   }
+
+   static public function drawDummyRectangle( target :MovieClip ) :Void {
+      target.lineStyle( 0, 0, 0 );
+
+      if( Debug.LEVEL >= DebugLevel.HIGH ) {
+         target.beginFill( ( new Color(
+            Math.random(), Math.random(), Math.random() ) ).toHex(), 30 );
+      } else {
+         target.beginFill( 0, 0 );
+      }
+
+      target.moveTo( 0, 0 );
+      target.lineTo( 1, 0 );
+      target.lineTo( 1, 1 );
+      target.lineTo( 0, 1 );
+      target.lineTo( 0, 0 );
+
+      target.endFill();
    }
 }
