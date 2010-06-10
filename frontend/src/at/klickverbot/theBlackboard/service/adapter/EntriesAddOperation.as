@@ -17,7 +17,10 @@ class at.klickverbot.theBlackboard.service.adapter.EntriesAddOperation extends A
    }
 
    private function handleResult( event :ResultEvent ) :Void {
+      m_target.id = Number( event.result );
+      m_target.loaded = true;
       m_target.dirty = false;
+
       super.handleResult( event );
    }
 
