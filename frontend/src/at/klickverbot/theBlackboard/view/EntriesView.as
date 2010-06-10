@@ -1,5 +1,6 @@
 import at.klickverbot.data.List;
 import at.klickverbot.debug.Debug;
+import at.klickverbot.drawing.Drawing;
 import at.klickverbot.event.events.Event;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theBlackboard.model.Configuration;
@@ -167,6 +168,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_state = EntriesViewState.DRAW;
 
       m_activeEntry = new Entry();
+      m_activeEntry.drawing = new Drawing();
       m_entries.push( m_activeEntry );
       m_entryGrid.goToLastPage();
 

@@ -479,6 +479,9 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
    }
 
    public function loadDrawing( newDrawing :Drawing ) :Boolean {
+      Debug.assertNotNull( newDrawing,
+         "Cannot load a null drawing into a DrawingArea!" );
+
       if ( m_drawMode ) {
          Debug.LIBRARY_LOG.warn( "Cannot load new drawing while in drawing mode!" );
          return false;
