@@ -123,15 +123,6 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
       return super.getInstanceInfo().concat( "entry: " + m_entry );
    }
 
-   private static var PROPERTY_EVENTS :Array = [
-      EntryChangeEvent.ID,
-      EntryChangeEvent.AUTHOR,
-      EntryChangeEvent.CAPTION,
-      EntryChangeEvent.DRAWING,
-      EntryChangeEvent.TIMESTAMP,
-      EntryChangeEvent.LOADED
-   ];
-
    private var m_entry :Entry;
    private var m_displayStack :Stack;
    private var m_drawingAreaContainer :DrawingAreaContainer;
