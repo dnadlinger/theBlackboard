@@ -167,13 +167,16 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    private function addNewEntry() :Void {
       m_state = EntriesViewState.DRAW;
 
+      Debug.assertNull( m_activeEntry,
+         "There was another entry active when trying to add a new entry." );
+
       m_activeEntry = new Entry();
       m_activeEntry.drawing = new Drawing();
       m_entries.push( m_activeEntry );
       m_entryGrid.goToLastPage();
 
-      Debug.assertNull( m_activeDetailsView, "There was still another " +
-         "DrawEntryDetailsView active while switching to draw mode!" );
+      Debug.assertNull( m_activeDrawView, "There was still another " +
+         "DrawEntryView active while switching to draw mode!" );
 
       m_activeDrawView = new DrawEntryView( m_activeEntry,
          EntryView( m_entryGrid.getViewForItem( m_activeEntry ) ).getDrawingArea() );
@@ -212,6 +215,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
          this, finishEditMode );
 
       m_modalOverlayDisplay.hideOverlay( m_activeDetailsView );
+      m_activeDetailsView = null;
 
       // TODO: Find a better design approach for this.
       EntryView( m_entryGrid.getViewForItem( m_activeEntry ) ).save();
