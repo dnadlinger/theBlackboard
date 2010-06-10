@@ -1,4 +1,3 @@
-import at.klickverbot.drawing.Drawing;
 import at.klickverbot.theBlackboard.model.Entry;
 import at.klickverbot.theBlackboard.model.EntryChangeEvent;
 import at.klickverbot.theBlackboard.view.DrawingAreaContainer;
@@ -72,10 +71,6 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
          return;
       }
 
-      if ( m_entry != null ) {
-         removeModelListeners( m_entry );
-      }
-
       m_entry = Entry( data );
       loadCurrentEntry();
    }
@@ -94,8 +89,9 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
          return;
       }
 
+      TooltipManager.getInstance().clearTooltip( this );
+
       if ( m_entry == null ) {
-         updateAll();
          m_displayStack.selectComponent( null );
          return;
       }
@@ -112,50 +108,9 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
    }
 
    private function displayCurrentEntry() :Void {
-      updateAll();
-      addModelListeners( m_entry );
+      m_drawingAreaContainer.getDrawingArea().loadDrawing( m_entry.drawing );
+      TooltipManager.getInstance().setTooltip( this, new EntryTooltip( m_entry ) );
       m_displayStack.selectComponent( m_drawingAreaContainer );
-   }
-
-   private function updateAll() :Void {
-      updateDrawing( m_entry.drawing );
-      updateTooltip();
-   }
-
-   private function updateDrawing( drawing :Drawing ) :Void {
-      if ( drawing == null ) {
-         m_drawingAreaContainer.getDrawingArea().clearHistory();
-      } else {
-         m_drawingAreaContainer.getDrawingArea().loadDrawing( drawing );
-      }
-   }
-
-   private function updateTooltip() :Void {
-      TooltipManager.getInstance().clearTooltip( this );
-      if ( m_entry && m_entry.loaded ) {
-         TooltipManager.getInstance().setTooltip( this,
-            new EntryTooltip( m_entry ) );
-      }
-   }
-
-   private function handleChange( event :EntryChangeEvent ) :Void {
-      if ( event.type == EntryChangeEvent.DRAWING ) {
-         updateDrawing( Drawing( event.newValue ) );
-      } else if ( event.type == EntryChangeEvent.LOADED ) {
-         updateTooltip();
-      }
-   }
-
-   private function addModelListeners( entry :Entry ) :Void {
-      for ( var i :Number = 0; i < PROPERTY_EVENTS.length; ++i ) {
-         entry.addEventListener( PROPERTY_EVENTS[ i ], this, handleChange );
-      }
-   }
-
-   private function removeModelListeners( entry :Entry ) :Void {
-      for ( var i :Number = 0; i < PROPERTY_EVENTS.length; ++i ) {
-         entry.removeEventListener( PROPERTY_EVENTS[ i ], this, handleChange );
-      }
    }
 
    private function getInstanceInfo() :Array {
