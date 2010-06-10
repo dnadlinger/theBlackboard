@@ -109,7 +109,13 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
 
    private function displayCurrentEntry() :Void {
       m_drawingAreaContainer.getDrawingArea().loadDrawing( m_entry.drawing );
-      TooltipManager.getInstance().setTooltip( this, new EntryTooltip( m_entry ) );
+
+      if ( m_entry.author != null ) {
+         // Avoid displaying a tooltip with "null" contents when creating a new
+         // entry.
+         TooltipManager.getInstance().setTooltip( this, new EntryTooltip( m_entry ) );
+      }
+
       m_displayStack.selectComponent( m_drawingAreaContainer );
    }
 
