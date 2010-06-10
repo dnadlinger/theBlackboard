@@ -51,7 +51,7 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
       }
 
       var containerName :String = TypeUtils.getTypeName( this ) +
-         "(McComponent)@" + target.getNextHighestDepth();
+         "(McComponent)@" + target.getNextHighestDepth() + "#" + ++m_sLastId;
       m_container = target.createEmptyMovieClip( containerName, depth );
       m_onStage = true;
 
@@ -303,6 +303,13 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
          return super.getInstanceInfo().concat( "onStage: " + m_onStage );
       }
    }
+
+   /**
+    * To circumvert a strange Flash player bug, we append a unique number to the
+    * end of the names of each McComponent container clip. This variable keeps
+    * track of the last used id.
+    */
+   private static var m_sLastId :Number = 0;
 
    private var m_container :MovieClip;
    private var m_onStage :Boolean;
