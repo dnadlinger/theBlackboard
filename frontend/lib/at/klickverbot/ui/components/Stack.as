@@ -148,6 +148,16 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
       if ( m_onStage ) {
          // Create the new component, hide it, and fade it in.
          if ( component != null ) {
+            // Check if the newly selected component is still fading out. If so,
+            // just end the fade out animation to be able to recreate it below.
+            var currentMapping :AnimationComponent;
+            var i :Number = m_fadingOutContents.length;
+            while ( currentMapping = m_fadingOutContents[ --i ] ) {
+               if ( currentMapping.component == component ) {
+                  currentMapping.animation.end();
+               }
+            }
+
             component.create( m_container );
             m_selectedContent.setSize( getSize() );
             component.fade( 0 );
