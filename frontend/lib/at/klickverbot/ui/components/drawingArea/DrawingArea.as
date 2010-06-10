@@ -96,20 +96,26 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
          return false;
       }
 
+      m_background = m_container.createEmptyMovieClip( "background",
+         m_container.getNextHighestDepth() );
+      drawBorderAndBackground();
+
       m_finalDrawing = BitmapCachedDrawing.create( m_container );
       m_tempDrawing = BitmapCachedDrawing.create( m_container );
-
-      // This clip is non-empty because of minimum size for the cache bitmaps,
-      // we can set the fixedSize right away.
-      m_tempDrawing.fixedSize = getSize();
-      m_finalDrawing.fixedSize = getSize();
 
       m_eraserTestClip = m_container.createEmptyMovieClip( "eraserTestClip",
          m_container.getNextHighestDepth() );
 
-      m_background = m_container.createEmptyMovieClip( "background",
-         m_container.getNextHighestDepth() );
-      drawBorderAndBackground();
+      if ( m_history.getCurrent() != null ) {
+         redrawFinalDrawing();
+      }
+
+      // This clip is non-empty because of minimum size for the cache bitmaps,
+      // we can set the fixedSize right away. Note that we do this after drawing
+      // the current history step above to not truncate it (getSize() is never
+      // smaller than it, because m_finalDrawing was in variable size mode above).
+      m_tempDrawing.fixedSize = getSize();
+      m_finalDrawing.fixedSize = getSize();
 
       return true;
    }
@@ -481,9 +487,11 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
       clearHistory();
 
       var newSmoothedDrawing :Drawing = newDrawing.optimized( m_smoother );
-      newSmoothedDrawing.draw( m_finalDrawing );
-
       m_history.addStep( new HistoryStep( newDrawing, newSmoothedDrawing ) );
+
+      if ( m_onStage ) {
+         redrawFinalDrawing();
+      }
 
       dispatchEvent( new DrawingAreaEvent( DrawingAreaEvent.HISTORY_CHANGE,
          this, 1, 0 ) );

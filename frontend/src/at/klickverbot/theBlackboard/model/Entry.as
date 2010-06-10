@@ -10,7 +10,10 @@ class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
       m_drawing = null;
       m_timestamp = null;
       m_loaded = false;
-      m_dirty = false;
+
+      // Entries are dirty per default since they have to be stored to the
+      // backend if they are created locally.
+      m_dirty = true;
    }
 
    public function copyFrom( other :Entry ) :Void {
@@ -118,6 +121,10 @@ class at.klickverbot.theBlackboard.model.Entry extends EventDispatcher {
          dispatchEvent( new EntryChangeEvent(
             EntryChangeEvent.DIRTY, this, oldValue, to ) );
       }
+   }
+
+   public function isPesistent() :Boolean {
+      return m_loaded || !m_dirty;
    }
 
    private function getInstanceInfo() :Array {

@@ -118,6 +118,13 @@ class at.klickverbot.ui.components.drawingArea.HistoryStack extends CoreObject {
       return m_buffer.length - 1 - m_currentStep;
    }
 
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( [
+         "stepCount: " + m_buffer.length,
+         "currentStep: " + m_currentStep
+      ] );
+   }
+
    public var DEFAULT_SIZE :Number = 25;
 
    private var m_currentStep :Number;

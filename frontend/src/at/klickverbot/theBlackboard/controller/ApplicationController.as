@@ -93,7 +93,7 @@ class at.klickverbot.theBlackboard.controller.ApplicationController {
    }
 
    private function loadEntry( event :EntryViewEvent ) :Void {
-      if ( ( event.entry.id == null ) || event.entry.loaded ) {
+      if ( event.entry.loaded || !event.entry.isPesistent() ) {
          // Nothing to do if the target entry is not stored on the server
          // or is already loaded.
          return;

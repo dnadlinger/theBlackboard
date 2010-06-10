@@ -50,6 +50,7 @@ class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
    public static var BACK_SCENERY :AppClipId = new AppClipId( "backScenery" );
    public static var FRONT_SCENERY :AppClipId = new AppClipId( "frontScenery" );
    public static var MODAL_OVERLAY_BACKGROUND :AppClipId = new AppClipId( "modalOverlayBackground" );
+   public static var ENTRY_LOADING_INDICATOR :AppClipId = new AppClipId( "entryLoadingIndicator" );
 
    public static var DEFAULT_POINTER :AppClipId = new AppClipId( "defaultPointer" );
 }
