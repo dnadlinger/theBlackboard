@@ -30,7 +30,8 @@ class EntriesServer {
 
    public function addEntry( array $params ) {
       MethodUtils::checkSignature( array( Types::STRING, Types::STRING, Types::STRING ), $params );
-      call_user_func_array( array( $this->entries, 'addEntry' ), $params );
+      return new ReturnValue( call_user_func_array(
+         array( $this->entries, 'addEntry' ), $params ) );
    }
 
    private $entries;

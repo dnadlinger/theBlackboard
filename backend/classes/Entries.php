@@ -99,6 +99,8 @@ class Entries {
          'INSERT INTO entries ( id, caption, author, drawingString, timestamp ) VALUES ( NULL, :caption, :author, :drawingString, CURRENT_TIMESTAMP );' );
       $statement->execute(	array( ':caption' => $caption, ':author' => $author,
          ':drawingString' => $drawingString ) );
+
+      return $this->dbConn->getPdo()->lastInsertId();
    }
 
    private function getSqlForSortingType( $type ) {
