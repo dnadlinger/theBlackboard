@@ -155,6 +155,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
             while ( currentMapping = m_runningFadeOuts[ --i ] ) {
                if ( currentMapping.component == component ) {
                   currentMapping.animation.end();
+                  break;
                }
             }
 
