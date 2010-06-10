@@ -16,7 +16,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
     */
    public function Stack() {
       m_contents = new Array();
-      m_fadingOutContents = new Array();
+      m_runningFadeOuts = new Array();
       m_fadeTemplate = DEFAULT_FADE_ANIMATION;
       m_selectedContent = null;
       m_runningFadeIn = null;
@@ -54,8 +54,8 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
       }
 
       var currentAnimation :AnimationComponent;
-      var i :Number = m_fadingOutContents.length;
-      while ( currentAnimation = m_fadingOutContents[ --i ] ) {
+      var i :Number = m_runningFadeOuts.length;
+      while ( currentAnimation = m_runningFadeOuts[ --i ] ) {
          currentAnimation.component.setSize( getSize() );
       }
    }
@@ -151,8 +151,8 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
             // Check if the newly selected component is still fading out. If so,
             // just end the fade out animation to be able to recreate it below.
             var currentMapping :AnimationComponent;
-            var i :Number = m_fadingOutContents.length;
-            while ( currentMapping = m_fadingOutContents[ --i ] ) {
+            var i :Number = m_runningFadeOuts.length;
+            while ( currentMapping = m_runningFadeOuts[ --i ] ) {
                if ( currentMapping.component == component ) {
                   currentMapping.animation.end();
                }
@@ -185,7 +185,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
 
    private function fadeOutContent( component :IUiComponent ) :Void {
       var animation :Animation = m_fadeTemplate.clone();
-      m_fadingOutContents.push( new AnimationComponent( animation, component ) );
+      m_runningFadeOuts.push( new AnimationComponent( animation, component ) );
 
       animation.setTween( new AlphaTween( component, 0 ) );
       animation.addEventListener( Event.COMPLETE,
@@ -203,11 +203,11 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
       // the event here.
       var component :IUiComponent = null;
       var currentMapping :AnimationComponent;
-      var i :Number = m_fadingOutContents.length;
-      while ( currentMapping = m_fadingOutContents[ --i ] ) {
+      var i :Number = m_runningFadeOuts.length;
+      while ( currentMapping = m_runningFadeOuts[ --i ] ) {
          if ( currentMapping.animation == event.target ) {
             component = currentMapping.component;
-            m_fadingOutContents.splice( i, 1 );
+            m_runningFadeOuts.splice( i, 1 );
             break;
          }
       }
@@ -232,5 +232,5 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
    private var m_fadeTemplate :Animation;
 
    private var m_runningFadeIn :Animation;
-   private var m_fadingOutContents :Array;
+   private var m_runningFadeOuts :Array;
 }
