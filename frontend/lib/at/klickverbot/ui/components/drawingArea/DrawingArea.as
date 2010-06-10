@@ -730,6 +730,10 @@ class at.klickverbot.ui.components.drawingArea.DrawingArea extends McComponent {
       delete m_mouseListener.onMouseUp;
    }
 
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( "m_history: " + m_history );
+   }
+
    private static var INTERPOLATE_BORDER_POINT_LIMIT :Number = 10;
 
    private var m_history :HistoryStack;
