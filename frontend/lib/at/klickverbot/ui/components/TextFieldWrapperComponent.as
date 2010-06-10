@@ -1,5 +1,4 @@
 import at.klickverbot.debug.Debug;
-import at.klickverbot.debug.DebugLevel;
 import at.klickverbot.event.EventDispatcher;
 import at.klickverbot.event.events.UiEvent;
 import at.klickverbot.graphics.Color;
