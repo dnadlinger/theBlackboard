@@ -1,3 +1,6 @@
+import at.klickverbot.graphics.Point2D;
+import at.klickverbot.ui.components.Spacer;
+import at.klickverbot.theBlackboard.view.PageDisplay;
 import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.theBlackboard.view.TooltipLabel;
 import at.klickverbot.theBlackboard.view.event.NavigationViewEvent;
@@ -27,19 +30,19 @@ class at.klickverbot.theBlackboard.view.NavigationView extends McComponent {
       }
 
       m_model.addEventListener( PaginatedChangeEvent.CURRENT_PAGE,
-         this, updateNavigationButtonStates );
+         this, updateState );
       m_model.addEventListener( PaginatedChangeEvent.PAGE_COUNT,
-         this, updateNavigationButtonStates );
-      updateNavigationButtonStates();
+         this, updateState );
+      updateState();
 
       return true;
    }
 
    public function destroy() :Void {
       m_model.removeEventListener( PaginatedChangeEvent.CURRENT_PAGE,
-         this, updateNavigationButtonStates );
+         this, updateState );
       m_model.removeEventListener( PaginatedChangeEvent.PAGE_COUNT,
-         this, updateNavigationButtonStates );
+         this, updateState );
 
       m_iconStrip.destroy();
 
@@ -55,11 +58,16 @@ class at.klickverbot.theBlackboard.view.NavigationView extends McComponent {
       m_previousPageButton.addEventListener( ButtonEvent.RELEASE,	this, previousPage );
       m_iconStrip.addContent( m_previousPageButton );
 
+      m_pageDisplay = new PageDisplay();
+      m_iconStrip.addContent( m_pageDisplay );
+
       m_nextPageButton = new Button( AppClipId.NEXT_PAGE_BUTTON );
       m_nextPageButton.addEventListener( ButtonEvent.RELEASE, this, nextPage );
       TooltipManager.getInstance().setTooltip( m_nextPageButton,
          new TooltipLabel( "Next page" ) );
       m_iconStrip.addContent( m_nextPageButton );
+
+      m_iconStrip.addContent( new Spacer( new Point2D( 50, 1 ) ) );
 
       m_newEntryButton = new Button( AppClipId.NEW_ENTRY_BUTTON );
       m_newEntryButton.addEventListener( ButtonEvent.RELEASE, this, newEntry );
@@ -68,7 +76,10 @@ class at.klickverbot.theBlackboard.view.NavigationView extends McComponent {
       m_iconStrip.addContent( m_newEntryButton );
    }
 
-   private function updateNavigationButtonStates() :Void {
+   private function updateState() :Void {
+      m_pageDisplay.setCurrentPage( m_model.getCurrentPage() + 1 );
+      m_pageDisplay.setPageCount( m_model.getPageCount() );
+
       if ( m_model.getCurrentPage() > 0 ) {
          m_previousPageButton.setActive( true );
       } else {
@@ -101,6 +112,7 @@ class at.klickverbot.theBlackboard.view.NavigationView extends McComponent {
 
    private var m_iconStrip :HStrip;
    private var m_previousPageButton :Button;
+   private var m_pageDisplay :PageDisplay;
    private var m_nextPageButton :Button;
    private var m_newEntryButton :Button;
 }

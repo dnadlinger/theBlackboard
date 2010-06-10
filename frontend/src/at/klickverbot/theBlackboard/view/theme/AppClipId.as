@@ -26,6 +26,7 @@ class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
 
    public static var TOOLTIP_LABEL :AppClipId = new AppClipId( "tooltipLabel" );
    public static var ENTRY_TOOLTIP :AppClipId = new AppClipId( "entryTooltip" );
+   public static var PAGE_DISPLAY :AppClipId = new AppClipId( "pageDisplay" );
 
    public static var PREVIOUS_PAGE_BUTTON :AppClipId = new AppClipId( "previousPageButton" );
    public static var NEXT_PAGE_BUTTON :AppClipId = new AppClipId( "nextPageButton" );
