@@ -1,4 +1,3 @@
-import at.klickverbot.debug.Logger;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.ui.components.themed.Static;
@@ -14,17 +13,9 @@ class at.klickverbot.theBlackboard.view.PageDisplay extends Static {
       }
 
       // TODO: Put the name strings into some central enum like ContainerContents?
-      m_currentField = TextField( m_staticContent[ "currentPage" ] );
-      if ( m_currentField == null ) {
-         Logger.getLog( "PageDisplay" ).error(
-            "Static content did not contain a current page field for " + this );
-         return false;
-      }
-
-      m_totalField = TextField( m_staticContent[ "totalPages" ] );
-      if ( m_totalField == null ) {
-         Logger.getLog( "PageDisplay" ).error(
-            "Static content did not contain a total pages field for " + this );
+      m_currentField = TextField( getChild( "currentPage", true ) );
+      m_totalField = TextField( getChild( "totalPages", true ) );
+      if ( !m_currentField || !m_totalField ) {
          return false;
       }
 
