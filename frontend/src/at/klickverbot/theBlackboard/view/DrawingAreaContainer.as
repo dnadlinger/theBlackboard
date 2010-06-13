@@ -1,7 +1,7 @@
-import at.klickverbot.drawing.BezierSmoother;
+import at.klickverbot.drawing.BezierSmoothOptimizer;
 import at.klickverbot.drawing.IOperationOptimizer;
 import at.klickverbot.drawing.LineStyle;
-import at.klickverbot.drawing.ReducePointsOptimizer;
+import at.klickverbot.drawing.SimpleReduceOptimizer;
 import at.klickverbot.ui.components.McComponent;
 import at.klickverbot.ui.components.drawingArea.DrawingArea;
 
@@ -46,8 +46,8 @@ class at.klickverbot.theBlackboard.view.DrawingAreaContainer extends McComponent
    private static var OPTIMIZE_STRAIGHTEN :Number = 1;
 
    private static var DEFAULT_OPTIMIZER :IOperationOptimizer =
-      new ReducePointsOptimizer( OPTIMIZE_MIN_DISTANCE, OPTIMIZE_STRAIGHTEN );
-   private static var DEFAULT_SMOOTHER :IOperationOptimizer = new BezierSmoother();
+      new SimpleReduceOptimizer( OPTIMIZE_MIN_DISTANCE, OPTIMIZE_STRAIGHTEN );
+   private static var DEFAULT_SMOOTHER :IOperationOptimizer = new BezierSmoothOptimizer();
 
    private static var DEFAULT_PEN_STYLE :LineStyle = new LineStyle( 6, 0xFFFFFF, 1 );
 

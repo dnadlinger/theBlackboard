@@ -10,17 +10,14 @@ import at.klickverbot.graphics.Point2D;
  *
  * Loosly based on an example from hgseib:
  * http://www.seibsprogrammladen.de/frame1.html?Prgm/Beispiele/flash6
- *
- * TODO: Adapt http://motiondraw.com/md/as_samples/t/LineGeneralization/demo.html
- *
  */
-class at.klickverbot.drawing.ReducePointsOptimizer extends CoreObject
+class at.klickverbot.drawing.SimpleReduceOptimizer extends CoreObject
    implements IOperationOptimizer {
 
    /**
     * Constructor.
     */
-   public function ReducePointsOptimizer( minDistance :Number,
+   public function SimpleReduceOptimizer( minDistance :Number,
       straighten :Number ) {
 
       if ( minDistance == null ) {

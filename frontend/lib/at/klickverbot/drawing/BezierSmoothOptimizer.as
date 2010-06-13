@@ -12,11 +12,8 @@ import at.klickverbot.graphics.Point2D;
  *
  * Loosly based on an example from hgseib:
  * http://www.seibsprogrammladen.de/frame1.html?Prgm/Beispiele/flash6
- *
- * TODO: Adapt better algorithm from http://motiondraw.com/md/as_samples/t/LineGeneralization/demo.html
- *
  */
-class at.klickverbot.drawing.BezierSmoother extends CoreObject
+class at.klickverbot.drawing.BezierSmoothOptimizer extends CoreObject
    implements IOperationOptimizer {
 
    public function optimize( operation :IDrawingOperation ) :IDrawingOperation {
