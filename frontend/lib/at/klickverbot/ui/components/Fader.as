@@ -110,12 +110,18 @@ class at.klickverbot.ui.components.Fader extends CustomSizeableComponent {
    }
 
    private function handleFadeInComplete() :Void {
+      m_runningFadeIn.removeEventListener( Event.COMPLETE, this, handleFadeInComplete );
       m_runningFadeIn = null;
    }
 
    private function handleFadeOutComplete() :Void {
+      m_runningFadeOut.removeEventListener( Event.COMPLETE, this, handleFadeOutComplete );
       m_runningFadeOut = null;
       m_content.destroy();
+   }
+
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( "content: " + m_content );
    }
 
    private static var DEFAULT_FADE_DURATION :Number = 0.5;

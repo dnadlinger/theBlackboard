@@ -23,6 +23,10 @@ class at.klickverbot.ui.animation.AlphaTween extends CoreObject
       m_target.fade( m_startAlpha + m_deltaAlpha * timeIndex );
    }
 
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( "target: " + m_target );
+   }
+
    private var m_target :IUiComponent;
    private var m_startAlpha :Number;
    private var m_deltaAlpha :Number;

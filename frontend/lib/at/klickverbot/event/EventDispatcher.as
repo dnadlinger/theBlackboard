@@ -18,6 +18,9 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
    /**
     * Registers an event listener that recieves the dispatched events.
     *
+    * There is no guarantee that the registered listeners are called in any
+    * particular order when an event is dispatched to them.
+    *
     * @param event The event to add the listener for.
     * @param listenerOwner The owner of the listener function. Only needed
     *        because ActionScript 2 allows no real function pointers.
