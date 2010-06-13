@@ -58,8 +58,15 @@ class at.klickverbot.ui.animation.Animation extends EventDispatcher
     *
     * This does not need to be equal to the end of the tween because the time
     * mapper used does not need to map animation time 1 to tween time 1.
+    *
+    * If the animation is already at its completed, nothing happens.
     */
    public function end() :Void {
+      if ( m_timeIndex == 1 ) {
+         // The animation is already completed, do nothing.
+         return;
+      }
+
       m_timeIndex = 1;
       m_tween.render( m_timeMapper.map( 1 ) );
       dispatchEvent( new Event( Event.COMPLETE, this ) );
@@ -91,6 +98,13 @@ class at.klickverbot.ui.animation.Animation extends EventDispatcher
       var copy :Animation = new Animation( m_tween, m_duration, m_timeMapper );
       copy.m_timeIndex = m_timeIndex;
       return copy;
+   }
+
+   private function getInstanceInfo() :Array {
+      return super.getInstanceInfo().concat( [
+         "tween: " + m_tween,
+         "timeIndex: " + m_timeIndex
+      ] );
    }
 
    private var m_tween :ITween;
