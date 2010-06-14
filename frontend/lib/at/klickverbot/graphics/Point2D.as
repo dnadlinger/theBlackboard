@@ -58,6 +58,13 @@ class at.klickverbot.graphics.Point2D extends CoreObject {
    }
 
    /**
+    * Returns the dot product with the other point/vector.
+    */
+   public function dot( other :Point2D ) :Number {
+      return m_x * other.m_x + m_y * other.m_y;
+   }
+
+   /**
     * Adds another Point2D to this point.
     *
     * @param other The point to add to this point.
