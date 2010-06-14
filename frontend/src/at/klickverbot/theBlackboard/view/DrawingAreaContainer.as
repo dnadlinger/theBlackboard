@@ -1,4 +1,4 @@
-import at.klickverbot.drawing.BezierSmoothOptimizer;
+import at.klickverbot.drawing.CatmullRomSmoother;
 import at.klickverbot.drawing.IOperationOptimizer;
 import at.klickverbot.drawing.LangReduceOptimizer;
 import at.klickverbot.drawing.LineStyle;
@@ -44,10 +44,12 @@ class at.klickverbot.theBlackboard.view.DrawingAreaContainer extends McComponent
    // TODO: Make values configurable.
    private static var OPTIMIZE_LOOK_AHEAD :Number = 10;
    private static var OPTIMIZE_TOLERANCE :Number = 4;
+   private static var SMOOTHER_DISTANCE :Number = 7;
 
    private static var DEFAULT_OPTIMIZER :IOperationOptimizer =
       new LangReduceOptimizer( OPTIMIZE_LOOK_AHEAD, OPTIMIZE_TOLERANCE );
-   private static var DEFAULT_SMOOTHER :IOperationOptimizer = new BezierSmoothOptimizer();
+   private static var DEFAULT_SMOOTHER :IOperationOptimizer =
+      new CatmullRomSmoother( SMOOTHER_DISTANCE );
 
    private static var DEFAULT_PEN_STYLE :LineStyle = new LineStyle( 6, 0xFFFFFF, 1 );
 
