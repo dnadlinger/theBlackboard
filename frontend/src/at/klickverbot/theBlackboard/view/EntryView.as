@@ -71,6 +71,12 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
          return;
       }
 
+      if ( m_entry != null ) {
+         // We are not interested in the old entry being loaded anymore.
+         m_entry.removeEventListener( EntryChangeEvent.LOADED,
+            this, displayCurrentEntry );
+      }
+
       m_entry = Entry( data );
       loadCurrentEntry();
    }
