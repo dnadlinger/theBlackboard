@@ -70,11 +70,20 @@ class at.klickverbot.ui.animation.Animator extends CoreObject {
       var deltaTime :Number = ( getTimer() - m_lastTicks ) * 0.001;
       m_lastTicks = getTimer();
 
-      var currentAnimation :Animation;
-      var i :Number = m_animations.length;
+      // Operate on a copy of the m_animations array to avoid strange effects
+      // when handleAnimationComplete() is called while the loop below runs.
+      var animations :Array = m_animations.slice();
 
-      while ( currentAnimation = m_animations[ --i ] ) {
-         currentAnimation.tick( deltaTime );
+      var currentAnimation :Animation;
+      var i :Number = animations.length;
+      while ( currentAnimation = animations[ --i ] ) {
+         // The extra check for isCompleted() is necessary because a race
+         // condition can be tripped if an animation are ended in a method
+         // called by a COMPLETE listener of a second Animation fired by ticking
+         // that animation here in this loop.
+         if ( !currentAnimation.isCompleted() ) {
+            currentAnimation.tick( deltaTime );
+         }
       }
    }
 
