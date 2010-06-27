@@ -5,10 +5,10 @@ import flash.geom.Point;
 
 /**
  * A point (in 2D space).
+ *
  * Actually this class had to be named 'Vector2D', but because there is not
  * even a real difference between a point and a vector, I was lazy and did
  * not rename it.
- *
  */
 class at.klickverbot.graphics.Point2D extends CoreObject {
 
@@ -18,7 +18,7 @@ class at.klickverbot.graphics.Point2D extends CoreObject {
     * @param x The x-coordinate of the point.
     * @param y The y-coordinate of the point.
     */
-   public function Point2D( x :Number, y	 :Number ) {
+   public function Point2D( x :Number, y :Number ) {
       m_x = x;
       m_y = y;
    }
