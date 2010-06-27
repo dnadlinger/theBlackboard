@@ -54,4 +54,6 @@ class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
    public static var ENTRY_LOADING_INDICATOR :AppClipId = new AppClipId( "entryLoadingIndicator" );
 
    public static var DEFAULT_POINTER :AppClipId = new AppClipId( "defaultPointer" );
+   public static var PEN_POINTER :AppClipId = new AppClipId( "penPointer" );
+   public static var ERASER_POINTER :AppClipId = new AppClipId( "eraserPointer" );
 }

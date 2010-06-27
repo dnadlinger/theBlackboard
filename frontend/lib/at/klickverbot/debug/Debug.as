@@ -172,6 +172,13 @@ class at.klickverbot.debug.Debug {
       assert( value instanceof klass, failMessage );
    }
 
+   public static function assertNotEmpty( target :Array, failMessage :String ) :Void {
+      if ( LEVEL == DebugLevel.NONE ) {
+         return;
+      }
+      assertPositive( target.length, failMessage );
+   }
+
    /**
     * Handles a call to the specified pure virtual function.
     *

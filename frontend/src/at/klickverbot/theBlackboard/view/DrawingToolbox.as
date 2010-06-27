@@ -2,6 +2,7 @@ import at.klickverbot.debug.Debug;
 import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.event.events.DrawingAreaEvent;
 import at.klickverbot.event.events.Event;
+import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theBlackboard.view.ButtonForNumber;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
@@ -11,6 +12,9 @@ import at.klickverbot.ui.components.drawingArea.DrawingArea;
 import at.klickverbot.ui.components.drawingArea.DrawingTool;
 import at.klickverbot.ui.components.themed.Button;
 import at.klickverbot.ui.components.themed.MultiContainer;
+import at.klickverbot.ui.mouse.LibraryMcCreator;
+import at.klickverbot.ui.mouse.PointerManager;
+import at.klickverbot.ui.mouse.ResizeMcCreator;
 
 class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
    /**
@@ -158,6 +162,19 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
          event.target );
 
       m_drawingArea.penStyle.thickness = size;
+
+      PointerManager.getInstance().setPointer(
+         m_drawingArea,
+         new ResizeMcCreator(
+            new LibraryMcCreator( AppClipId.PEN_POINTER.getId() ),
+            new Point2D( size, size )
+         ),
+         // Create the pointer in our own container for the correct scale. Let's
+         // hope that the theme designer has not messed up things and the layout
+         // code gets not broken by inserting an element (the pointer clip)
+         // which is not taken into account by this.getSize().
+         m_container
+      );
    }
 
    private function findNumberForButton( mappings :Array, button :Button ) :Number {
@@ -192,6 +209,9 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
 
       m_eraserButton.setActive( false );
       m_drawingArea.setActiveTool( DrawingTool.ERASER );
+
+      PointerManager.getInstance().setPointer( m_drawingArea,
+         new LibraryMcCreator( AppClipId.ERASER_POINTER.getId() ) );
    }
 
    private function handleUndoButtonPress( event :ButtonEvent ) :Void {

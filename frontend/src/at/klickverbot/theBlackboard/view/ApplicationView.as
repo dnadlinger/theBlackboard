@@ -11,7 +11,6 @@ import at.klickverbot.theBlackboard.view.CaptchaAuthView;
 import at.klickverbot.theBlackboard.view.EntriesView;
 import at.klickverbot.theBlackboard.view.ModalOverlayDisplay;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
-import at.klickverbot.theBlackboard.view.theme.Pointer;
 import at.klickverbot.theme.SizeConstraints;
 import at.klickverbot.theme.ThemeManager;
 import at.klickverbot.theme.XmlTheme;
@@ -63,9 +62,8 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
       m_captchaAuthView.addUnhandledEventsListener( this, dispatchEvent );
 
       // Add and use the default pointer which is defined in the theme.
-      PointerManager.getInstance().addPointer( Pointer.DEFAULT,
+      PointerManager.getInstance().setPointer( null,
          new ThemeMcCreator( AppClipId.DEFAULT_POINTER ) );
-      PointerManager.getInstance().selectPointer( Pointer.DEFAULT );
    }
 
    private function startView() :Void {
@@ -121,7 +119,7 @@ class at.klickverbot.theBlackboard.view.ApplicationView extends EventDispatcher 
       }
 
       // Set the default custom pointer.
-      PointerManager.getInstance().setPointerContainer( event.themeTarget );
+      PointerManager.getInstance().setDefaultPointerTarget( event.themeTarget );
       PointerManager.getInstance().useCustomPointer( true );
 
       // Set the tooltip target so that the clips from the theme library can

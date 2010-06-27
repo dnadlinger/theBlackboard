@@ -1,17 +1,15 @@
 import at.klickverbot.core.CoreObject;
+import at.klickverbot.debug.Debug;
+import at.klickverbot.event.events.UiEvent;
+import at.klickverbot.ui.components.IUiComponent;
+import at.klickverbot.ui.mouse.ComponentPointerMapping;
 import at.klickverbot.ui.mouse.IMcCreator;
 import at.klickverbot.util.Delegate;
 
 /**
- * Class that helps dealing with multiple custom mouse pointers
- * (in form of MovieClips).
- *
- * In order to use a custom pointer, you have to do the following:
- * <ol>
- * <li>{@link #addPointer}</li>
- * <li>{@link #selectPointer}</li>
- * <li>{@link #useCustomPointer}</li>
- * </ol>
+ * A singleton which provides a central point for handling the system pointer
+ * and custom cursors which are displayed when the mouse is hovered
+ * over <code>IUiComponent</code>s.
  */
 class at.klickverbot.ui.mouse.PointerManager extends CoreObject {
    /**
@@ -20,15 +18,15 @@ class at.klickverbot.ui.mouse.PointerManager extends CoreObject {
     * The default values do not change the current (system) cursor.
     */
    private function PointerManager() {
+      m_mappings = new Array();
+      m_activePointers = new Array();
+      m_defaultTarget = _root;
+
       m_useCustomPointer = false;
       m_showPointer = true;
-      m_currentPointer = null;
       m_pointerSuspensionCount = 0;
-      m_pointers = new Array();
 
       m_pointerClip = null;
-      m_pointerContainer = _root;
-      m_pointerDepth = DEFAULT_DEPTH;
    }
 
    /**
@@ -55,71 +53,71 @@ class at.klickverbot.ui.mouse.PointerManager extends CoreObject {
    public function useCustomPointer( useCustom :Boolean ) :Void {
       // Do we need to change something?
       if ( useCustom != m_useCustomPointer ) {
-         if ( useCustom == true && m_currentPointer != null ) {
+         if ( useCustom == true && ( m_activePointers.length > 0 ) ) {
             // Hide default (system) pointer.
             Mouse.hide();
-            initializeCustomPointer();
+            createActivePointer();
             m_useCustomPointer = true;
          }
          else {
             // Show default (system) pointer.
             Mouse.show();
-            deleteCustomPointer();
+            deleteActivePointer();
             m_useCustomPointer = false;
          }
       }
    }
 
    /**
-    * Adds a named pointer to the list.
-    *
-    * @param name The name the pointer will get (used with selectPointer).
-    * @param libraryId The IMcCreator that creates the pointer MovieClip.
-    * @see #selectPointer
-    * @see #removePointer
+    * @param component The component to use the custom pointer for. If null, the
+    *        pointer is displayed globally (instead of the system pointer).
+    * @param pointerCreator The IMcCreator used for creating the pointer on
+    *        stage.
+    * @param pointerTarget An optional paramter specifying the MovieClip in
+    *        which the custom pointer clip should be created. This should only
+    *        be needed to work around the Flash restriction that symbols from a
+    *        library can only be attached inside its own SWF.
     */
-   public function addPointer( name :String, pointerCreator :IMcCreator ) :Void {
-      m_pointers[ name ] = pointerCreator;
-   }
+   public function setPointer( component :IUiComponent,
+      pointerCreator :IMcCreator, pointerTarget :MovieClip ) :Void {
 
-   /**
-    * Removes a pointer from the list.
-    * Should not be needed except for if you want to clear all references to the
-    * pointer creator.
-    *
-    * @param name The name of the pointer to remove.
-    * @return If the pointer could be removed (if false, the name does not exist).
-    * @see #addPointer
-    */
-   public function removePointer( name :String ) :Boolean {
-      if ( m_pointers[ name ] != null ) {
-         delete m_pointers[ name ];
-         return true;
-      } else {
-         return false;
-      }
-   }
+      resetPointer( component );
 
-   /**
-    * Selects the pointer that is displayed as custom pointer.
-    *
-    * @param name The name of a pointer that was added with <code>addPointer</code>.
-    * @return If the pointer could be selected (if false, specified name doesn't exist).
-    */
-   public function selectPointer( name :String ) :Boolean {
-      if ( m_pointers[ name ] != null ) {
-         m_currentPointer = name;
+      var mapping :ComponentPointerMapping = new ComponentPointerMapping(
+         component, pointerCreator, pointerTarget );
+      m_mappings.push( mapping );
 
-         // If the custom pointer is active, replace it with the new one.
-         if ( m_useCustomPointer ) {
-            initializeCustomPointer();
+      if ( component == null ) {
+         // If this is a global pointer, just add it to the active pointers list.
+         m_activePointers.push( mapping );
+
+         if ( m_activePointers.length == 1 ) {
+            // If there were no other active pointers, put the global pointer on
+            // stage.
+            createActivePointer();
          }
+      } else {
+         component.addEventListener( UiEvent.MOUSE_OVER, this, handleMouseOver );
+         component.addEventListener( UiEvent.MOUSE_OUT, this, handleMouseOut );
+      }
+   }
 
-         return true;
+   public function resetPointer( component :IUiComponent ) :Boolean {
+      var currentMapping :ComponentPointerMapping;
+      var i :Number = m_mappings.length;
+      while ( currentMapping = m_mappings[ --i ] ) {
+         if ( currentMapping.component == component ) {
+            component.removeEventListener( UiEvent.MOUSE_OVER, this, handleMouseOver );
+            component.removeEventListener( UiEvent.MOUSE_OUT, this, handleMouseOut );
+
+            m_mappings.splice( i, 1 );
+
+            removeFromActivePointers( component );
+            return true;
+         }
       }
-      else {
-         return false;
-      }
+
+      return false;
    }
 
    /**
@@ -170,33 +168,12 @@ class at.klickverbot.ui.mouse.PointerManager extends CoreObject {
       }
    }
 
-   /**
-    * The container in which the custom pointer clip is created.
-    * Defaults to _root.
-    */
-   public function getPointerContainer() :MovieClip {
-      return m_pointerContainer;
+   public function getDefaultPointerTarget() :MovieClip {
+      return m_defaultTarget;
    }
 
-   public function setPointerContainer( container :MovieClip ) :Void {
-      m_pointerContainer = container;
-   }
-
-   /**
-    * The depth the pointer clip is created at.
-    * The pointer clip is created in the container at the specified depth.
-    */
-   public function getPointerDepth() :Number {
-      return m_pointerDepth;
-   }
-
-   public function setPointerDepth( depth :Number ) :Void {
-      m_pointerDepth = depth;
-      // If a custom pointer is currently in use ...
-      if ( m_useCustomPointer ) {
-         // ... move it to the new depth.
-         m_pointerClip.swapDepths( depth );
-      }
+   public function setDefaultPointerTarget( to :MovieClip ) :Void {
+      m_defaultTarget = to;
    }
 
    /**
@@ -225,15 +202,19 @@ class at.klickverbot.ui.mouse.PointerManager extends CoreObject {
       m_pointerClip.gotoAndPlay( "release" );
    }
 
-   /**
-    * Helper function for spawning the currently selected custom pointer MovieClip.
-    */
-   private function initializeCustomPointer() :Void {
-      if ( m_pointerClip != null ) {
-         deleteCustomPointer();
+   private function createActivePointer() :Void {
+      Debug.assertNotEmpty( m_activePointers, "No custom pointer to create." );
+
+      var mapping :ComponentPointerMapping = m_activePointers[ 0 ];
+
+      var target :MovieClip = mapping.pointerTarget;
+
+      if ( target == null ) {
+         target = m_defaultTarget;
       }
-      m_pointerClip = IMcCreator( m_pointers[ m_currentPointer ] ).createClip(
-         m_pointerContainer, "customPointer", m_pointerDepth );
+
+      m_pointerClip = mapping.pointerCreator.createClip(
+         target, "customPointer", POINTER_DEPTH );
 
       if ( !m_showPointer ) {
          m_pointerClip._visible = false;
@@ -247,10 +228,7 @@ class at.klickverbot.ui.mouse.PointerManager extends CoreObject {
       m_pointerClip.onMouseMove = Delegate.create( this, onMouseMove );
    }
 
-   /**
-    * Helper function for deleting the currently used custom pointer MovieClip.
-    */
-   private function deleteCustomPointer() :Void {
+   private function deleteActivePointer() :Void {
       m_pointerClip.onMouseDown = null;
       m_pointerClip.onMouseUp = null;
       m_pointerClip.onMouseMove = null;
@@ -259,22 +237,74 @@ class at.klickverbot.ui.mouse.PointerManager extends CoreObject {
       m_pointerClip = null;
    }
 
+   private function handleMouseOver( event :UiEvent ) :Void {
+      // Find the pointer mapping for the component broadcasting the event.
+      var mapping :ComponentPointerMapping = null;
+      var currentMapping :ComponentPointerMapping;
+      var i :Number = m_mappings.length;
+      while ( currentMapping = m_mappings[ --i ] ) {
+         if ( currentMapping.component == IUiComponent( event.target ) ) {
+            mapping = currentMapping;
+         }
+      }
+      Debug.assertNotNull( mapping,
+         "Did not find pointer mapping for " + event.target );
 
-   private static var DEFAULT_DEPTH :Number = 200;
+      // If there is already a pointer on stage, delete it.
+      if ( m_activePointers.length > 0 ) {
+         deleteActivePointer();
+      }
+
+      // Create the new pointer.
+      m_activePointers.unshift( mapping );
+      createActivePointer();
+   }
+
+   private function handleMouseOut( event :UiEvent ) :Void {
+      removeFromActivePointers( IUiComponent( event.target ) );
+   }
+
+   /**
+    * Removes the pointer for the given component from the active pointer list,
+    * if any and activates the first one in the list if it was the one currently
+    * on stage.
+    */
+   private function removeFromActivePointers( component :IUiComponent ) :Void {
+      var currentMapping :ComponentPointerMapping;
+      var i :Number = m_activePointers.length;
+      while ( currentMapping = m_activePointers[ --i ] ) {
+         if ( currentMapping.component == component ) {
+            if ( i == 0 ) {
+               deleteActivePointer();
+
+               m_activePointers.shift();
+
+               if ( m_activePointers.length > 0 ) {
+                  createActivePointer();
+               }
+            } else {
+               m_activePointers.splice( i, 1 );
+            }
+
+            return;
+         }
+      }
+   }
+
+   private static var POINTER_DEPTH :Number = 200;
 
    private static var m_instance :PointerManager;
+
+   private var m_mappings :Array;
+   private var m_activePointers :Array;
+
+   private var m_defaultTarget :MovieClip;
 
    private var m_useCustomPointer :Boolean;
    private var m_showPointer :Boolean;
    private var m_pointerSuspensionCount :Number;
 
-   private var m_currentPointer :String;
-   private var m_pointers :Object;
-
    private var m_pointerClip :MovieClip;
-
-   private var m_pointerContainer :MovieClip;
-   private var m_pointerDepth :Number;
 
    // Can't use the (cleaner) approach of registering an IMouseListener because
    // it doesn't respect updateAfterEvent(), which is essential for smooth
