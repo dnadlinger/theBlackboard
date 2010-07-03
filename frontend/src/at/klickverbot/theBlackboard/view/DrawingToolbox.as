@@ -56,6 +56,7 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
    public function destroy() :Void {
       if ( m_onStage ) {
          // TODO: Correctly remove all listeners here.
+         PointerManager.getInstance().resetPointer( m_drawingArea );
          m_toolboxContainer.destroy();
       }
 
