@@ -2,7 +2,6 @@ import at.klickverbot.data.List;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.debug.Logger;
 import at.klickverbot.event.events.CollectionEvent;
-import at.klickverbot.theBlackboard.view.EntryView;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.Grid;
 import at.klickverbot.ui.components.data.IItemView;
@@ -111,11 +110,37 @@ class at.klickverbot.ui.components.data.PaginatedGrid
       updateItemViewData();
    }
 
+   public function goToPage( pageIndex :Number ) :Void {
+      Debug.assertPositive( pageIndex, "pageIndex must be positive!" );
+      Debug.assertLess( pageIndex, getPageCount(),
+         "pageIndex must not exceed pageCount!" );
+
+      setStartOffset( pageIndex * m_grid.getCapacity() );
+      updateItemViewData();
+   }
+
+   public function getPageForItem( item :Object ) :Number {
+      var itemIndex :Number = null;
+
+      for ( var i :Number = 0; i < m_items.getLength(); ++i ) {
+         var currentItem :Object = m_items.getItemAt( i );
+         if ( currentItem == item ) {
+            itemIndex = i;
+            break;
+         }
+      }
+
+      Debug.assertNotNull( itemIndex,
+         "Cannot get the page index for an item not added to the PaginatedGrid." );
+
+      return Math.floor( itemIndex / m_grid.getCapacity() );
+   }
+
    public function getViewForItem( item :Object ) :IItemView {
       var itemView :IItemView;
 
       for ( var i :Number = 0; i < m_itemViews.length ; ++i ) {
-         var currentDisplay :EntryView = m_itemViews[ i ];
+         var currentDisplay :IItemView = m_itemViews[ i ];
          if ( currentDisplay.getData() == item ) {
             itemView = currentDisplay;
             break;

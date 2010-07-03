@@ -125,14 +125,19 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       if ( !checkOnStage( "resize" ) ) return;
       super.resize( width, height );
 
-      m_backScenery.resize( width, height );
-      m_mainContainer.resize( width, height );
-      m_frontScenery.resize( width, height );
       m_entryOverlayStack.resize( width, height );
 
-      if ( m_activeDrawView != null ) {
+      if ( !m_activeEntry ) {
+         resizeMainChildren();
+      } else if ( m_activeDrawView != null ) {
          Animator.getInstance().run( drawEntryZoom( false ) );
       }
+   }
+
+   private function resizeMainChildren() :Void {
+      m_backScenery.setSize( getSize() );
+      m_mainContainer.setSize( getSize() );
+      m_frontScenery.setSize( getSize() );
    }
 
    private function setupUi() :Void {
@@ -225,7 +230,10 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_activeEntry.removeEventListener( EntryChangeEvent.DIRTY,
          this, finishEditMode );
 
+      resizeMainChildren();
+      m_entryGrid.goToPage( m_entryGrid.getPageForItem( m_activeEntry ) );
       m_activeEntry = null;
+
       Animator.getInstance().run( generalViewZoom( true ) );
       m_state = EntriesViewState.VIEW_ALL;
    }
