@@ -17,10 +17,13 @@ import at.klickverbot.theBlackboard.view.NavigationView;
 import at.klickverbot.theBlackboard.view.event.NavigationViewEvent;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
+import at.klickverbot.ui.animation.AlphaTween;
+import at.klickverbot.ui.animation.Animation;
 import at.klickverbot.ui.animation.Animator;
 import at.klickverbot.ui.animation.Delay;
 import at.klickverbot.ui.animation.IAnimation;
 import at.klickverbot.ui.animation.Sequence;
+import at.klickverbot.ui.animation.timeMapping.TimeMappers;
 import at.klickverbot.ui.components.Container;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.Stack;
@@ -50,9 +53,9 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
 
       setupUi();
       m_navigation.addEventListener( NavigationViewEvent.PREVIOUS_PAGE,
-         m_entryGrid, m_entryGrid.goToPreviousPage );
+         this, goToPreviousPage );
       m_navigation.addEventListener( NavigationViewEvent.NEXT_PAGE,
-         m_entryGrid, m_entryGrid.goToNextPage );
+         this, goToNextPage );
       m_navigation.addEventListener( NavigationViewEvent.NEW_ENTRY,
          this, addNewEntry );
    }
@@ -277,6 +280,32 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
 
    private function showOverlayStack() :Void {
       Animator.getInstance().run( Animations.fadeIn( m_entryOverlayStack ) );
+   }
+   
+   private function goToPreviousPage( event :NavigationViewEvent ) :Void {
+   	var fadeOut :Animation = new Animation( new AlphaTween( m_entryGrid, 0 ),
+   	  Animations.FADE_DURATION, TimeMappers.CUBIC );
+   	
+   	fadeOut.addEventListener( Event.COMPLETE,
+   	  m_entryGrid, m_entryGrid.goToPreviousPage );
+   	fadeOut.addEventListener( Event.COMPLETE, this, fadeInGrid );
+   	
+   	Animator.getInstance().run( fadeOut );   	
+   }
+   
+   private function goToNextPage( event :NavigationViewEvent ) :Void {
+      var fadeOut :Animation = new Animation( new AlphaTween( m_entryGrid, 0 ),
+        Animations.FADE_DURATION, TimeMappers.CUBIC );
+      
+      fadeOut.addEventListener( Event.COMPLETE, m_entryGrid, m_entryGrid.goToNextPage );
+      fadeOut.addEventListener( Event.COMPLETE, this, fadeInGrid );
+      
+      Animator.getInstance().run( fadeOut );
+   }
+   
+   private function fadeInGrid() :Void {
+   	Animator.getInstance().run( new Animation( new AlphaTween( m_entryGrid, 1 ),
+        Animations.FADE_DURATION, TimeMappers.CUBIC ) );
    }
 
    private var m_entries :List;
