@@ -46,8 +46,7 @@ class at.klickverbot.ui.components.data.PaginatedGrid
       m_items.addEventListener( CollectionEvent.CHANGE,
          this, updateItemViewData );
 
-      // There were no item views up to now, so use zero for oldCapacity.
-      updateGridContents( 0 );
+      fillGrid();
       updateSizeDummy();
       return true;
    }
@@ -70,7 +69,7 @@ class at.klickverbot.ui.components.data.PaginatedGrid
       super.resize( width, height );
 
       m_grid.resize( width, height );
-      updateGridContents();
+      fillGrid();
       updatePage();
    }
 
@@ -88,7 +87,6 @@ class at.klickverbot.ui.components.data.PaginatedGrid
          "Not enough items in the grid to go to the previous page: " + this );
 
       setStartOffset( newStartOffset );
-      updateItemViewData();
    }
 
    public function goToNextPage() :Void {
@@ -97,17 +95,14 @@ class at.klickverbot.ui.components.data.PaginatedGrid
          "Not enough items in the grid to go to the next page: " + this );
 
       setStartOffset( newStartOffset );
-      updateItemViewData();
    }
 
    public function goToFirstPage() :Void {
       setStartOffset( 0 );
-      updateItemViewData();
    }
 
    public function goToLastPage() :Void {
       setStartOffset( ( getPageCount() - 1 ) * m_grid.getCapacity() );
-      updateItemViewData();
    }
 
    public function goToPage( pageIndex :Number ) :Void {
@@ -116,7 +111,6 @@ class at.klickverbot.ui.components.data.PaginatedGrid
          "pageIndex must not exceed pageCount!" );
 
       setStartOffset( pageIndex * m_grid.getCapacity() );
-      updateItemViewData();
    }
 
    public function getPageForItem( item :Object ) :Number {
@@ -159,11 +153,11 @@ class at.klickverbot.ui.components.data.PaginatedGrid
       m_paginatedModel.pageCount =
          Math.ceil( m_items.getLength() / m_grid.getCapacity() );
 
-      var newPage :Number = Math.min( getCurrentPage(), getPageCount() );
+      var newPage :Number = Math.min( getCurrentPage(), ( getPageCount() - 1 ) );
       setStartOffset( newPage * m_grid.getCapacity() );
    }
 
-   private function updateGridContents() :Void {
+   private function fillGrid() :Void {
       // If the new capacity is larger than it was ever before, create new
       // item views for it. Don't care to remove surplus ones, they are not
       // put on stage anyway.
@@ -173,8 +167,6 @@ class at.klickverbot.ui.components.data.PaginatedGrid
          m_itemViews.push( newView );
          m_grid.addContent( newView );
       }
-
-      updateItemViewData();
    }
 
    private function updateItemViewData() :Void {
@@ -198,6 +190,8 @@ class at.klickverbot.ui.components.data.PaginatedGrid
       m_currentStartOffset = newOffset;
       m_paginatedModel.currentPage =
          Math.floor( m_currentStartOffset / m_grid.getCapacity() );
+
+      updateItemViewData();
    }
 
    private var m_items :List;
