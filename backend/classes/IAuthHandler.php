@@ -1,5 +1,5 @@
 <?php
 interface IAuthHandler {
-   public function isAuthenticated( $methodOwner, $methodName );
+   public function isAuthenticated( Request $request );
 }
 ?>

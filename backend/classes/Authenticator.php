@@ -5,8 +5,9 @@ class Authenticator {
       $this->authHandlers = array();
    }
 
-   public function clientMayCall( $methodOwner, $methodName ) {
-      $sets = $this->getAuthSetsForMethod( $methodOwner, $methodName );
+   public function isAuthenticated( Request $request ) {
+      $sets = $this->getAuthSetsForMethod( $request->getMethodOwner(),
+         $request->getMethodName() );
 
       if ( empty( $sets ) ) {
          // If there are no authentication methods in the DB, the client does
@@ -21,7 +22,7 @@ class Authenticator {
          foreach ( $currentSet as $method ) {
             $handler = $this->authHandlers[ $method ];
             if ( !( isset( $handler ) &&
-               $handler->isAuthenticated( $methodOwner, $methodName ) ) ) {
+               $handler->isAuthenticated( $request ) ) ) {
                $currentAuthenticated = false;
                break;
             }

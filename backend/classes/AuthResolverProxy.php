@@ -10,9 +10,7 @@ class AuthResolverProxy implements IMethodResolver {
    }
 
    public function resolve( Request $request, Response $response ) {
-      if ( !$this->authenticator->clientMayCall(
-         $request->getMethodOwner(), $request->getMethodName() ) ) {
-
+      if ( !$this->authenticator->isAuthenticated( $request ) ) {
          $response->setFault( FaultCodes::AUTHENTICATION_NEEDED,
             'Authentication needed to call this method.' );
          return;
