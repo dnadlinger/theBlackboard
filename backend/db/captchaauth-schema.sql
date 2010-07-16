@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS `captchaAuth` (
   `methodOwner` varchar(30) NOT NULL,
   `methodName` varchar(30) NOT NULL,
   `solution` varchar(10) NOT NULL,
-  `solved` tinyint(1) NOT NULL,
+  `solved` timestamp NULL default NULL,,
   PRIMARY KEY (`id`)
 );

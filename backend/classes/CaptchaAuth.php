@@ -33,7 +33,7 @@ class CaptchaAuth {
 
       if ( $resultRows[ 0 ][ 'solution' ] == $solution ) {
          $statement = $this->dbConn->getPdo()->prepare(
-            'UPDATE captchaAuth SET solved = 1 WHERE id = ?' );
+            'UPDATE captchaAuth SET solved = CURRENT_TIMESTAMP WHERE id = ?' );
          $statement->execute( array( $id ) );
       } else {
          $this->deleteStatement->execute( array( $id ) );
@@ -43,17 +43,14 @@ class CaptchaAuth {
    }
 
    public function isAuthenticated( $methodOwner, $methodName ) {
+      // Solved captchas are only valid 300 seconds (5 minutes).
       $statement = $this->dbConn->getPdo()->prepare(
-         'SELECT * FROM captchaAuth WHERE methodOwner = ? AND methodName = ? LIMIT 1' );
+         'SELECT id FROM captchaAuth WHERE methodOwner = ? AND methodName = ? ' .
+         'AND ( CURRENT_TIMESTAMP - solved ) < 300 LIMIT 1' );
       $statement->execute( array( $methodOwner, $methodName ) );
 
       $resultRows = $statement->fetchAll();
       if ( count( $resultRows ) < 1 ) {
-         return false;
-      }
-
-      $solved = $resultRows[ 0 ][ 'solved' ];
-      if ( !$solved ) {
          return false;
       }
 
