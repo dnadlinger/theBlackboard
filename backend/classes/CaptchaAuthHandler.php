@@ -6,7 +6,9 @@ class CaptchaAuthHandler implements IAuthHandler {
 
    public function isAuthenticated( Request $request ) {
       return $this->captchaAuth->isAuthenticated(
-         $request->getMethodOwner(), $request->getMethodName() );
+         $request->getMethodOwner(), $request->getMethodName(),
+         $request->getSession()->getValue( SessionValues::CAPTCHA_IDS )
+      );
    }
 
    private $captchaAuth;

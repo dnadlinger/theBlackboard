@@ -17,6 +17,10 @@ class XmlRpcRequest extends Request {
       $this->methodName = $methodStrings[ 1 ];
 
       $this->methodParams = XMLRPC_getParams( $requestData );
+
+      // TODO: Where to call session_start?
+      session_start();
+      $this->session = new PhpHttpSession();
    }
 }
 ?>

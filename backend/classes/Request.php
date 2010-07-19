@@ -4,23 +4,28 @@ abstract class Request {
       $this->methodOwner = null;
       $this->methodName = null;
       $this->methodParams = null;
+      $this->session = null;
 
       $this->init();
    }
 
-   public function isValid() {
+   public final function isValid() {
       return !( StringUtils::isEmpty( $this->methodOwner ) ||
-         StringUtils::isEmpty( $this->methodName ) );
+         StringUtils::isEmpty( $this->methodName ) || $this->session == null );
    }
 
-   public function getMethodOwner() {
+   public final function getMethodOwner() {
       return $this->methodOwner;
    }
-   public function getMethodName() {
+   public final function getMethodName() {
       return $this->methodName;
    }
-   public function getMethodParams() {
+   public final function getMethodParams() {
       return $this->methodParams;
+   }
+
+   public final function getSession() {
+      return $this->session;
    }
 
    abstract protected function init();
@@ -28,5 +33,6 @@ abstract class Request {
    protected $methodOwner;
    protected $methodName;
    protected $methodParams;
+   protected $session;
 }
 ?>

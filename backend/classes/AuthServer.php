@@ -4,7 +4,8 @@ class AuthServer {
       $this->authenticator = $wrappedAuthenticator;
    }
 
-   public function getAuthSetsForMethod( array $params ) {
+   public function getAuthSetsForMethod( Request $request ) {
+      $params = $request->getMethodParams();
       MethodUtils::checkSignature( array( Types::STRING ), $params );
 
       $parts = explode( '.', $params[ 0 ] );

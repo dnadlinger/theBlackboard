@@ -4,7 +4,8 @@ class CaptchaAuthServer {
       $this->captchaAuth = $wrappedCaptchaAuth;
    }
 
-   public function getCaptcha( array $params ) {
+   public function getCaptcha( Request $request ) {
+      $params = $request->getMethodParams();
       MethodUtils::checkSignature( array( Types::STRING ), $params );
 
       $parts = explode( '.', $params[ 0 ] );
@@ -15,11 +16,21 @@ class CaptchaAuthServer {
             'owner object and a method name separated by a single dot.' );
       }
 
-      return new ReturnValue( call_user_func_array(
-         array( $this->captchaAuth, 'getCaptcha' ), $parts ) );
+      $captchaId = call_user_func_array(
+         array( $this->captchaAuth, 'getCaptcha' ), $parts );
+
+      $ids = $request->getSession()->getValue( SessionValues::CAPTCHA_IDS );
+      if ( $ids == null ) {
+         $ids = array();
+      }
+      $ids[] = $captchaId;
+      $request->getSession()->setValue( SessionValues::CAPTCHA_IDS, $ids );
+
+      return new ReturnValue( $captchaId );
    }
 
-   public function solveCaptcha( array $params ) {
+   public function solveCaptcha( Request $request ) {
+      $params = $request->getMethodParams();
       MethodUtils::checkSignature( array( Types::INT, Types::STRING ), $params );
       call_user_func_array( array( $this->captchaAuth, 'solveCaptcha' ), $params );
    }

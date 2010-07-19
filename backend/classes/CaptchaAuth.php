@@ -42,11 +42,19 @@ class CaptchaAuth {
       }
    }
 
-   public function isAuthenticated( $methodOwner, $methodName ) {
+   public function isAuthenticated( $methodOwner, $methodName, $ids ) {
+      if ( $ids == null || count( $ids ) < 1 ) {
+         return false;
+      }
+
       // Solved captchas are only valid 300 seconds (5 minutes).
       $statement = $this->dbConn->getPdo()->prepare(
-         'SELECT id FROM captchaAuth WHERE methodOwner = ? AND methodName = ? ' .
-         'AND ( CURRENT_TIMESTAMP - solved ) < 300 LIMIT 1' );
+         'SELECT id FROM captchaAuth WHERE ' .
+         'methodOwner = ? AND methodName = ? ' .
+         'AND ( CURRENT_TIMESTAMP - solved ) < 300 ' .
+         'AND id IN (' . join( ', ', $ids ) . ') '.
+         'LIMIT 1'
+      );
       $statement->execute( array( $methodOwner, $methodName ) );
 
       $resultRows = $statement->fetchAll();

@@ -1,13 +1,14 @@
 <?php
-class ClassResolver implements IMethodResolver {
-   public function __construct( $objectName, $targetObject ) {
+class DirectClassResolver implements IMethodResolver {
+   public function __construct( $objectName, $targetObject, $methodInfo ) {
       $this->name = $objectName;
       $this->target = $targetObject;
+      $this->methodInfo = $methodInfo;
    }
 
    public function canResolve( Request $request ) {
       return ( ( $request->getMethodOwner() === $this->name ) &&
-         ( is_callable( array( $this->target, $request->getMethodName() ) ) ) );
+         isset( $this->methodInfo[ $request->getMethodName() ] ) );
    }
 
    public function resolve( Request $request, Response $response ) {
@@ -17,11 +18,14 @@ class ClassResolver implements IMethodResolver {
       }
 
       $methodName = $request->getMethodName();
+      $params = $request->getMethodParams();
+
       try {
-         $result = $this->target->$methodName( $request );
+         MethodUtils::checkSignature( $this->methodInfo[ $methodName ], $params );
+         $result = call_user_func_array( array( $this->target, $methodName ), $params );
 
          if ( $result != null ) {
-            $response->setReturnValue( $result );
+            $response->setReturnValue( new ReturnValue( $result ) );
          }
       } catch( InvalidSignatureException $e ) {
          $response->setFault( FaultCodes::INVALID_METHOD_PARAMS, $e->getMessage() );
@@ -32,5 +36,6 @@ class ClassResolver implements IMethodResolver {
 
    private $name;
    private $target;
+   private $methodInfo;
 }
 ?>

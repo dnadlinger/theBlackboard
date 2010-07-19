@@ -50,20 +50,27 @@ class Core {
       $authenticator->setMethodHandler( AuthMethods::CAPTCHA,
          new CaptchaAuthHandler( $captchaAuth ) );
 
-      $services = array(
-         'configuration' => new ConfigurationServer( $configuration ),
-         'entries' => new EntriesServer( $entries ),
-         'auth' => new AuthServer( $authenticator ),
-         'captchaAuth' => new CaptchaAuthServer( $captchaAuth )
+      $resolvers = array(
+         new DirectClassResolver( 'configuration', $configuration, array(
+            'getAll' => array(),
+            'getByName' => array( Types::STRING )
+         ) ),
+         new DirectClassResolver( 'entries', $entries, array(
+            'getEntryCount' => array(),
+            'getAllIds' => array( Types::STRING ),
+            'getIdsForRange' => array( Types::STRING, Types::INT, Types::INT ),
+            'getEntryById' => array( Types::INT ),
+            'addEntry' => array( Types::STRING, Types::STRING, Types::STRING )
+         ) ),
+         new ClassResolver( 'auth', new AuthServer( $authenticator ) ),
+         new ClassResolver( 'captchaAuth', new CaptchaAuthServer( $captchaAuth ) ),
+         new CaptchaImageResolver( $captchaAuth )
       );
 
-      foreach( $services as $name => $server ) {
-         $this->frontController->addResolver( new AuthResolverProxy(
-            new ClassResolver( $name, $server ), $authenticator ) );
+      foreach ( $resolvers as $resolver )  {
+         $this->frontController->addResolver(
+            new AuthResolverProxy( $resolver, $authenticator ) );
       }
-
-      $this->frontController->addResolver(
-         new CaptchaImageResolver( $captchaAuth ) );
    }
 
    private $dbConnector;
