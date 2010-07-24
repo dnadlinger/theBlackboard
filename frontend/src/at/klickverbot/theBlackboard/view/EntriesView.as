@@ -26,7 +26,7 @@ import at.klickverbot.ui.animation.Sequence;
 import at.klickverbot.ui.animation.timeMapping.TimeMappers;
 import at.klickverbot.ui.components.Container;
 import at.klickverbot.ui.components.CustomSizeableComponent;
-import at.klickverbot.ui.components.Stack;
+import at.klickverbot.ui.components.Fader;
 import at.klickverbot.ui.components.data.IItemViewFactory;
 import at.klickverbot.ui.components.data.PaginatedGrid;
 import at.klickverbot.ui.components.themed.MultiContainer;
@@ -50,6 +50,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_state = EntriesViewState.VIEW_ALL;
       m_activeDrawView = null;
       m_activeDetailsView = null;
+      m_drawingOverlayFader = null;
 
       setupUi();
       m_navigation.addEventListener( NavigationViewEvent.PREVIOUS_PAGE,
@@ -93,11 +94,6 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
          return false;
       }
 
-      // Create the overlay container.
-      if ( !m_entryOverlayStack.create( m_container ) ) {
-         return false;
-      }
-
       // Fade in the scenery and the main container.
       Animator.getInstance().run( Animations.fadeIn( m_backScenery ) );
 
@@ -128,7 +124,9 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       if ( !checkOnStage( "resize" ) ) return;
       super.resize( width, height );
 
-      m_entryOverlayStack.resize( width, height );
+      if ( m_drawingOverlayFader != null && m_drawingOverlayFader.isOnStage() ) {
+         m_drawingOverlayFader.resize( width, height );
+      }
 
       if ( !m_activeEntry ) {
          resizeMainChildren();
@@ -165,9 +163,6 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_mainContainer.addContent( ContainerElement.MAIN_NAVIGATION,
          navContainer );
 
-      // Setup the overlay container.
-      m_entryOverlayStack = new Stack();
-
       // Setup the foreground scenery.
       m_frontScenery = new Static( AppClipId.FRONT_SCENERY );
    }
@@ -193,12 +188,16 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       var overlayContainer :Container = new Container();
       overlayContainer.addContent( m_activeDrawView, StretchModes.UNIFORM,
          HorizontalAligns.LEFT, VerticalAligns.TOP );
-      m_entryOverlayStack.addContent( overlayContainer );
+      m_drawingOverlayFader = new Fader( overlayContainer );
+      m_drawingOverlayFader.create( m_container );
+      m_drawingOverlayFader.setSize( getSize() );
+      m_drawingOverlayFader.createContent();
 
       // Delay showing the overlay until the zoom animation is complete.
       var zoomAnimation :IAnimation = drawEntryZoom( true );
-      zoomAnimation.addEventListener( Event.COMPLETE, this, showOverlayStack );
-      m_entryOverlayStack.fade( 0 );
+      zoomAnimation.addEventListener( Event.COMPLETE,
+         this, fadeInDrawingOverlay );
+      m_drawingOverlayFader.fade( 0 );
       Animator.getInstance().run( zoomAnimation );
    }
 
@@ -210,7 +209,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_activeDetailsView = new EditEntryDetailsView( m_activeEntry );
       m_activeDetailsView.addEventListener( Event.COMPLETE, this, saveEntry );
 
-      m_entryOverlayStack.removeContent( m_entryOverlayStack.getSelectedComponent() );
+      m_drawingOverlayFader.destroyContent( true );
       m_activeDrawView = null;
 
       m_modalOverlayDisplay.showOverlay( m_activeDetailsView );
@@ -242,9 +241,8 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    }
 
    private function drawEntryZoom( animate :Boolean ) :IAnimation {
-      if ( m_activeDrawView == null ) {
-         return null;
-      }
+      Debug.assertNotNull( m_activeDrawView,
+         "drawEntryZoom requested, but no active DrawEntryView." );
 
       Debug.assertFuzzyEqual(
          m_activeDrawView.getDrawingAreaSize().x,
@@ -278,34 +276,34 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       return Animations.zoomTo( m_mainContentClip, new Point2D( 0, 0 ), 1, animate );
    }
 
-   private function showOverlayStack() :Void {
-      Animator.getInstance().run( Animations.fadeIn( m_entryOverlayStack ) );
-   }
-   
    private function goToPreviousPage( event :NavigationViewEvent ) :Void {
-   	var fadeOut :Animation = new Animation( new AlphaTween( m_entryGrid, 0 ),
-   	  Animations.FADE_DURATION, TimeMappers.CUBIC );
-   	
-   	fadeOut.addEventListener( Event.COMPLETE,
-   	  m_entryGrid, m_entryGrid.goToPreviousPage );
-   	fadeOut.addEventListener( Event.COMPLETE, this, fadeInGrid );
-   	
-   	Animator.getInstance().run( fadeOut );   	
+      var fadeOut :Animation = new Animation( new AlphaTween( m_entryGrid, 0 ),
+        Animations.FADE_DURATION, TimeMappers.CUBIC );
+
+      fadeOut.addEventListener( Event.COMPLETE,
+        m_entryGrid, m_entryGrid.goToPreviousPage );
+      fadeOut.addEventListener( Event.COMPLETE, this, fadeInGrid );
+
+      Animator.getInstance().run( fadeOut );
    }
-   
+
    private function goToNextPage( event :NavigationViewEvent ) :Void {
       var fadeOut :Animation = new Animation( new AlphaTween( m_entryGrid, 0 ),
         Animations.FADE_DURATION, TimeMappers.CUBIC );
-      
+
       fadeOut.addEventListener( Event.COMPLETE, m_entryGrid, m_entryGrid.goToNextPage );
       fadeOut.addEventListener( Event.COMPLETE, this, fadeInGrid );
-      
+
       Animator.getInstance().run( fadeOut );
    }
-   
+
    private function fadeInGrid() :Void {
-   	Animator.getInstance().run( new Animation( new AlphaTween( m_entryGrid, 1 ),
-        Animations.FADE_DURATION, TimeMappers.CUBIC ) );
+      Animator.getInstance().run( new Animation( new AlphaTween( m_entryGrid, 1 ),
+         Animations.FADE_DURATION, TimeMappers.CUBIC ) );
+   }
+
+   private function fadeInDrawingOverlay() :Void {
+      Animator.getInstance().run( Animations.fadeIn( m_drawingOverlayFader ) );
    }
 
    private var m_entries :List;
@@ -316,7 +314,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    private var m_state :EntriesViewState;
    // The entry which is currently edited.
    private var m_activeEntry :Entry;
-   private var m_entryOverlayStack :Stack;
+   private var m_drawingOverlayFader :Fader;
    private var m_activeDrawView :DrawEntryView;
    private var m_activeDetailsView :EditEntryDetailsView;
 
