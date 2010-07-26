@@ -51,7 +51,8 @@ class at.klickverbot.ui.components.themed.Static extends McComponent
    public function destroy() :Void {
       if ( m_onStage ) {
          m_staticContent.removeMovieClip();
-         m_staticContent = null;
+         // Do not set m_staticContent to null here to keep it accessible from
+         // child classes which might use it in getMouseoverArea().
       }
       super.destroy();
    }

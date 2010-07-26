@@ -68,6 +68,24 @@ class at.klickverbot.ui.mouse.MouseoverManager extends CoreObject {
       return found;
    }
 
+   public function isAreaHovered( activeArea :MovieClip ) :Boolean {
+      var area :MouseoverArea = null;
+
+      var currentArea :MouseoverArea;
+      var currentIndex :Number = m_areas.length;
+      while ( currentArea = m_areas[ --currentIndex ] ) {
+         if ( currentArea.activeArea == activeArea ) {
+            area = currentArea;
+            break;
+         }
+      }
+
+      Debug.assertNotNull( area, "isAreaHovered() called for a MovieClip not " +
+         "registered as mouseover area: " + activeArea );
+
+      return area.currentlyOver;
+   }
+
    private function onMouseMove() :Void {
       var globalPosition :Point2D = McUtils.localToGlobal( m_clip,
          new Point2D( m_clip._xmouse, m_clip._ymouse ) );

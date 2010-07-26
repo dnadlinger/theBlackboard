@@ -17,7 +17,8 @@ import at.klickverbot.util.TypeUtils;
  *
  * It dispatches two events:
  *  - UiEvent.MOUSE_OVER when the mouse enters the area above the component.
- *  - UiEvent.MOUSE_OUT when the mouse leaves the area above the component.
+ *  - UiEvent.MOUSE_OUT when the mouse leaves the area above the component
+ *    (or the component is destroyed while the mouse is above it).
  *
  * Note that these are only dispatched to explicitely added listeners, not to
  * listeners added via addUnhandledEventsListener, because the internal handling
@@ -72,6 +73,15 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
 
    public function destroy() :Void {
       if ( !checkOnStage( "destroy" ) ) return;
+
+      if ( hasMouseoverListeners() ) {
+         if ( MouseoverManager.getInstance().isAreaHovered( getMouseoverArea() ) ) {
+            // If the pointer is above the component when it is destroyed, simulate
+            // a mouse off event so that listeners do not get confused.
+            handleMouseOff();
+         }
+         deregisterMouseoverArea();
+      }
 
       m_container.removeMovieClip();
       m_container = null;
@@ -254,7 +264,7 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
     * sensitive for mouseover events.
     */
    private function getMouseoverArea() :MovieClip {
-      Debug.assert( m_onStage, "mouseOverArea() called while not on stage" );
+      Debug.assert( m_onStage, "getMouseOverArea() called while not on stage" );
       return m_container;
    }
 
