@@ -1,14 +1,11 @@
-import at.klickverbot.event.events.UiEvent;
 import at.klickverbot.event.events.ButtonEvent;
+import at.klickverbot.event.events.UiEvent;
 import at.klickverbot.theme.ClipId;
-import at.klickverbot.ui.components.IUiComponent;
 import at.klickverbot.ui.components.themed.IButtonStateChanger;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.util.Delegate;
 
-class at.klickverbot.ui.components.themed.Button extends Static
-   implements IUiComponent {
-
+class at.klickverbot.ui.components.themed.Button extends Static {
    /**
     * Constructor.
     *
@@ -69,6 +66,15 @@ class at.klickverbot.ui.components.themed.Button extends Static
       }
 
       return true;
+   }
+
+
+   public function destroy() :Void {
+      if ( m_onStage ) {
+         removeEventListener( UiEvent.MOUSE_OVER, this, handleMouseOver );
+         removeEventListener( UiEvent.MOUSE_OUT, this, handleMouseOut );
+      }
+      super.destroy();
    }
 
    public function isActive() :Boolean {
