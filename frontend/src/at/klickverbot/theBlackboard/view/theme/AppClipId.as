@@ -46,7 +46,8 @@ class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
    public static var ERASER_BUTTON :AppClipId = new AppClipId( "eraserButton" );
    public static var UNDO_BUTTON :AppClipId = new AppClipId( "undoButton" );
    public static var REDO_BUTTON :AppClipId = new AppClipId( "redoButton" );
-   public static var NEXT_STEP_BUTTON :AppClipId = new AppClipId( "nextStepButton" );
+   public static var SUBMIT_BUTTON :AppClipId = new AppClipId( "submitButton" );
+   public static var DISCARD_BUTTON :AppClipId = new AppClipId( "discardButton" );
 
    public static var BACKGROUND :AppClipId = new AppClipId( "background" );
    public static var BACK_SCENERY :AppClipId = new AppClipId( "backScenery" );

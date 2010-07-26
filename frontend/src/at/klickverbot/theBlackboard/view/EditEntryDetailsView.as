@@ -27,7 +27,7 @@ class at.klickverbot.theBlackboard.view.EditEntryDetailsView
       m_formContainer.addContent(
          ContainerElement.DETAILS_FORM_CAPTION, m_captionText );
 
-      m_submitButton = new Button( AppClipId.NEXT_STEP_BUTTON );
+      m_submitButton = new Button( AppClipId.SUBMIT_BUTTON );
       m_submitButton.oneShotMode = true;
       m_submitButton.addEventListener( ButtonEvent.PRESS, this, handleSubmitPress );
       m_formContainer.addContent(

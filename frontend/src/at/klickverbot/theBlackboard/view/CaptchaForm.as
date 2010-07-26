@@ -30,7 +30,7 @@ class at.klickverbot.theBlackboard.view.CaptchaForm
       m_formContainer.addContent(
          ContainerElement.CAPTCHA_INPUT, m_inputText );
 
-      m_submitButton = new Button( AppClipId.NEXT_STEP_BUTTON );
+      m_submitButton = new Button( AppClipId.SUBMIT_BUTTON );
       m_submitButton.oneShotMode = true;
       m_submitButton.addEventListener( ButtonEvent.PRESS, this, handleSubmitPress );
       m_formContainer.addContent(

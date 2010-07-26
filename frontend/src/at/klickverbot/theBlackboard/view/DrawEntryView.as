@@ -1,4 +1,3 @@
-import at.klickverbot.event.events.Event;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theBlackboard.model.Entry;
 import at.klickverbot.theBlackboard.view.DrawingToolbox;
@@ -26,7 +25,6 @@ class at.klickverbot.theBlackboard.view.DrawEntryView
 
       m_drawingToolbox = new DrawingToolbox( target );
       m_drawEntryContainer.addContent( ContainerElement.NEW_TOOLBOX, m_drawingToolbox );
-      m_drawingToolbox.addEventListener( Event.COMPLETE, this, handleComplete );
    }
 
    private function createUi() :Boolean {
@@ -68,10 +66,9 @@ class at.klickverbot.theBlackboard.view.DrawEntryView
       return m_drawingAreaDummy.getSize();
    }
 
-   private function handleComplete( event :Event ) :Void {
+   public function commitChanges() :Void {
       m_drawingArea.setMouseDrawMode( false );
       m_model.drawing = m_drawingArea.getCurrentDrawing();
-      dispatchEvent( new Event( Event.COMPLETE, this ) );
    }
 
    private var m_model :Entry;

@@ -14,7 +14,9 @@ import at.klickverbot.theBlackboard.view.EntryView;
 import at.klickverbot.theBlackboard.view.EntryViewFactory;
 import at.klickverbot.theBlackboard.view.ModalOverlayDisplay;
 import at.klickverbot.theBlackboard.view.NavigationView;
+import at.klickverbot.theBlackboard.view.SubmitDiscardView;
 import at.klickverbot.theBlackboard.view.event.NavigationViewEvent;
+import at.klickverbot.theBlackboard.view.event.SubmitDiscardEvent;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
 import at.klickverbot.ui.animation.AlphaTween;
@@ -27,6 +29,7 @@ import at.klickverbot.ui.animation.timeMapping.TimeMappers;
 import at.klickverbot.ui.components.Container;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.Fader;
+import at.klickverbot.ui.components.Stack;
 import at.klickverbot.ui.components.data.IItemViewFactory;
 import at.klickverbot.ui.components.data.PaginatedGrid;
 import at.klickverbot.ui.components.themed.MultiContainer;
@@ -172,12 +175,16 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
 
       // Setup the toolbar.
       m_toolbarContainer = new MultiContainer( AppClipId.TOOLBAR_CONTAINER );
+      m_toolbarStack = new Stack();
+
       var navContainer :Container = new Container();
       m_navigation = new NavigationView( m_entryGrid );
       navContainer.addContent( m_navigation, StretchModes.UNIFORM,
          HorizontalAligns.CENTER, VerticalAligns.MIDDLE );
+      m_toolbarStack.addContent( navContainer );
+
       m_toolbarContainer.addContent( ContainerElement.TOOLBAR_CONTENT,
-         navContainer );
+         m_toolbarStack );
    }
 
    private function addNewEntry() :Void {
@@ -191,16 +198,26 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_entries.push( m_activeEntry );
       m_entryGrid.goToLastPage();
 
+      var navContainer :Container = new Container();
+
+      var navigation :SubmitDiscardView = new SubmitDiscardView();
+      navigation.addEventListener( SubmitDiscardEvent.SUBMIT,
+         this, editEntryDetails );
+
+      navContainer.addContent( navigation, StretchModes.UNIFORM,
+         HorizontalAligns.CENTER, VerticalAligns.MIDDLE );
+      m_toolbarStack.addContent( navContainer );
+      m_toolbarStack.selectComponent( navContainer );
+
       Debug.assertNull( m_activeDrawView, "There was still another " +
          "DrawEntryView active while switching to draw mode!" );
 
       m_activeDrawView = new DrawEntryView( m_activeEntry,
          EntryView( m_entryGrid.getViewForItem( m_activeEntry ) ).getDrawingArea() );
-      m_activeDrawView.addEventListener( Event.COMPLETE, this, editEntryDetails );
-
       var overlayContainer :Container = new Container();
       overlayContainer.addContent( m_activeDrawView, StretchModes.UNIFORM,
          HorizontalAligns.LEFT, VerticalAligns.TOP );
+
       m_drawingOverlayFader = new Fader( overlayContainer );
       m_drawingOverlayFader.create( m_container );
       m_drawingOverlayFader.setSize( getSize() );
@@ -222,6 +239,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_activeDetailsView = new EditEntryDetailsView( m_activeEntry );
       m_activeDetailsView.addEventListener( Event.COMPLETE, this, saveEntry );
 
+      m_activeDrawView.commitChanges();
       m_drawingOverlayFader.destroyContent( true );
       m_activeDrawView = null;
 
@@ -244,6 +262,8 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    private function finishEditMode() :Void {
       m_activeEntry.removeEventListener( EntryChangeEvent.DIRTY,
          this, finishEditMode );
+
+      m_toolbarStack.removeContent( m_toolbarStack.getSelectedComponent() );
 
       resizeMainChildren();
       m_entryGrid.goToPage( m_entryGrid.getPageForItem( m_activeEntry ) );
@@ -337,6 +357,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    private var m_entryViewFactory :IItemViewFactory;
 
    private var m_toolbarContainer :MultiContainer;
+   private var m_toolbarStack :Stack;
    private var m_navigation :NavigationView;
 
    private var m_mainContentClip :MovieClip;

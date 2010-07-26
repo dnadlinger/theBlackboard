@@ -1,7 +1,6 @@
 import at.klickverbot.debug.Debug;
 import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.event.events.DrawingAreaEvent;
-import at.klickverbot.event.events.Event;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theBlackboard.view.ButtonForNumber;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
@@ -112,12 +111,6 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
       m_redoButton = new Button( AppClipId.REDO_BUTTON );
       m_redoButton.addEventListener( ButtonEvent.PRESS, this, handleRedoButtonPress );
       m_toolboxContainer.addContent( ContainerElement.TOOLS_REDO, m_redoButton );
-
-      // Add the next step button.
-      m_nextStepButton = new Button( AppClipId.NEXT_STEP_BUTTON );
-      m_nextStepButton.oneShotMode = true;
-      m_nextStepButton.addEventListener( ButtonEvent.PRESS, this, handleNextStepButtonPress );
-      m_toolboxContainer.addContent( ContainerElement.TOOLS_NEXT_STEP, m_nextStepButton );
    }
 
    private function addColorButtonHandler( target :Button ) :Void {
@@ -223,10 +216,6 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
       m_drawingArea.redo( 1 );
    }
 
-   private function handleNextStepButtonPress( event :ButtonEvent ) :Void {
-      dispatchEvent( new Event( Event.COMPLETE, this ) );
-   }
-
    private function updateHistoryButtons( event :DrawingAreaEvent ) :Void {
       m_undoButton.setActive( ( m_drawingArea.getUndoStepsPossible() >= 1 ) );
       m_redoButton.setActive( ( m_drawingArea.getRedoStepsPossible() >= 1 ) );
@@ -262,7 +251,6 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
    private var m_eraserButton :Button;
    private var m_undoButton :Button;
    private var m_redoButton :Button;
-   private var m_nextStepButton :Button;
 
    private var m_oldDeactivatedSizeButton :Button;
 }
