@@ -58,9 +58,8 @@ class at.klickverbot.ui.components.HStrip extends CustomSizeableComponent
          component + "!" );
 
       if ( component.isOnStage() ) {
-         trace( "HStrip::addContent( component )" );
-         Debug.LIBRARY_LOG.warn(
-            "Attempted to add a component that is already on stage!" );
+         Debug.LIBRARY_LOG.warn( "Attempted to add a component that is already " +
+            "on stage (" + component + ") to " + this + "!" );
          return false;
       }
 
