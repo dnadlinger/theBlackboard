@@ -8,13 +8,14 @@ import at.klickverbot.ui.components.ScaleGrid;
 import at.klickverbot.ui.components.themed.MultiContainerContent;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.layout.ContainerRule;
+import at.klickverbot.ui.layout.HorizontalPosition;
 import at.klickverbot.ui.layout.ScaleGridCell;
 import at.klickverbot.ui.layout.ScaleGridMapping;
 import at.klickverbot.ui.layout.ScaleGridType;
+import at.klickverbot.ui.layout.VerticalPosition;
 import at.klickverbot.util.McUtils;
 
-class at.klickverbot.ui.components.themed.MultiContainer extends Static
-   implements IUiComponent {
+class at.klickverbot.ui.components.themed.MultiContainer extends Static {
    /**
     * Constructor.
     *
@@ -168,8 +169,7 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
          var rightWidth :Number;
          var bottomHeight :Number;
 
-         // TODO: Remove the type thing if not necessary.
-         if ( m_scaleGridMapping.getGridType() == ScaleGridType.SCALE_CENTER_STATIC ) {
+         if ( m_scaleGridMapping.getGridType() == ScaleGridType.CENTER_STATIC ) {
             var centerElementFound :Boolean = false;
 
             // Loop through all child clips to build the scale grid dimensions.
@@ -206,21 +206,61 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static
 
             if ( !centerElementFound ) {
                Debug.LIBRARY_LOG.warn( "The ScaleGrid for the MultiContainer is " +
-                  "of type SCALE_CENTER_STATIC, but has nothing in the center cell." );
+                  "of type CENTER_STATIC, but has nothing in the center cell." );
                m_scaleGridMapping = null;
                return;
             }
+         } else if ( m_scaleGridMapping.getGridType() == ScaleGridType.BORDERS_STATIC ) {
+            leftWidth = 0;
+            topHeight = 0;
+            rightWidth = 0;
+            bottomHeight = 0;
+            // Loop through all child clips to build the scale grid dimensions.
+            for ( var childName :String in m_staticContent ) {
+               var currentClip :MovieClip = m_staticContent[ childName ];
+               var contentLocation :ScaleGridCell =
+                  m_scaleGridMapping.getLocationForElement( childName );
 
-            m_scaleGridContainer.setCellSizes( leftWidth, rightWidth,
-               topHeight, bottomHeight );
+               if ( contentLocation.row == VerticalPosition.TOP ) {
+                  topHeight =
+                     Math.max( topHeight, ( currentClip._y + currentClip._height ) );
+               } else if ( contentLocation.row == VerticalPosition.BOTTOM ) {
+                  bottomHeight =
+                     Math.max( bottomHeight, ( getSize().y - currentClip._y ) );
+               }
+
+               if ( contentLocation.column == HorizontalPosition.LEFT ) {
+                  leftWidth = Math.max( leftWidth,
+                     ( currentClip._x + currentClip._width ) );
+               } else if ( contentLocation.column == HorizontalPosition.RIGHT ) {
+                  rightWidth =
+                     Math.max( rightWidth, ( getSize().x - currentClip._x ) );
+               }
+            }
          } else {
-            Debug.LIBRARY_LOG.error( "Unsupported ScaleGridType for a " +
+            Debug.LIBRARY_LOG.warn( "Unsupported ScaleGridType for a " +
                "MultiContainer: " + m_scaleGridMapping.getGridType() );
             m_scaleGridMapping = null;
             return;
          }
-      }
-      else {
+
+         if ( ( leftWidth + rightWidth ) > getSize().x ) {
+            Debug.LIBRARY_LOG.warn( "Left and right scale grid column width " +
+               "exceeds container width for:" + this );
+            m_scaleGridMapping = null;
+            return;
+         }
+
+         if ( ( topHeight + bottomHeight ) > getSize().y ) {
+            Debug.LIBRARY_LOG.warn( "Top and bottom scale grid row height " +
+               "exceeds container height for:" + this );
+            m_scaleGridMapping = null;
+            return;
+         }
+
+         m_scaleGridContainer.setCellSizes( leftWidth, rightWidth,
+            topHeight, bottomHeight );
+      } else {
          // If there is no scale grid set, fall back to "normal" behavior.
          m_scaleGridMapping = null;
          return;

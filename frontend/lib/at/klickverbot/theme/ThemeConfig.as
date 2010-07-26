@@ -148,8 +148,10 @@ class at.klickverbot.theme.ThemeConfig extends CoreObject {
                var scaleGrid :ScaleGridMapping = new ScaleGridMapping();
 
                var rawScaleGridType :String = rawScaleGrid[ "gridType" ];
-               if ( rawScaleGridType == "scaleCenterStatic" ) {
-                  scaleGrid.setGridType( ScaleGridType.SCALE_CENTER_STATIC );
+               if ( rawScaleGridType == "centerStatic" ) {
+                  scaleGrid.setGridType( ScaleGridType.CENTER_STATIC );
+               } else if ( rawScaleGridType == "bordersStatic" ) {
+                  scaleGrid.setGridType( ScaleGridType.BORDERS_STATIC );
                } else {
                   return null;
                }

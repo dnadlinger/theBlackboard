@@ -39,7 +39,7 @@ class at.klickverbot.ui.layout.ScaleGridMapping extends CoreObject {
       m_gridType = type;
    }
 
-   private static var DEFAULT_TYPE :ScaleGridType = ScaleGridType.SCALE_CENTER_STATIC;
+   private static var DEFAULT_TYPE :ScaleGridType = ScaleGridType.CENTER_STATIC;
 
    private var m_elements :Object;
    private var m_gridType :ScaleGridType;
