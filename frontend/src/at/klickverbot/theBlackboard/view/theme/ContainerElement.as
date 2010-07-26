@@ -1,6 +1,7 @@
 class at.klickverbot.theBlackboard.view.theme.ContainerElement {
-   public static var MAIN_ENTRIES_DISPLAY :String = "entriesDisplay";
-   public static var MAIN_NAVIGATION :String = "navigation";
+   public static var MAIN_CONTENT :String = "content";
+
+   public static var TOOLBAR_CONTENT :String = "content";
 
    public static var NEW_DRARING_AREA :String = "drawingArea";
    public static var NEW_TOOLBOX :String = "toolbox";

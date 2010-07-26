@@ -15,13 +15,19 @@
       <containerRule>
          <containerId>mainContainer</containerId>
          <scaleGrid>
-            <gridType>scaleCenterStatic</gridType>
-            <bottom>
-               <elementName>navigation</elementName>
-            </bottom>
+            <gridType>centerStatic</gridType>
             <center>
-               <elementName>entriesDisplay</elementName>
+               <elementName>content</elementName>
             </center>
+         </scaleGrid>
+      </containerRule>
+      <containerRule>
+         <containerId>toolbarContainer</containerId>
+         <scaleGrid>
+            <gridType>bordersStatic</gridType>
+            <bottom>
+               <elementName>content</elementName>
+            </bottom>
          </scaleGrid>
       </containerRule>
    </layoutRules>

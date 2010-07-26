@@ -16,6 +16,7 @@ class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
    }
 
    public static var MAIN_CONTAINER :AppClipId = new AppClipId( "mainContainer" );
+   public static var TOOLBAR_CONTAINER :AppClipId = new AppClipId( "toolbarContainer" );
    public static var ENTRIES_DISPLAY_CONTAINER :AppClipId = new AppClipId( "entriesDisplayContainer" );
    public static var DRAW_ENTRY_CONTAINER :AppClipId = new AppClipId( "drawEntryContainer" );
    public static var DRAWING_TOOLS_CONTAINER :AppClipId = new AppClipId( "drawingToolsContainer" );

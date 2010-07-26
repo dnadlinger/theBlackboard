@@ -94,6 +94,10 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
          return false;
       }
 
+      if ( !m_toolbarContainer.create( m_container ) ) {
+         return false;
+      }
+
       // Fade in the scenery and the main container.
       Animator.getInstance().run( Animations.fadeIn( m_backScenery ) );
 
@@ -108,6 +112,9 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       Animator.getInstance().run(
          Delay.preDelay( Animations.FADE_DURATION * 1.1,
          Animations.fadeIn( m_frontScenery ) ) );
+      Animator.getInstance().run(
+         Delay.preDelay( Animations.FADE_DURATION * 1.4,
+         Animations.fadeIn( m_toolbarContainer ) ) );
 
       updateSizeDummy();
       return true;
@@ -115,7 +122,10 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
 
    public function destroy() :Void {
       if ( m_onStage ) {
+         m_backScenery.destroy();
          m_mainContainer.destroy();
+         m_frontScenery.destroy();
+         m_toolbarContainer.destroy();
       }
       super.destroy();
    }
@@ -139,6 +149,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_backScenery.setSize( getSize() );
       m_mainContainer.setSize( getSize() );
       m_frontScenery.setSize( getSize() );
+      m_toolbarContainer.setSize( getSize() );
    }
 
    private function setupUi() :Void {
@@ -153,18 +164,20 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_entryGrid = new PaginatedGrid( m_entries, m_entryViewFactory,
          m_configuration.drawingSize, m_configuration.drawingSize );
       m_entriesContainer.setContent( m_entryGrid );
-      m_mainContainer.addContent( ContainerElement.MAIN_ENTRIES_DISPLAY,
+      m_mainContainer.addContent( ContainerElement.MAIN_CONTENT,
          m_entriesContainer );
 
+      // Setup the foreground scenery.
+      m_frontScenery = new Static( AppClipId.FRONT_SCENERY );
+
+      // Setup the toolbar.
+      m_toolbarContainer = new MultiContainer( AppClipId.TOOLBAR_CONTAINER );
       var navContainer :Container = new Container();
       m_navigation = new NavigationView( m_entryGrid );
       navContainer.addContent( m_navigation, StretchModes.UNIFORM,
          HorizontalAligns.CENTER, VerticalAligns.MIDDLE );
-      m_mainContainer.addContent( ContainerElement.MAIN_NAVIGATION,
+      m_toolbarContainer.addContent( ContainerElement.TOOLBAR_CONTENT,
          navContainer );
-
-      // Setup the foreground scenery.
-      m_frontScenery = new Static( AppClipId.FRONT_SCENERY );
    }
 
    private function addNewEntry() :Void {
@@ -320,9 +333,11 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
 
    private var m_mainContainer :MultiContainer;
    private var m_entriesContainer :StaticContainer;
-   private var m_navigation :NavigationView;
    private var m_entryGrid :PaginatedGrid;
    private var m_entryViewFactory :IItemViewFactory;
+
+   private var m_toolbarContainer :MultiContainer;
+   private var m_navigation :NavigationView;
 
    private var m_mainContentClip :MovieClip;
    private var m_backScenery :Static;
