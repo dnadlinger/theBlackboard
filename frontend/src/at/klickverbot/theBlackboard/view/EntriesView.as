@@ -137,22 +137,30 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       if ( !checkOnStage( "resize" ) ) return;
       super.resize( width, height );
 
-      if ( m_drawingOverlayFader != null && m_drawingOverlayFader.isOnStage() ) {
-         m_drawingOverlayFader.resize( width, height );
+      if ( m_state == EntriesViewState.DRAW ) {
+         if ( m_drawingOverlayFader.isOnStage() ) {
+            // We check here if the drawingOverlayFader is already on stage,
+            // because it is not created until the animated drawEntryZoom is
+            // completed.
+            m_drawingOverlayFader.resize( width, height );
+         }
+
+         // Make sure that the entry is still in the correct position below the
+         // DrawEntryView (it is not if the fader has been resized above).
+         Animator.getInstance().run( drawEntryZoom( false ) );
+      } else if ( m_state == EntriesViewState.EDIT_DETAILS ) {
+         // Do nothing.
+      } else {
+         resizeMainChildren();
       }
 
-      if ( !m_activeEntry ) {
-         resizeMainChildren();
-      } else if ( m_activeDrawView != null ) {
-         Animator.getInstance().run( drawEntryZoom( false ) );
-      }
+      m_toolbarContainer.setSize( getSize() );
    }
 
    private function resizeMainChildren() :Void {
       m_backScenery.setSize( getSize() );
       m_mainContainer.setSize( getSize() );
       m_frontScenery.setSize( getSize() );
-      m_toolbarContainer.setSize( getSize() );
    }
 
    private function setupUi() :Void {
