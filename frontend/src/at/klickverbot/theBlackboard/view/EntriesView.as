@@ -211,6 +211,8 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       var navigation :SubmitDiscardView = new SubmitDiscardView();
       navigation.addEventListener( SubmitDiscardEvent.SUBMIT,
          this, editEntryDetails );
+      navigation.addEventListener( SubmitDiscardEvent.DISCARD,
+         this, discardNewEntry );
 
       navContainer.addContent( navigation, StretchModes.UNIFORM,
          HorizontalAligns.CENTER, VerticalAligns.MIDDLE );
@@ -278,6 +280,20 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_activeEntry = null;
 
       Animator.getInstance().run( generalViewZoom( true ) );
+      m_state = EntriesViewState.VIEW_ALL;
+   }
+
+   private function discardNewEntry() :Void {
+      m_drawingOverlayFader.destroyContent( true );
+      m_activeDrawView = null;
+
+      m_toolbarStack.removeContent( m_toolbarStack.getSelectedComponent() );
+      resizeMainChildren();
+      Animator.getInstance().run( generalViewZoom( true ) );
+
+      m_activeEntry = null;
+      m_entries.removeLast();
+
       m_state = EntriesViewState.VIEW_ALL;
    }
 
