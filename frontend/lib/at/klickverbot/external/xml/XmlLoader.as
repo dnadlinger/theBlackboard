@@ -18,7 +18,7 @@ class at.klickverbot.external.xml.XmlLoader extends EventDispatcher {
       // Workaround to fix a bug presumably in the ActionScript 2 runtime which
       // causes a warning to appear in the debug Flash Player log if
       // onHttpStatus is not set.
-      m_xml.onHTTPStatus = function( status :Number ) :Void {};
+      m_xml[ "onHTTPStatus" ] = function( status :Number ) :Void {};
 
       var thisHack :XmlLoader = this;
       m_xml.onLoad = function( success :Boolean ) :Void {
