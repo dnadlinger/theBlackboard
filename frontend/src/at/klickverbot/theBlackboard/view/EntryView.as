@@ -11,6 +11,9 @@ import at.klickverbot.ui.components.drawingArea.DrawingArea;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.tooltip.TooltipManager;
 
+/**
+ * An ItemView displaying a single entry.
+ */
 class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponent
    implements IItemView {
 
@@ -81,11 +84,25 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
       loadCurrentEntry();
    }
 
+   /**
+    * Returns a reference to the child DrawingArea used for displaying the
+    * entry.
+    */
    public function getDrawingArea() :DrawingArea {
       return m_drawingAreaContainer.getDrawingArea();
    }
 
+   /**
+    * Save the entry associated with this view.
+    * 
+    * As well as #getDrawingArea, this being called externally is a design
+    * kludge, but for smooth operation, the same component needs to be used for
+    * creating an entry and for showing it afterwards.
+    */
    public function save() :Void {
+      // When the entry has been saved to the backend, set the tooltip.
+      m_entry.addEventListener( EntryChangeEvent.DIRTY, this, registerTooltip );
+ 
       dispatchEvent(
          new EntryViewEvent( EntryViewEvent.SAVE_ENTRY, this, m_entry ) );
    }
@@ -116,15 +133,20 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
    private function displayCurrentEntry() :Void {
       m_drawingAreaContainer.getDrawingArea().loadDrawing( m_entry.drawing );
 
-      if ( m_entry.author != null ) {
+      if ( m_entry.isPesistent() ) {
          // Avoid displaying a tooltip with "null" contents when creating a new
          // entry.
-         TooltipManager.getInstance().setTooltip( this, new EntryTooltip( m_entry ) );
+         registerTooltip();
       }
 
       m_displayStack.selectComponent( m_drawingAreaContainer );
    }
 
+   private function registerTooltip() :Void {
+   	TooltipManager.getInstance().setTooltip( this, new EntryTooltip( m_entry ) );
+   }
+
+   
    private function getInstanceInfo() :Array {
       return super.getInstanceInfo().concat( "entry: " + m_entry );
    }
