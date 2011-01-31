@@ -1,4 +1,5 @@
 import at.klickverbot.debug.Debug;
+import at.klickverbot.debug.DebugLevel;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.ui.components.ContainerContent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
@@ -146,8 +147,13 @@ class at.klickverbot.ui.components.Container extends CustomSizeableComponent
    }
 
    private function getInstanceInfo() :Array {
-      return super.getInstanceInfo().concat(
-         "contents.length: " + m_contents.length );
+      if ( Debug.LEVEL > DebugLevel.NORMAL ) {
+      	return super.getInstanceInfo().concat(
+           "contents: " + m_contents );
+      } else {
+         return super.getInstanceInfo().concat(
+           "contents.length: " + m_contents.length );
+      }
    }
 
    private var m_contents :Array;
