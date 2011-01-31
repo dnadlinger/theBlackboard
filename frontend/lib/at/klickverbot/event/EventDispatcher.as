@@ -82,8 +82,8 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
          var i :Number = eventListeners.length;
 
          while ( currentListener = eventListeners[ --i ] ) {
-            if ( ( currentListener.listenerFunc === listener ) &&
-               ( currentListener.listenerOwner === listenerOwner ) ) {
+            if ( ( currentListener.func === listener ) &&
+               ( currentListener.owner === listenerOwner ) ) {
 
                eventListeners.splice( i, 1 );
                return true;
@@ -95,8 +95,8 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
          while ( listenerIndex < eventListeners.length ) {
             currentListener = eventListeners[ listenerIndex ];
 
-            if ( ( currentListener.listenerFunc === listener ) &&
-               ( currentListener.listenerOwner === listenerOwner ) ) {
+            if ( ( currentListener.func === listener ) &&
+               ( currentListener.owner === listenerOwner ) ) {
                eventListeners.splice( listenerIndex, 1 );
                eventRemoved = true;
 
@@ -106,8 +106,8 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
                if ( listenerIndex > 0 ) {
                   --listenerIndex;
                }
-            } else if ( ( currentListener.listenerFunc == null ) ||
-               ( currentListener.listenerOwner == null ) ) {
+            } else if ( ( currentListener.func == null ) ||
+               ( currentListener.owner == null ) ) {
                eventListeners.splice( listenerIndex, 1 );
 
                if ( listenerIndex > 0 ) {
@@ -175,8 +175,8 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
       if ( Debug.LEVEL == DebugLevel.NONE ) {
          var i :Number = m_unhandledListeners.length;
          while ( currentListener = m_unhandledListeners[ --i ] ) {
-            if ( ( currentListener.listenerFunc === listener ) &&
-               ( currentListener.listenerOwner === listenerOwner ) ) {
+            if ( ( currentListener.func === listener ) &&
+               ( currentListener.owner === listenerOwner ) ) {
 
                m_unhandledListeners.splice( i, 1 );
                return true;
@@ -189,8 +189,8 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
          while ( listenerIndex < m_unhandledListeners.length ) {
             currentListener = m_unhandledListeners[ listenerIndex ];
 
-            if ( ( currentListener.listenerFunc === listener ) &&
-               ( currentListener.listenerOwner === listenerOwner ) ) {
+            if ( ( currentListener.func === listener ) &&
+               ( currentListener.owner === listenerOwner ) ) {
                m_unhandledListeners.splice( listenerIndex, 1 );
                eventRemoved = true;
 
@@ -200,8 +200,8 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
                if ( listenerIndex > 0 ) {
                   --listenerIndex;
                }
-            } else if ( ( currentListener.listenerFunc == null ) ||
-               ( currentListener.listenerOwner == null ) ) {
+            } else if ( ( currentListener.func == null ) ||
+               ( currentListener.owner == null ) ) {
                m_unhandledListeners.splice( listenerIndex, 1 );
 
                if ( listenerIndex > 0 ) {
@@ -271,14 +271,14 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
       var listenerIndex :Number = listenersCopy.length;
       if ( Debug.LEVEL == DebugLevel.NONE ) {
          while ( currentListener = listenersCopy[ --listenerIndex ] ) {
-            currentListener.listenerFunc.call(
-               currentListener.listenerOwner, event );
+            currentListener.func.call(
+               currentListener.owner, event );
          }
       } else {
          while ( currentListener = listenersCopy[ --listenerIndex ] ) {
-            if ( ( currentListener.listenerFunc != null ) ) {
-               currentListener.listenerFunc.call(
-                  currentListener.listenerOwner, event );
+            if ( ( currentListener.func != null ) ) {
+               currentListener.func.call(
+                  currentListener.owner, event );
             } else {
                eventListeners.splice( listenerIndex, 1 );
                Debug.LIBRARY_LOG.warn( "No longer existing event listener " +
@@ -309,15 +309,15 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
          var listenerCount :Number = m_unhandledListeners.length;
 
          while ( currentListener = m_unhandledListeners[ --listenerCount ] ) {
-            currentListener.listenerFunc.call( currentListener.listenerOwner, event );
+            currentListener.func.call( currentListener.owner, event );
          }
       } else {
          var listenerIndex :Number = 0;
 
          while ( listenerIndex < m_unhandledListeners.length ) {
             currentListener = m_unhandledListeners[ listenerIndex ];
-            if ( ( currentListener.listenerFunc != null ) ) {
-               currentListener.listenerFunc.call( currentListener.listenerOwner,
+            if ( ( currentListener.func != null ) ) {
+               currentListener.func.call( currentListener.owner,
                   event );
             } else {
                m_unhandledListeners.splice( listenerIndex, 1 );

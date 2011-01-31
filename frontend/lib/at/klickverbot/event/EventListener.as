@@ -2,47 +2,45 @@ import at.klickverbot.core.CoreObject;
 import at.klickverbot.debug.Debug;
 
 /**
- * An container object to ensure type safety for storing the event listeners.
- * Alternatively we could use a dimension more in the listener array...
- *
+ * Container object to ensure type safety when storing the event listeners.
  */
 class at.klickverbot.event.EventListener extends CoreObject {
    /**
     * Constructor.
     *
-    * @param listenerOwner The owner of the listener function. Only needed
-    *        because ActionScript 2 allows no real function pointers.
-    * @param listenerFunc The listener function for the event.
+    * @param owner The owner of the listener function. This is needed because
+    *        ActionScript 2 does not have real delegates/member function pointers.
+    * @param func The listener function for the event.
     */
-   public function EventListener( listenerOwner :Object, listenerFunc :Function ) {
-      m_listenerOwner = listenerOwner;
-      m_listenerFunc = listenerFunc;
+   public function EventListener( owner :Object, func :Function ) {
+      m_owner = owner;
+      m_func = func;
    }
 
-   public function get listenerOwner() :Object {
-      return m_listenerOwner;
+   public function get owner() :Object {
+      return m_owner;
    }
-   public function set listenerOwner( to :Object ) :Void {
+   public function set owner( to :Object ) :Void {
       Debug.assertNotNull( to, "The owner of the listener function " +
          "cannot be null!" );
-      m_listenerOwner = to;
+      m_owner = to;
    }
 
-   public function get listenerFunc() :Function {
-      return m_listenerFunc;
+   public function get func() :Function {
+      return m_func;
    }
-   public function set listenerFunc( to :Function ) :Void {
+   public function set func( to :Function ) :Void {
       Debug.assertNotNull( to, "The listener function cannot be null!" );
-      m_listenerFunc = to;
+      m_func = to;
    }
 
    private function getInstanceInfo() :Array {
       return super.getInstanceInfo().concat( [
-         "listenerOwner: " + m_listenerOwner,
-         "listenerFunc: " + listenerFunc
+         "owner: " + m_owner,
+         "func: " + func
       ] );
    }
 
-   private var m_listenerOwner :Object;
-   private var m_listenerFunc :Function;
+   private var m_owner :Object;
+   private var m_func :Function;
 }
