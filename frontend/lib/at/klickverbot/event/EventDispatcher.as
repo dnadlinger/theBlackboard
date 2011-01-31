@@ -226,7 +226,7 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
     * @return The number of listeners.
     */
    public function getListenerCount( eventType :String ) :Number {
-      return getListenersForEvent( eventType ).length;
+      return getListenersForEvent( eventType ).length || 0;
    }
 
    /**
