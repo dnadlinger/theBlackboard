@@ -259,39 +259,31 @@ class at.klickverbot.event.EventDispatcher extends CoreObject
          // No listeners registed for this event.
          return false;
       }
+      
+      // Operate on a private copy of the listeners array to avoid getting
+      // confused if a listener is removed from the list while iterating it.
+      var listenersCopy :Array = eventListeners.slice();
 
       // We need to traverse the m_listeners subarray to dispatch the event to
       // all listeners. While we are at it, we can also check if any registered
-      // listeners have ceased to exist. Because this should not happen anyway,
-      // we go with a faster approach when not debugging. Inspired by Saban Ünlü.
-
+      // listeners have ceased to exist (for debugging purposes).
       var currentListener :EventListener;
+      var listenerIndex :Number = listenersCopy.length;
       if ( Debug.LEVEL == DebugLevel.NONE ) {
-         var listenerCount :Number = eventListeners.length;
-
-         while ( currentListener = eventListeners[ --listenerCount ] ) {
-            currentListener.listenerFunc.call( currentListener.listenerOwner, event );
+         while ( currentListener = listenersCopy[ --listenerIndex ] ) {
+            currentListener.listenerFunc.call(
+               currentListener.listenerOwner, event );
          }
       } else {
-         var listenerIndex :Number = 0;
-
-         while ( listenerIndex < eventListeners.length ) {
-            currentListener = eventListeners[ listenerIndex ];
+         while ( currentListener = listenersCopy[ --listenerIndex ] ) {
             if ( ( currentListener.listenerFunc != null ) ) {
-               currentListener.listenerFunc.call( currentListener.listenerOwner,
-                  event );
+               currentListener.listenerFunc.call(
+                  currentListener.listenerOwner, event );
             } else {
                eventListeners.splice( listenerIndex, 1 );
-
-               if ( listenerIndex > 0 ) {
-                  --listenerIndex;
-               }
-
                Debug.LIBRARY_LOG.warn( "No longer existing event listener " +
                   "for event " + event + " removed from " + this + "." );
             }
-
-            ++listenerIndex;
          }
       }
 
