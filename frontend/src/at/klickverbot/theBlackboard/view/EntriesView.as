@@ -232,10 +232,13 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
 
       // Create the drawing overlay.
       Debug.assertNull( m_activeDrawView, "There was still another " +
-         "DrawEntryView active while switching to draw mode!" );
+         "DrawEntryView active when switching to drawing mode." );
+      Debug.assertNull( m_activeDrawingOverlay, "When switching to drawing " +
+         "mode, there must not be another active IDrawingOverlay." );
 
       m_activeDrawView = new DrawEntryView( m_activeEntry,
          EntryView( m_entryGrid.getViewForItem( m_activeEntry ) ).getDrawingArea() );
+      m_activeDrawingOverlay = m_activeDrawView;
       var overlayContainer :Container = new Container();
       overlayContainer.addContent( m_activeDrawView, StretchModes.UNIFORM,
          HorizontalAligns.LEFT, VerticalAligns.TOP );
