@@ -1,3 +1,4 @@
+import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.theBlackboard.model.Entry;
 import at.klickverbot.theBlackboard.model.EntryChangeEvent;
 import at.klickverbot.theBlackboard.view.DrawingAreaContainer;
@@ -10,6 +11,7 @@ import at.klickverbot.ui.components.data.IItemView;
 import at.klickverbot.ui.components.drawingArea.DrawingArea;
 import at.klickverbot.ui.components.themed.Static;
 import at.klickverbot.ui.tooltip.TooltipManager;
+import at.klickverbot.util.Delegate;
 
 /**
  * An ItemView displaying a single entry.
@@ -94,7 +96,7 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
 
    /**
     * Save the entry associated with this view.
-    * 
+    *
     * As well as #getDrawingArea, this being called externally is a design
     * kludge, but for smooth operation, the same component needs to be used for
     * creating an entry and for showing it afterwards.
@@ -102,9 +104,13 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
    public function save() :Void {
       // When the entry has been saved to the backend, set the tooltip.
       m_entry.addEventListener( EntryChangeEvent.DIRTY, this, registerTooltip );
- 
+
       dispatchEvent(
          new EntryViewEvent( EntryViewEvent.SAVE_ENTRY, this, m_entry ) );
+   }
+
+   private function onPress() :Void {
+      dispatchEvent( new ButtonEvent( ButtonEvent.PRESS, this ) );
    }
 
    private function loadCurrentEntry() :Void {
@@ -143,10 +149,11 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
    }
 
    private function registerTooltip() :Void {
-   	TooltipManager.getInstance().setTooltip( this, new EntryTooltip( m_entry ) );
+      TooltipManager.getInstance().setTooltip( this, new EntryTooltip( m_entry ) );
+      m_container.onPress = Delegate.create( this, onPress );
    }
 
-   
+
    private function getInstanceInfo() :Array {
       return super.getInstanceInfo().concat( "entry: " + m_entry );
    }

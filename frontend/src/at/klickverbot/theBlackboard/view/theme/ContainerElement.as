@@ -23,4 +23,11 @@ class at.klickverbot.theBlackboard.view.theme.ContainerElement {
    public static var TOOLS_UNDO :String = "undo";
    public static var TOOLS_REDO :String = "redo";
    public static var TOOLS_NEXT_STEP :String = "nextStep";
+
+   public static var SINGLE_DRAWING_AREA :String = "drawingArea";
+   public static var SINGLE_DETAILS :String = "details";
+
+   public static var DETAILS_DISPLAY_CAPTION :String = "caption";
+   public static var DETAILS_DISPLAY_AUTHOR :String = "author";
+   public static var DETAILS_DISPLAY_TIMESTAMP :String = "timestamp";
 }

@@ -1,31 +1,29 @@
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theBlackboard.model.Entry;
-import at.klickverbot.theBlackboard.view.DrawingToolbox;
+import at.klickverbot.theBlackboard.view.EntryDetailsDisplay;
 import at.klickverbot.theBlackboard.view.IDrawingOverlay;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.Spacer;
-import at.klickverbot.ui.components.drawingArea.DrawingArea;
 import at.klickverbot.ui.components.themed.MultiContainer;
 
-class at.klickverbot.theBlackboard.view.DrawEntryView
+class at.klickverbot.theBlackboard.view.ViewSingleOverlay
    extends CustomSizeableComponent implements IDrawingOverlay {
 
-   public function DrawEntryView( model :Entry, target :DrawingArea ) {
+   public function ViewSingleOverlay( model :Entry ) {
       super();
 
       m_model = model;
-      m_drawingArea = target;
 
-      m_drawEntryContainer = new MultiContainer( AppClipId.DRAW_ENTRY_CONTAINER );
+      m_drawEntryContainer = new MultiContainer( AppClipId.VIEW_SINGLE_CONTAINER );
 
       m_drawingAreaDummy = new Spacer( new Point2D( 1, 1 ) );
       m_drawEntryContainer.addContent(
-         ContainerElement.NEW_DRARING_AREA, m_drawingAreaDummy );
+         ContainerElement.SINGLE_DRAWING_AREA, m_drawingAreaDummy );
 
-      m_drawingToolbox = new DrawingToolbox( target );
-      m_drawEntryContainer.addContent( ContainerElement.NEW_TOOLBOX, m_drawingToolbox );
+      m_details = new EntryDetailsDisplay( m_model );
+      m_drawEntryContainer.addContent( ContainerElement.SINGLE_DETAILS, m_details );
    }
 
    private function createUi() :Boolean {
@@ -37,8 +35,6 @@ class at.klickverbot.theBlackboard.view.DrawEntryView
          super.destroy();
          return false;
       }
-
-      m_drawingArea.setMouseDrawMode( true );
 
       updateSizeDummy();
       return true;
@@ -67,14 +63,8 @@ class at.klickverbot.theBlackboard.view.DrawEntryView
       return m_drawingAreaDummy.getSize();
    }
 
-   public function commitChanges() :Void {
-      m_drawingArea.setMouseDrawMode( false );
-      m_model.drawing = m_drawingArea.getCurrentDrawing();
-   }
-
    private var m_model :Entry;
-   private var m_drawingArea :DrawingArea;
    private var m_drawEntryContainer :MultiContainer;
    private var m_drawingAreaDummy :Spacer;
-   private var m_drawingToolbox :DrawingToolbox;
+   private var m_details :EntryDetailsDisplay;
 }

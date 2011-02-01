@@ -1,6 +1,7 @@
 import at.klickverbot.data.List;
 import at.klickverbot.debug.Debug;
 import at.klickverbot.drawing.Drawing;
+import at.klickverbot.event.events.ButtonEvent;
 import at.klickverbot.event.events.Event;
 import at.klickverbot.graphics.Point2D;
 import at.klickverbot.theBlackboard.model.Configuration;
@@ -12,11 +13,15 @@ import at.klickverbot.theBlackboard.view.EditEntryDetailsView;
 import at.klickverbot.theBlackboard.view.EntriesViewState;
 import at.klickverbot.theBlackboard.view.EntryView;
 import at.klickverbot.theBlackboard.view.EntryViewFactory;
+import at.klickverbot.theBlackboard.view.IDrawingOverlay;
 import at.klickverbot.theBlackboard.view.ModalOverlayDisplay;
 import at.klickverbot.theBlackboard.view.NavigationView;
 import at.klickverbot.theBlackboard.view.SubmitDiscardView;
+import at.klickverbot.theBlackboard.view.ViewSingleOverlay;
+import at.klickverbot.theBlackboard.view.ViewSingleToolbar;
 import at.klickverbot.theBlackboard.view.event.NavigationViewEvent;
 import at.klickverbot.theBlackboard.view.event.SubmitDiscardEvent;
+import at.klickverbot.theBlackboard.view.event.ViewSingleEvent;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
 import at.klickverbot.theBlackboard.view.theme.ContainerElement;
 import at.klickverbot.ui.animation.AlphaTween;
@@ -53,6 +58,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_state = EntriesViewState.VIEW_ALL;
       m_activeDrawView = null;
       m_activeDetailsView = null;
+      m_activeDrawingOverlay = null;
       m_drawingOverlayFader = null;
 
       setupUi();
@@ -67,9 +73,11 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    /**
     * Sets up event handling for a child EntryView.
     *
-    * This method is called from EntryViewFactory.
+    * This method is called from
+    * {@link at.klickverbot.theBlackboard.view.EntryViewFactory}.
     */
    public function registerEntryView( view :EntryView ) :Void {
+      view.addEventListener( ButtonEvent.PRESS, this, handleDrawingAreaPress );
       view.addUnhandledEventsListener( this, dispatchEvent );
    }
 
@@ -137,7 +145,8 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       if ( !checkOnStage( "resize" ) ) return;
       super.resize( width, height );
 
-      if ( m_state == EntriesViewState.DRAW ) {
+      if ( m_state == EntriesViewState.DRAW ||
+         m_state == EntriesViewState.VIEW_SINGLE ) {
          if ( m_drawingOverlayFader.isOnStage() ) {
             // We check here if the drawingOverlayFader is already on stage,
             // because it is not created until the animated drawEntryZoom is
@@ -147,7 +156,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
 
          // Make sure that the entry is still in the correct position below the
          // DrawEntryView (it is not if the fader has been resized above).
-         Animator.getInstance().run( drawEntryZoom( false ) );
+         Animator.getInstance().run( drawingOverlayZoom( false ) );
       } else if ( m_state == EntriesViewState.EDIT_DETAILS ) {
          // Do nothing.
       } else {
@@ -201,11 +210,13 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       Debug.assertNull( m_activeEntry,
          "There was another entry active when trying to add a new entry." );
 
+      // Create a new entry and push it to the grid.
       m_activeEntry = new Entry();
       m_activeEntry.drawing = new Drawing();
       m_entries.push( m_activeEntry );
       m_entryGrid.goToLastPage();
 
+      // Switch to the submit/discard navigation bar.
       var navContainer :Container = new Container();
 
       var navigation :SubmitDiscardView = new SubmitDiscardView();
@@ -219,6 +230,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_toolbarStack.addContent( navContainer );
       m_toolbarStack.selectComponent( navContainer );
 
+      // Create the drawing overlay.
       Debug.assertNull( m_activeDrawView, "There was still another " +
          "DrawEntryView active while switching to draw mode!" );
 
@@ -234,7 +246,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_drawingOverlayFader.createContent();
 
       // Delay showing the overlay until the zoom animation is complete.
-      var zoomAnimation :IAnimation = drawEntryZoom( true );
+      var zoomAnimation :IAnimation = drawingOverlayZoom( true );
       zoomAnimation.addEventListener( Event.COMPLETE,
          this, fadeInDrawingOverlay );
       m_drawingOverlayFader.fade( 0 );
@@ -251,6 +263,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
 
       m_activeDrawView.commitChanges();
       m_drawingOverlayFader.destroyContent( true );
+      m_activeDrawingOverlay = null;
       m_activeDrawView = null;
 
       m_modalOverlayDisplay.showOverlay( m_activeDetailsView );
@@ -286,6 +299,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    private function discardNewEntry() :Void {
       m_drawingOverlayFader.destroyContent( true );
       m_activeDrawView = null;
+      m_activeDrawingOverlay = null;
 
       m_toolbarStack.removeContent( m_toolbarStack.getSelectedComponent() );
       resizeMainChildren();
@@ -297,17 +311,71 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_state = EntriesViewState.VIEW_ALL;
    }
 
-   private function drawEntryZoom( animate :Boolean ) :IAnimation {
-      Debug.assertNotNull( m_activeDrawView,
-         "drawEntryZoom requested, but no active DrawEntryView." );
+   private function viewSingleEntry() :Void {
+      Debug.assertEqual( m_state, EntriesViewState.VIEW_ALL,
+        "Must be in view all mode to trigger view single mode." );
+      m_state = EntriesViewState.VIEW_SINGLE;
+
+      Debug.assertEqual( m_entryGrid.getPageForItem( m_activeEntry ),
+        m_entryGrid.getCurrentPage(), "Entry to be viewed must be on current page. " );
+
+      // Display view single toolbar.
+      var toolbarContainer :Container = new Container();
+
+      var toolbar :ViewSingleToolbar = new ViewSingleToolbar();
+      toolbar.addEventListener( ViewSingleEvent.BACK, this, finishSingleView );
+      toolbarContainer.addContent( toolbar,
+         StretchModes.UNIFORM, HorizontalAligns.CENTER, VerticalAligns.MIDDLE );
+
+      m_toolbarStack.addContent( toolbarContainer );
+      m_toolbarStack.selectComponent( toolbarContainer );
+
+      // Display view single overlay.
+      var overlay :ViewSingleOverlay = new ViewSingleOverlay( m_activeEntry );
+      m_activeDrawingOverlay = overlay;
+      var overlayContainer :Container = new Container();
+      overlayContainer.addContent( overlay, StretchModes.UNIFORM,
+         HorizontalAligns.LEFT, VerticalAligns.TOP );
+
+      m_drawingOverlayFader = new Fader( overlayContainer );
+      m_drawingOverlayFader.create( m_container );
+      m_drawingOverlayFader.setSize( getSize() );
+      m_drawingOverlayFader.createContent();
+
+      // Delay showing the overlay until the zoom animation is complete.
+      var zoomAnimation :IAnimation = drawingOverlayZoom( true );
+      zoomAnimation.addEventListener( Event.COMPLETE,
+         this, fadeInDrawingOverlay );
+      m_drawingOverlayFader.fade( 0 );
+      Animator.getInstance().run( zoomAnimation );
+   }
+
+   private function finishSingleView() :Void {
+      Debug.assertEqual( m_state, EntriesViewState.VIEW_SINGLE,
+        "Cannot finish view single mode if not active." );
+      m_state = EntriesViewState.VIEW_ALL;
+      m_activeEntry = null;
+
+      m_drawingOverlayFader.destroyContent( true );
+      m_activeDrawingOverlay = null;
+
+      m_toolbarStack.removeContent( m_toolbarStack.getSelectedComponent() );
+
+      Animator.getInstance().run( generalViewZoom( true ) );
+   }
+
+
+   private function drawingOverlayZoom( animate :Boolean ) :IAnimation {
+      Debug.assertNotNull( m_activeDrawingOverlay,
+         "drawingOverlayZoom requested, but no active IDrawingOverlay." );
 
       Debug.assertFuzzyEqual(
-         m_activeDrawView.getDrawingAreaSize().x,
-         m_activeDrawView.getDrawingAreaSize().y,
+         m_activeDrawingOverlay.getDrawingAreaSize().x,
+         m_activeDrawingOverlay.getDrawingAreaSize().y,
          "The drawing area must be a square."
        );
-      var drawingSize :Number = m_activeDrawView.getDrawingAreaSize().x;
-      var drawingPosition :Point2D = m_activeDrawView.getDrawingAreaPosition();
+      var drawingSize :Number = m_activeDrawingOverlay.getDrawingAreaSize().x;
+      var drawingPosition :Point2D = m_activeDrawingOverlay.getDrawingAreaPosition();
 
       return entryZoom( drawingPosition, drawingSize, animate );
    }
@@ -363,6 +431,12 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       Animator.getInstance().run( Animations.fadeIn( m_drawingOverlayFader ) );
    }
 
+   private function handleDrawingAreaPress( event :ButtonEvent ) :Void {
+      var entry :Entry = Entry( EntryView( event.target ).getData() );
+      m_activeEntry = entry;
+      viewSingleEntry();
+   }
+
    private var m_entries :List;
    private var m_configuration :Configuration;
 
@@ -374,6 +448,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    private var m_drawingOverlayFader :Fader;
    private var m_activeDrawView :DrawEntryView;
    private var m_activeDetailsView :EditEntryDetailsView;
+   private var m_activeDrawingOverlay :IDrawingOverlay;
 
    private var m_mainContainer :MultiContainer;
    private var m_entriesContainer :StaticContainer;

@@ -22,12 +22,14 @@ class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
    public static var DRAWING_TOOLS_CONTAINER :AppClipId = new AppClipId( "drawingToolsContainer" );
    public static var ENTRY_DETAILS_CONTAINER :AppClipId = new AppClipId( "entryDetailsContainer" );
    public static var CAPTCHA_AUTH_CONTAINER :AppClipId = new AppClipId( "captchaAuthContainer" );
+   public static var VIEW_SINGLE_CONTAINER :AppClipId = new AppClipId( "viewSingleContainer" );
 
    public static var DEFAULT_TEXT_BOX :AppClipId = new AppClipId( "defaultTextBox" );
 
    public static var TOOLTIP_LABEL :AppClipId = new AppClipId( "tooltipLabel" );
    public static var ENTRY_TOOLTIP :AppClipId = new AppClipId( "entryTooltip" );
    public static var PAGE_DISPLAY :AppClipId = new AppClipId( "pageDisplay" );
+   public static var ENTRY_DETAILS_DISPLAY :AppClipId = new AppClipId( "entryDetailsDisplay" );
 
    public static var PREVIOUS_PAGE_BUTTON :AppClipId = new AppClipId( "previousPageButton" );
    public static var NEXT_PAGE_BUTTON :AppClipId = new AppClipId( "nextPageButton" );
@@ -48,6 +50,7 @@ class at.klickverbot.theBlackboard.view.theme.AppClipId extends ClipId {
    public static var REDO_BUTTON :AppClipId = new AppClipId( "redoButton" );
    public static var SUBMIT_BUTTON :AppClipId = new AppClipId( "submitButton" );
    public static var DISCARD_BUTTON :AppClipId = new AppClipId( "discardButton" );
+   public static var BACK_TO_INDEX_BUTTON :AppClipId = new AppClipId( "backToIndexButton" );
 
    public static var BACKGROUND :AppClipId = new AppClipId( "background" );
    public static var BACK_SCENERY :AppClipId = new AppClipId( "backScenery" );
