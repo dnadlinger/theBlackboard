@@ -99,9 +99,10 @@ class at.klickverbot.ui.components.Fader extends CustomSizeableComponent {
       m_runningFadeOut = new Animation( new AlphaTween( m_content, 0 ),
          m_fadeDuration * m_content.getAlpha(), TimeMappers.CUBIC );
 
-      m_runningFadeOut.addEventListener( Event.COMPLETE, this, handleFadeOutComplete );
       if ( destroyFader ) {
          m_runningFadeOut.addEventListener( Event.COMPLETE, this, destroy );
+      } else {
+         m_runningFadeOut.addEventListener( Event.COMPLETE, this, handleFadeOutComplete );
       }
 
       Animator.getInstance().run( m_runningFadeOut );
