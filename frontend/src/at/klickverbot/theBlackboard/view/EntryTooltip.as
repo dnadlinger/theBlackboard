@@ -1,7 +1,7 @@
-import at.klickverbot.theBlackboard.model.EntryChangeEvent;
-import at.klickverbot.theBlackboard.view.theme.ContainerElement;
 import at.klickverbot.theBlackboard.model.Entry;
+import at.klickverbot.theBlackboard.model.EntryChangeEvent;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
+import at.klickverbot.theBlackboard.view.theme.ContainerElement;
 import at.klickverbot.ui.components.themed.Static;
 
 class at.klickverbot.theBlackboard.view.EntryTooltip extends Static {
