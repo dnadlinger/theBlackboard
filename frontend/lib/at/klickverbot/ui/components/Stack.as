@@ -8,9 +8,7 @@ import at.klickverbot.ui.components.AnimationComponent;
 import at.klickverbot.ui.components.CustomSizeableComponent;
 import at.klickverbot.ui.components.IUiComponent;
 
-class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
-   implements IUiComponent {
-
+class at.klickverbot.ui.components.Stack extends CustomSizeableComponent {
    /**
     * Constructor.
     */
@@ -97,7 +95,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
                } else {
                   // We can't select any other component, so fade it out manually.
                   if ( m_onStage ) {
-                     fadeOutContent( component );
+                     fadeOutContent( component, true );
                   }
                   m_selectedContent = null;
                }
@@ -116,10 +114,24 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
    }
 
    /**
-    * Selects the component to be displayed.
-    * <code>null</code> will hide the whole stack.
+    * Selects a content component to be displayed.
+    * 
+    * This class was specifically designed to help managing smooth transitions,
+    * but in some cases one occasionally needs an instant change to another
+    * componenent. To control this animation behavior, the {@code animate}
+    * parameter can be used.
+    * 
+    * @param component The component to be displayed. It must have been added to
+    *        the Stack before with {@link addComponent()}. <code>null</code> will
+    *        hide the whole stack.
+    * @param animate Whether to animate the transition to the new component.
+    *        Defaults to {@code true}.
     */
-   public function selectComponent( component :IUiComponent ) :Void {
+   public function selectComponent( component :IUiComponent, animate :Boolean ) :Void {
+   	if ( animate === undefined ) {
+   		animate = true;
+   	}
+
       if ( component != null ) {
          Debug.assertIncludes( m_contents, component,
             "Cannot select a component which has not been added." );
@@ -139,7 +151,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
 
          // Fade the old component out.
          if ( m_selectedContent != null ) {
-            fadeOutContent( m_selectedContent );
+            fadeOutContent( m_selectedContent, animate );
          }
       }
 
@@ -161,12 +173,15 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
 
             component.create( m_container );
             m_selectedContent.setSize( getSize() );
-            component.fade( 0 );
-
-            m_runningFadeIn = m_fadeTemplate.clone();
-            m_runningFadeIn.setTween( new AlphaTween( component, 1 ) );
-            m_runningFadeIn.addEventListener( Event.COMPLETE, this, handleFadeInComplete );
-            Animator.getInstance().run( m_runningFadeIn );
+            if ( animate ) {
+               component.fade( 0 );
+   
+               m_runningFadeIn = m_fadeTemplate.clone();
+               m_runningFadeIn.setTween( new AlphaTween( component, 1 ) );
+               m_runningFadeIn.addEventListener( Event.COMPLETE,
+                  this, handleFadeInComplete );
+               Animator.getInstance().run( m_runningFadeIn );
+            }
          }
       }
    }
@@ -184,7 +199,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
       }
    }
 
-   private function fadeOutContent( component :IUiComponent ) :Void {
+   private function fadeOutContent( component :IUiComponent, animate :Boolean ) :Void {
       var animation :Animation = m_fadeTemplate.clone();
       m_runningFadeOuts.push( new AnimationComponent( animation, component ) );
 
@@ -192,6 +207,10 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent
       animation.addEventListener( Event.COMPLETE,
          this, handleFadeOutComplete );
       Animator.getInstance().run( animation );
+      
+      if ( !animate ) {
+      	animation.end();
+      }
    }
 
    private function handleFadeInComplete( event :Event ) :Void {

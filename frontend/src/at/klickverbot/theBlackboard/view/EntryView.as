@@ -115,7 +115,7 @@ class at.klickverbot.theBlackboard.view.EntryView extends CustomSizeableComponen
       TooltipManager.getInstance().clearTooltip( this );
 
       if ( m_entry == null ) {
-         m_displayStack.selectComponent( null );
+         m_displayStack.selectComponent( null, false );
          return;
       }
 
