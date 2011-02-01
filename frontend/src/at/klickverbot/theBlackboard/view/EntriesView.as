@@ -435,6 +435,9 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    }
 
    private function handleDrawingAreaPress( event :ButtonEvent ) :Void {
+      // View single mode can only be triggered when in view all state.
+      if ( m_state != EntriesViewState.VIEW_ALL ) return;
+
       var entry :Entry = Entry( EntryView( event.target ).getData() );
       m_activeEntry = entry;
       viewSingleEntry();
