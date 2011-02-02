@@ -57,7 +57,7 @@ class at.klickverbot.theBlackboard.view.ModalOverlayDisplay extends CustomSizeab
 
    public function showOverlay( component :IUiComponent ) :Void {
       if ( m_fadersForContents.length == 0 ) {
-         m_backgroundFader.createContent();
+         m_backgroundFader.showContent();
       }
 
       var container :Container = new Container();
@@ -69,7 +69,7 @@ class at.klickverbot.theBlackboard.view.ModalOverlayDisplay extends CustomSizeab
 
       fader.create( m_container );
       fader.setSize( getSize() );
-      fader.createContent();
+      fader.showContent();
    }
 
    public function hideOverlay( component :IUiComponent ) :Boolean {
@@ -77,11 +77,11 @@ class at.klickverbot.theBlackboard.view.ModalOverlayDisplay extends CustomSizeab
       var i :Number = m_fadersForContents.length;
       while ( currentMapping = m_fadersForContents[ --i ] ) {
          if ( currentMapping.component == component ) {
-            currentMapping.fader.destroyContent( true );
+            currentMapping.fader.hideContent( true );
             m_fadersForContents.splice( i, 1 );
 
             if ( m_fadersForContents.length == 0 ) {
-               m_backgroundFader.destroyContent();
+               m_backgroundFader.hideContent();
             }
 
             return true;

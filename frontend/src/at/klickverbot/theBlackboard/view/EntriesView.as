@@ -246,13 +246,11 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_drawingOverlayFader = new Fader( overlayContainer );
       m_drawingOverlayFader.create( m_container );
       m_drawingOverlayFader.setSize( getSize() );
-      m_drawingOverlayFader.createContent();
 
       // Delay showing the overlay until the zoom animation is complete.
       var zoomAnimation :IAnimation = drawingOverlayZoom( true );
       zoomAnimation.addEventListener( Event.COMPLETE,
          this, fadeInDrawingOverlay );
-      m_drawingOverlayFader.fade( 0 );
       Animator.getInstance().run( zoomAnimation );
    }
 
@@ -265,9 +263,10 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_activeDetailsView.addEventListener( Event.COMPLETE, this, saveEntry );
 
       m_activeDrawView.commitChanges();
-      m_drawingOverlayFader.destroyContent( true );
-      m_activeDrawingOverlay = null;
       m_activeDrawView = null;
+      m_drawingOverlayFader.hideContent( true );
+      m_drawingOverlayFader = null;
+      m_activeDrawingOverlay = null;
 
       m_modalOverlayDisplay.showOverlay( m_activeDetailsView );
    }
@@ -300,8 +299,9 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    }
 
    private function discardNewEntry() :Void {
-      m_drawingOverlayFader.destroyContent( true );
       m_activeDrawView = null;
+      m_drawingOverlayFader.hideContent( true );
+      m_drawingOverlayFader = null;
       m_activeDrawingOverlay = null;
 
       m_toolbarStack.removeContent( m_toolbarStack.getSelectedComponent() );
@@ -343,13 +343,15 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_drawingOverlayFader = new Fader( overlayContainer );
       m_drawingOverlayFader.create( m_container );
       m_drawingOverlayFader.setSize( getSize() );
-      m_drawingOverlayFader.createContent();
 
-      // Delay showing the overlay until the zoom animation is complete.
+      // Delay showing the overlay until the zoom animation is complete. The
+      // component is on stage in advance though to determine the position to
+      // zoom though. Thus, we cannot just use Fader.createContent to fade it
+      // in later, but have to create it immediately, but hide the whole Fader
+      //
       var zoomAnimation :IAnimation = drawingOverlayZoom( true );
       zoomAnimation.addEventListener( Event.COMPLETE,
          this, fadeInDrawingOverlay );
-      m_drawingOverlayFader.fade( 0 );
       Animator.getInstance().run( zoomAnimation );
    }
 
@@ -359,7 +361,8 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       m_state = EntriesViewState.VIEW_ALL;
       m_activeEntry = null;
 
-      m_drawingOverlayFader.destroyContent( true );
+      m_drawingOverlayFader.hideContent( true );
+      m_drawingOverlayFader = null;
       m_activeDrawingOverlay = null;
 
       m_toolbarStack.removeContent( m_toolbarStack.getSelectedComponent() );
@@ -431,7 +434,11 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
    }
 
    private function fadeInDrawingOverlay() :Void {
-      Animator.getInstance().run( Animations.fadeIn( m_drawingOverlayFader ) );
+      // If the user left view single or drawing mode while the zoom was still
+      // in progress, the fader could have already been destroyed.
+      if ( m_drawingOverlayFader.isOnStage() ) {
+         m_drawingOverlayFader.showContent();
+      }
    }
 
    private function handleEntryViewPress( event :ButtonEvent ) :Void {
