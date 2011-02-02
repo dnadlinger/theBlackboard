@@ -9,7 +9,7 @@ import at.klickverbot.graphics.Tint;
 interface at.klickverbot.ui.components.IUiComponent extends IEventDispatcher {
    /**
     * Creates the visible part of the component in the target parent MovieClip.
-    * The component can be recreated using @link{ #destroy } and this function,
+    * The component can be recreated using {@link #destroy} and this function,
     * but only one (visible) representation can exist at the same time.
     *
     * @see #isOnStage
@@ -22,7 +22,7 @@ interface at.klickverbot.ui.components.IUiComponent extends IEventDispatcher {
 
    /**
     * Destroys the visible part of the component.
-    * It can be recreated using @link{ #create }.
+    * It can be recreated using {@link #create}.
     *
     * @see #isOnStage
     */

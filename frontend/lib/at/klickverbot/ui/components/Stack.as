@@ -115,22 +115,22 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent {
 
    /**
     * Selects a content component to be displayed.
-    * 
+    *
     * This class was specifically designed to help managing smooth transitions,
     * but in some cases one occasionally needs an instant change to another
-    * componenent. To control this animation behavior, the {@code animate}
+    * componenent. To control this animation behavior, the <code>animate</code>
     * parameter can be used.
-    * 
+    *
     * @param component The component to be displayed. It must have been added to
     *        the Stack before with {@link addComponent()}. <code>null</code> will
     *        hide the whole stack.
     * @param animate Whether to animate the transition to the new component.
-    *        Defaults to {@code true}.
+    *        Defaults to <code>true</code>.
     */
    public function selectComponent( component :IUiComponent, animate :Boolean ) :Void {
-   	if ( animate === undefined ) {
-   		animate = true;
-   	}
+      if ( animate === undefined ) {
+         animate = true;
+      }
 
       if ( component != null ) {
          Debug.assertIncludes( m_contents, component,
@@ -175,7 +175,7 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent {
             m_selectedContent.setSize( getSize() );
             if ( animate ) {
                component.fade( 0 );
-   
+
                m_runningFadeIn = m_fadeTemplate.clone();
                m_runningFadeIn.setTween( new AlphaTween( component, 1 ) );
                m_runningFadeIn.addEventListener( Event.COMPLETE,
@@ -207,9 +207,9 @@ class at.klickverbot.ui.components.Stack extends CustomSizeableComponent {
       animation.addEventListener( Event.COMPLETE,
          this, handleFadeOutComplete );
       Animator.getInstance().run( animation );
-      
+
       if ( !animate ) {
-      	animation.end();
+         animation.end();
       }
    }
 
