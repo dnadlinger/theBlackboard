@@ -1,3 +1,4 @@
+import at.klickverbot.util.NumberUtils;
 import at.klickverbot.theBlackboard.model.Entry;
 import at.klickverbot.theBlackboard.model.EntryChangeEvent;
 import at.klickverbot.theBlackboard.view.theme.AppClipId;
@@ -73,7 +74,15 @@ class at.klickverbot.theBlackboard.view.EntryDetailsDisplay extends Static {
       } else {
          m_captionField.text = m_entry.caption;
          m_authorField.text = m_entry.author;
-         m_timestampField.text = m_entry.timestamp.toString();
+
+         with ( m_entry.timestamp ) {
+            m_timestampField.text =
+               NumberUtils.numberToString( getDate(), 2 ) + "." +
+               NumberUtils.numberToString( getMonth() + 1, 2 ) + "." +
+               getFullYear() + ", " +
+               NumberUtils.numberToString( getHours(), 2 ) + ":" +
+               NumberUtils.numberToString( getMinutes(), 2 );
+         }
       }
    }
 
