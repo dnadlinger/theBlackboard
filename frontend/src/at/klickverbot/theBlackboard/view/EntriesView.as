@@ -439,6 +439,10 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       if ( m_state != EntriesViewState.VIEW_ALL ) return;
 
       var entry :Entry = Entry( EntryView( event.target ).getData() );
+
+      // Do nothing if an empty entry view was pressed.
+      if ( entry == null ) return;
+
       m_activeEntry = entry;
       viewSingleEntry();
    }
