@@ -96,7 +96,9 @@ class Entries {
 
       // TODO: Cache statement?
       $statement = $this->dbConn->getPdo()->prepare(
-         'INSERT INTO entries ( id, caption, author, drawingString, timestamp ) VALUES ( NULL, :caption, :author, :drawingString, CURRENT_TIMESTAMP );' );
+         'INSERT INTO entries ( id, caption, author, drawingString, timestamp ) ' .
+         'VALUES ( NULL, :caption, :author, :drawingString, UTC_TIMESTAMP );'
+      );
       $statement->execute(	array( ':caption' => $caption, ':author' => $author,
          ':drawingString' => $drawingString ) );
 
