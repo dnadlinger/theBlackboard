@@ -97,7 +97,7 @@ interface at.klickverbot.ui.components.IUiComponent extends IEventDispatcher {
 
    /**
     * Scales the component according to the given factors.
-    * Same as <code>#resize()</code>, but uses scale factors instead of absoulte
+    * Same as {@link #resize}, but uses scale factors instead of absoulte
     * values for width and height.
     *
     * @see #resize
@@ -139,6 +139,8 @@ interface at.klickverbot.ui.components.IUiComponent extends IEventDispatcher {
     * Note that some components could be not fadeable, then they are completely
     * opaque if alpha > 0.
     *
+    * @see #getAlpha
+    *
     * @param alpha A value from 0-1 specifying the new translucency
     *        (1 is completely opaque).
     */
@@ -147,11 +149,28 @@ interface at.klickverbot.ui.components.IUiComponent extends IEventDispatcher {
    /**
     * Returns the translucency of the component.
     *
+    * @see #fade
+    *
     * @return The translucency of the component (0..1).
     */
    public function getAlpha() :Number;
 
+   /**
+    * Tints the component in the specified tone.
+    *
+    * @see #getTint
+    *
+    * @param tint The tint to apply.
+    */
    public function tint( tint :Tint ) :Void;
 
+   /**
+    * Returns the currently applied tint.
+    *
+    * Note: There may be cases where the result can't be determined unambigously,
+    * for instance when the tint amount is zero.
+    *
+    * @see #tint
+    */
    public function getTint() :Tint;
 }
