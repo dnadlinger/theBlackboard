@@ -135,8 +135,8 @@ class at.klickverbot.ui.components.McComponent extends EventDispatcher
             new Point2D( m_container._width, m_container._height );
          if ( !result.equals( traditionalSize ) ) {
             Debug.LIBRARY_LOG.debug( "Is it intended that " + this +
-               " extends beyond its registration point (origin): " + result +
-               " vs. " + traditionalSize + "?" );
+               " does not start exactly at its registration point (origin): " +
+               result + " vs. " + traditionalSize + "?" );
          }
       }
 
