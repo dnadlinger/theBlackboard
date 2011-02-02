@@ -77,7 +77,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
     * {@link at.klickverbot.theBlackboard.view.EntryViewFactory}.
     */
    public function registerEntryView( view :EntryView ) :Void {
-      view.addEventListener( ButtonEvent.PRESS, this, handleDrawingAreaPress );
+      view.addEventListener( ButtonEvent.PRESS, this, handleEntryViewPress );
       view.addUnhandledEventsListener( this, dispatchEvent );
    }
 
@@ -434,7 +434,7 @@ class at.klickverbot.theBlackboard.view.EntriesView extends CustomSizeableCompon
       Animator.getInstance().run( Animations.fadeIn( m_drawingOverlayFader ) );
    }
 
-   private function handleDrawingAreaPress( event :ButtonEvent ) :Void {
+   private function handleEntryViewPress( event :ButtonEvent ) :Void {
       // View single mode can only be triggered when in view all state.
       if ( m_state != EntriesViewState.VIEW_ALL ) return;
 
