@@ -129,6 +129,7 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
 
          m_eraserButton.setActive( true );
          m_drawingArea.setActiveTool( DrawingTool.PEN );
+         setPenPointer();
       }
 
       for ( var i :Number = 0; i < m_buttonsForColor.length; ++i ) {
@@ -156,19 +157,7 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
          event.target );
 
       m_drawingArea.penStyle.thickness = size;
-
-      PointerManager.getInstance().setPointer(
-         m_drawingArea,
-         new ResizeMcCreator(
-            new LibraryMcCreator( AppClipId.PEN_POINTER.getId() ),
-            new Point2D( size, size )
-         ),
-         // Create the pointer in our own container for the correct scale. Let's
-         // hope that the theme designer has not messed up things and the layout
-         // code gets not broken by inserting an element (the pointer clip)
-         // which is not taken into account by this.getSize().
-         m_container
-      );
+      setPenPointer();
    }
 
    private function findNumberForButton( mappings :Array, button :Button ) :Number {
@@ -219,6 +208,24 @@ class at.klickverbot.theBlackboard.view.DrawingToolbox extends McComponent {
    private function updateHistoryButtons( event :DrawingAreaEvent ) :Void {
       m_undoButton.setActive( ( m_drawingArea.getUndoStepsPossible() >= 1 ) );
       m_redoButton.setActive( ( m_drawingArea.getRedoStepsPossible() >= 1 ) );
+   }
+
+   private function setPenPointer() :Void {
+      PointerManager.getInstance().setPointer(
+         m_drawingArea,
+         new ResizeMcCreator(
+            new LibraryMcCreator( AppClipId.PEN_POINTER.getId() ),
+            new Point2D(
+               m_drawingArea.penStyle.thickness,
+               m_drawingArea.penStyle.thickness
+            )
+         ),
+         // Create the pointer in our own container for the correct scale. Let's
+         // hope that the theme designer has not messed up things and the layout
+         // code gets not broken by inserting an element (the pointer clip)
+         // which is not taken into account by this.getSize().
+         m_container
+      );
    }
 
    private static var CLIP_ID_COLOR_TABLE :Array = [
