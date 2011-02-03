@@ -269,6 +269,8 @@ class at.klickverbot.ui.components.themed.MultiContainer extends Static {
 
    private function putContentOnStage( content :MultiContainerContent ) :Boolean {
       if ( !content.component.create( m_container ) ) {
+         Debug.LIBRARY_LOG.error(
+            "Failed to create " + content + " for " + this + "." );
          return false;
       }
 
